@@ -63,6 +63,7 @@ public class GameStateManager : MonoBehaviour
         var prop = pProps.FirstOrDefault(p => p.playerType == PlayerClassEnum.Warrior);
         if (prop != null)
         {
+            prop.initiative = 9;
             prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
             prop.leftEquipement.transform.Rotate(45, 180, 0);
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
@@ -109,6 +110,7 @@ public class GameStateManager : MonoBehaviour
         prop = pProps.FirstOrDefault(p => p.playerType == PlayerClassEnum.Herald);
         if (prop != null)
         {
+            prop.initiative = 4;
             prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
             prop.leftEquipement.transform.Rotate(45, 180, 0);
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
@@ -182,6 +184,7 @@ public class GameStateManager : MonoBehaviour
         prop = pProps.FirstOrDefault(p => p.playerType == PlayerClassEnum.Knight);
         if (prop != null)
         {
+            prop.initiative = 10;
             prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/knight_shield_material", typeof(Material)));
@@ -224,6 +227,7 @@ public class GameStateManager : MonoBehaviour
         prop = pProps.FirstOrDefault(p => p.playerType == PlayerClassEnum.Assassin);
         if (prop != null)
         {
+            prop.initiative = 8;
             prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/assassin_shield_material", typeof(Material)));
