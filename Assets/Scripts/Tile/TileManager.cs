@@ -23,6 +23,7 @@ public class TileManager : MonoBehaviour
 
     private int LastActivePlayer = 0;
     private int LastActiveEnemy = 0;
+    private bool firstMovementFree = true;
 
     internal bool isHovered = false;
     internal string enteredFrom;
@@ -64,6 +65,7 @@ public class TileManager : MonoBehaviour
     {
         if (isFocused && isHovered && Input.GetButtonDown("End Turn"))
         {
+            firstMovementFree = true;
             bool isEnemyTurn = false;
 
             var previousPlayer = players.FirstOrDefault(p => p.isActive);
@@ -170,6 +172,7 @@ public class TileManager : MonoBehaviour
             var enemy = enemyGenerator.CreateHollowSoldier(gameObject.transform);
             positions.First(p => p.isSpawnTwo).AddNonBossUnit(enemy);
             enemies.Add(enemy.GetComponent<UnitBasicProperties>());
+            EventManager.RaiseEvent(EventTypes.EnemyCreated, enemy);
         }
 
         for (int i = 0; i < monsterSettings.arbalestHollowSoldierCount; i++)
@@ -177,6 +180,7 @@ public class TileManager : MonoBehaviour
             var enemy = enemyGenerator.CreateCrossbowHollowSoldier(gameObject.transform);
             positions.First(p => p.isSpawnOne).AddNonBossUnit(enemy);
             enemies.Add(enemy.GetComponent<UnitBasicProperties>());
+            EventManager.RaiseEvent(EventTypes.EnemyCreated, enemy);
         }
 
         enemies = enemies.OrderBy(p => p.initiative).ToList();
@@ -225,10 +229,17 @@ public class TileManager : MonoBehaviour
 
         foreach (var unit in enemies)
         {
-            Destroy(unit.gameObject);
+            RemoveEnemy(unit);
         }
 
         enemies.Clear();
+    }
+
+    private void RemoveEnemy(UnitBasicProperties enemy)
+    {
+        enemy.ClearEquipement();
+        Destroy(enemy.gameObject);
+        EventManager.RaiseEvent(EventTypes.EnemyRemoved, enemy.gameObject);
     }
 
     private void Cleared()
@@ -259,7 +270,7 @@ public class TileManager : MonoBehaviour
     {
         if (isFocused)
         {
-            var pathcost = pathFinder.GetPathhStaminaCost(currentPath);
+            var pathcost = pathFinder.GetPathhStaminaCost(currentPath) - (firstMovementFree ? 1 : 0);
 
             var currentUnit = players.FirstOrDefault(p => p.isActive) ?? enemies.FirstOrDefault(p => p.isActive);
             var currentUnitObject = currentUnit.gameObject;
@@ -269,6 +280,7 @@ public class TileManager : MonoBehaviour
                 return;
             }
 
+            firstMovementFree = false;
 
             var currentPosition = positions.FirstOrDefault(p => p.HasUnit(currentUnitObject));
             currentPosition.RemoveNonBossUnit(currentUnitObject);

@@ -17,6 +17,8 @@ namespace BoardGame.Script.Events
         UnitIsActivated,
         PositionHovered,
         PositionHoveredExit,
+        EnemyCreated,
+        EnemyRemoved,
     }
 
     public class EventManager

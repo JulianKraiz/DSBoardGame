@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using Assets.Scripts.Unit;
 
 public class UnitBasicProperties : MonoBehaviour
 {
@@ -47,5 +46,25 @@ public class UnitBasicProperties : MonoBehaviour
     public virtual int StaminaLeft()
     {
         return hitPoints - injuries - stamina;
+    }
+
+    public virtual void ClearEquipement()
+    {
+        if (leftEquipement != null)
+        {
+            Destroy(leftEquipement);
+        }
+        if (rightEquipement != null)
+        {
+            Destroy(rightEquipement);
+        }
+        if (armourEquipement != null)
+        {
+            Destroy(armourEquipement);
+        }
+        if (sideEquipement != null)
+        {
+            Destroy(sideEquipement);
+        }
     }
 }

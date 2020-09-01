@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyProperties : UnitBasicProperties
 {
+    public EnemyClassEnum enemyType;
     protected override void StartInternal()
     {
 

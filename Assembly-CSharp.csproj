@@ -64,8 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Models\Campfire\Script\FireLightScript.cs" />
+    <Compile Include="Assets\Scripts\ActiveUnitDisplay\EnemyDisplayBehavior.cs" />
+    <Compile Include="Assets\Scripts\ActiveUnitDisplay\EnemyDisplayContainer.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\PlayerDisplayBehavior.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\PlayerDisplayContainer.cs" />
+    <Compile Include="Assets\Scripts\ActiveUnitDisplay\RaiseEventOnEnterExit.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
     <Compile Include="Assets\Scripts\Events\UnityEventWithObject.cs" />
     <Compile Include="Assets\Scripts\GameStateManager.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="Assets\Scripts\Tile\TileManager.cs" />
     <Compile Include="Assets\Scripts\TileMonsterSettings.cs" />
     <Compile Include="Assets\Scripts\Unit\AttackDetail.cs" />
+    <Compile Include="Assets\Scripts\Unit\EnemyClassEnum.cs" />
     <Compile Include="Assets\Scripts\Unit\EnemyProperties.cs" />
     <Compile Include="Assets\Scripts\Unit\EquipementProperties.cs" />
     <Compile Include="Assets\Scripts\Unit\NewBehaviourScript.cs" />

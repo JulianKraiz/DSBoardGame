@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Unit;
 using System.Collections.Generic;
 using UnityEngine;
+using BoardGame.Unit;
 
 public class EnemyGenerator : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class EnemyGenerator : MonoBehaviour
         var soldier = Instantiate(Resources.Load("Asset/SmallHollowSoldier"), parent) as GameObject;
         var prop = soldier.GetComponent<EnemyProperties>();
 
+        prop.enemyType = EnemyClassEnum.ArbalestHollowSoldier;
         prop.hitPoints = 1;
 
         prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
@@ -38,6 +40,7 @@ public class EnemyGenerator : MonoBehaviour
     {
         var soldier = Instantiate(Resources.Load("Asset/ArcherHoolowSoldier"), parent) as GameObject;
         var prop = soldier.GetComponent<EnemyProperties>();
+        prop.enemyType = EnemyClassEnum.HollowSoldier;
 
         prop.hitPoints = 1;
 

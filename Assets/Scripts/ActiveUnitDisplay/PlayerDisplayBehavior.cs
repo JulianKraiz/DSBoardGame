@@ -1,10 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using BoardGame.Unit;
-using System.Linq;
 
 public class PlayerDisplayBehavior : MonoBehaviour
 {
+
+    private Vector3 translateOffset;
+    private Vector3 translateOffsetVertical;
+    private Vector3 smallScaleOffset;
+    private Vector3 bigScaleOffset;
+
+    private Vector3 equipementScaleOffset;
+
     private Quaternion cardAngle;
 
     private PlayerProperties playerProperties;
@@ -29,9 +36,25 @@ public class PlayerDisplayBehavior : MonoBehaviour
     private GameObject sideAnchor;
     private GameObject armourAnchor;
 
+    private GameObject leftEquipementCopy;
+    private GameObject rightEquipementCopy;
+    private GameObject sideEquipementCopy;
+    private GameObject armourEquipementCopy;
+
+    private int index;
+
+    private RaiseEventOnEnterExit colisionPlane;
+
     void Start()
     {
+        colisionPlane = transform.Find("ColisionPlane").GetComponent<RaiseEventOnEnterExit>();
+        colisionPlane.PositionEnter += MouseEnter;
+        colisionPlane.PositionExit += MouseExit;
+
+        smallScaleOffset = new Vector3(0.65f, 0.65f, 0.65f);
+        bigScaleOffset = new Vector3(2.5f, 2.5f, 1f);
         cardAngle = Quaternion.Euler(45, -180, 0);
+        equipementScaleOffset = new Vector3(0.04f, 1f, 0.08f);
 
         estusTokenRenderer = transform.Find("EstusToken").GetComponent<MeshRenderer>();
         luckTokenRenderer = transform.Find("LuckToken").GetComponent<MeshRenderer>();
@@ -51,26 +74,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
         armourAnchor = transform.Find("ArmourAnchor").gameObject;
     }
 
-    public void Initialize()
-    {
-        var injuriesParent = transform.Find("InjuriesToken");
-        injuriesToken = new List<MeshRenderer>();
-        for (int i = 0; i < injuriesParent.childCount; i++)
-        {
-            injuriesToken.Add(injuriesParent.GetChild(i).GetComponent<MeshRenderer>());
-        }
-
-        var staminaParent = transform.Find("StaminaToken");
-        staminaToken = new List<MeshRenderer>();
-        for (int i = 0; i < staminaParent.childCount; i++)
-        {
-            staminaToken.Add(staminaParent.GetChild(i).GetComponent<MeshRenderer>());
-        }
-
-       
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (playerProperties != null)
@@ -89,36 +92,65 @@ public class PlayerDisplayBehavior : MonoBehaviour
             luckTokenRenderer.material = playerProperties.hasLuckToken ? luckOnMaterial : luckOffMaterial;
             abilityTokenRenderer.material = playerProperties.hasAbility ? abilityOnMaterial : abilityOffMaterial;
 
-            if (playerProperties.leftEquipement != null)
-            {
-                playerProperties.leftEquipement.transform.position = leftHandAnchor.transform.position;
-                playerProperties.leftEquipement.transform.rotation = cardAngle;
-            }
-            if (playerProperties.rightEquipement != null)
-            {
-                playerProperties.rightEquipement.transform.position = rightHandAnchor.transform.position;
-                playerProperties.rightEquipement.transform.rotation = cardAngle;
-            }
-            if (playerProperties.sideEquipement != null)
-            {
-                playerProperties.sideEquipement.transform.position = sideAnchor.transform.position;
-                playerProperties.sideEquipement.transform.rotation = cardAngle;
-            }
-            if (playerProperties.armourEquipement != null)
-            {
-                playerProperties.armourEquipement.transform.position = armourAnchor.transform.position;
-                playerProperties.armourEquipement.transform.rotation = cardAngle;
-            }
+            leftEquipementCopy = CopyAndPlaceEquipement(playerProperties.leftEquipement, leftHandAnchor, leftEquipementCopy);
+            rightEquipementCopy = CopyAndPlaceEquipement(playerProperties.rightEquipement, rightHandAnchor, rightEquipementCopy);
+            sideEquipementCopy = CopyAndPlaceEquipement(playerProperties.sideEquipement, sideAnchor, sideEquipementCopy);
+            armourEquipementCopy = CopyAndPlaceEquipement(playerProperties.armourEquipement, armourAnchor, armourEquipementCopy);
         }
     }
 
-    public void SetUnit(GameObject unit)
+    private GameObject CopyAndPlaceEquipement(GameObject playerEquipement, GameObject anchor, GameObject copy)
+    {
+        if (playerEquipement != null && (copy == null || playerEquipement?.name != copy?.name))
+        {
+            copy = Instantiate(playerEquipement, transform);
+            copy.name = playerEquipement.name;
+            copy.transform.localScale = equipementScaleOffset;
+            copy.transform.position = anchor.transform.position;
+            copy.transform.rotation = cardAngle;
+        }
+        else if(playerEquipement == null && copy != null)
+        {
+            Destroy(copy);
+        }
+
+        return copy;
+    }
+
+    public void SetUnit(GameObject unit, int index)
     {
         if (unit != null)
         {
             playerProperties = unit.GetComponent<PlayerProperties>();
             SetBackgroundMaterial();
+            InitializeDisplay(index);
         }
+    }
+
+    private void InitializeDisplay(int index)
+    {
+        this.index = index;
+
+        translateOffset = new Vector3(2.8f, 0f, -0.5f);
+        translateOffsetVertical = new Vector3(0f, -2f, 0f);
+        // find a less hardcoded way of setting the big pictur translation vertical offset.
+        translateOffset = translateOffset + (index == 1 || index == 2 ? 0 : 1) * translateOffsetVertical;
+
+        var injuriesParent = transform.Find("InjuriesToken");
+        injuriesToken = new List<MeshRenderer>();
+        for (int i = 0; i < injuriesParent.childCount; i++)
+        {
+            injuriesToken.Add(injuriesParent.GetChild(i).GetComponent<MeshRenderer>());
+        }
+
+        var staminaParent = transform.Find("StaminaToken");
+        staminaToken = new List<MeshRenderer>();
+        for (int i = 0; i < staminaParent.childCount; i++)
+        {
+            staminaToken.Add(staminaParent.GetChild(i).GetComponent<MeshRenderer>());
+        }
+
+
     }
 
     private void SetBackgroundMaterial()
@@ -146,5 +178,16 @@ public class PlayerDisplayBehavior : MonoBehaviour
         rend.material = mat;
 
        
+    }
+
+    private void MouseEnter(GameObject args)
+    {
+        transform.localPosition += translateOffset;
+        transform.localScale = bigScaleOffset;
+    }
+    private void MouseExit(GameObject args)
+    {
+        transform.localPosition -= translateOffset;
+        transform.localScale = smallScaleOffset;
     }
 }

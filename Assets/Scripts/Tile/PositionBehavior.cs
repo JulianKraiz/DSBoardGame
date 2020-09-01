@@ -107,13 +107,11 @@ public class PositionBehavior : MonoBehaviour
 
     private void OnMouseOver()
     {
-        render.enabled = _canRender && true;
         EventManager.RaiseEvent(EventTypes.PositionHovered, gameObject);
     }
 
     private void OnMouseExit()
     {
-        render.enabled = false;
         EventManager.RaiseEvent(EventTypes.PositionHoveredExit, gameObject);
     }
 
