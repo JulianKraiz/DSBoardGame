@@ -1,0 +1,212 @@
+# Blender MTL File: 'ModelRenderLighting2.blend'
+# Material Count: 15
+
+newmtl 24_part1-armorplates_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.797086 0.603734 0.495275
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 24_part2-armgloves_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.754705 0.601014 0.753282
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\am_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900.png
+
+newmtl 24_part2-armplate_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.434877 0.629949 0.569193
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\am_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900.png
+
+newmtl 24_part3-hdfc_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.608256 0.638700 0.702766
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\hd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900.png
+
+newmtl 24_part3-helmet_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.540071 0.455102 0.685976
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\hd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900.png
+
+newmtl 25_part1-body_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.757354 0.526306 0.729929
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part1-clothA_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.635362 0.674125 0.570278
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part1-clothB_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.622255 0.719607 0.524751
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part1-clothC_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.797616 0.708854 0.520155
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part1-skirtA_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.586198 0.586111 0.571804
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part1-skirtB_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.548175 0.558983 0.662091
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\bd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\bd_m_1900.png
+
+newmtl 25_part2-armcloth_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.471903 0.782720 0.528950
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\am_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\am_m_1900.png
+
+newmtl 25_part3-hood_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.482685 0.598526 0.773388
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\hd_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\hd_m_1900.png
+
+newmtl 25_part4-legsB_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.581640 0.584230 0.520630
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\lg_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900.png
+
+newmtl 25_part4-legs_1_16_16
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.460964 0.740964 0.591964
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd D:\Dropbox\Shared Files\XPS\Fallen Knight,Dark Souls 3\lg_m_1900.png
+map_Bump D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900_n.png
+map_Ks D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900_s.png
+map_d D:\\Dropbox\\Shared Files\\XPS\\Fallen Knight,Dark Souls 3\\lg_m_1900.png
