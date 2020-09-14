@@ -17,7 +17,7 @@ public class GameStateManager : MonoBehaviour
         characterDisplayContainer = GameObject.Find("UnitDisplays").GetComponent<PlayerDisplayContainer>();
         tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
         players = GameObject.FindGameObjectsWithTag("Player").ToList();
-        EventManager.StartListening(EventTypes.TileIsEntered, IntializeFocusedTileHandler);
+        EventManager.StartListeningGameObject(EventTypes.TileIsEntered, IntializeFocusedTileHandler);
 
         // DEBUG
         foreach (var tile in tiles)

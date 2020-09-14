@@ -25,7 +25,7 @@ public class HoverFocusedTile : MonoBehaviour
             if (lerpedProsition == targetPosition)
             {
                 tileProperties.isHovered = true;
-                EventManager.RaiseEvent(EventTypes.TileIsEntered);
+                EventManager.RaiseEventGameObject(EventTypes.TileIsEntered);
             }
 
             mainCamera.transform.SetPositionAndRotation(lerpedProsition, Quaternion.Euler(45, 0, 0));

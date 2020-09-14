@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using BoardGame.Unit;
+using BoardGame.Script.Events;
 
 public class PlayerDisplayBehavior : MonoBehaviour
 {
@@ -41,9 +42,10 @@ public class PlayerDisplayBehavior : MonoBehaviour
     private GameObject sideEquipementCopy;
     private GameObject armourEquipementCopy;
 
-    private int index;
-
     private RaiseEventOnEnterExit colisionPlane;
+    private MeshRenderer focusedLayerRenderer;
+
+    private int displayIndex;
 
     void Start()
     {
@@ -72,6 +74,11 @@ public class PlayerDisplayBehavior : MonoBehaviour
         rightHandAnchor = transform.Find("RightHandAnchor").gameObject;
         sideAnchor = transform.Find("SideAnchor").gameObject;
         armourAnchor = transform.Find("ArmourAnchor").gameObject;
+
+        focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
+
+        EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, DisplayFocusedOverlay);
+        EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, HideFocusedOverlay);
     }
 
     void Update()
@@ -108,6 +115,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
             copy.transform.localScale = equipementScaleOffset;
             copy.transform.position = anchor.transform.position;
             copy.transform.rotation = cardAngle;
+            copy.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
         else if(playerEquipement == null && copy != null)
         {
@@ -129,7 +137,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
 
     private void InitializeDisplay(int index)
     {
-        this.index = index;
+        displayIndex = index;
 
         translateOffset = new Vector3(2.8f, 0f, -0.5f);
         translateOffsetVertical = new Vector3(0f, -2f, 0f);
@@ -189,5 +197,21 @@ public class PlayerDisplayBehavior : MonoBehaviour
     {
         transform.localPosition -= translateOffset;
         transform.localScale = smallScaleOffset;
+    }
+
+    private void DisplayFocusedOverlay(GameObject unit)
+    {
+        if (unit == playerProperties.gameObject)
+        {
+            focusedLayerRenderer.enabled = true;
+        }
+    }
+
+    private void HideFocusedOverlay(GameObject unit)
+    {
+        if (unit == playerProperties.gameObject)
+        {
+            focusedLayerRenderer.enabled = false;
+        }
     }
 }

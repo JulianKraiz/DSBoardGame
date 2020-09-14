@@ -8,13 +8,17 @@ namespace Assets.Scripts.Tile
 {
     public class PathFinder
     {
-        public List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
+        public List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target)
         {
-            if(start == target)
+            if (start == target)
             {
-                return null;
+                return new List<PositionBehavior>();
             }
+            return GetPath(start, target, new List<PositionBehavior>());
+        }
 
+        private List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
+        {
             List<PositionBehavior> bestPath = null;
 
             foreach (var node in start.GetAdjacentNodes())
@@ -23,7 +27,7 @@ namespace Assets.Scripts.Tile
                 if (target == node)
                 {
                     currentPath.Add(node);
-                    if (PathDistance(start,bestPath) > PathDistance(start,currentPath))
+                    if (PathDistance(start, bestPath) > PathDistance(start, currentPath))
                     {
                         bestPath = currentPath;
                     }
@@ -31,11 +35,11 @@ namespace Assets.Scripts.Tile
                 }
                 else
                 {
-                    if (!currentPath.Contains(node) && node != start && CloserNode(node,start,target))
+                    if (!currentPath.Contains(node) && node != start && CloserNode(node, start, target))
                     {
                         currentPath.Add(node);
                         var path = GetPath(node, target, currentPath);
-                        if(path != null && (PathDistance(start, bestPath) > PathDistance(start, path)))
+                        if (path != null && (PathDistance(start, bestPath) > PathDistance(start, path)))
                         {
                             bestPath = path;
                         }
@@ -53,7 +57,7 @@ namespace Assets.Scripts.Tile
 
         private float PathDistance(PositionBehavior start, List<PositionBehavior> path)
         {
-            if(path == null)
+            if (path == null)
             {
                 return float.MaxValue;
             }
@@ -61,19 +65,19 @@ namespace Assets.Scripts.Tile
             var completedPath = new List<PositionBehavior>() { start }.Concat(path).ToList();
             var distance = 0f;
 
-            for(int i=0; i< completedPath.Count()-1;i++) 
+            for (int i = 0; i < completedPath.Count() - 1; i++)
             {
-                distance += NodeDistance(completedPath[i],completedPath[i + 1]);
+                distance += NodeWorldDistance(completedPath[i], completedPath[i + 1]);
             }
             return distance;
         }
 
         private bool CloserNode(PositionBehavior nodeA, PositionBehavior nodeB, PositionBehavior target)
         {
-            return NodeDistance(nodeA, target) <= NodeDistance(nodeB, target);
+            return NodeWorldDistance(nodeA, target) <= NodeWorldDistance(nodeB, target);
         }
 
-        private float NodeDistance(PositionBehavior node1, PositionBehavior node2)
+        private float NodeWorldDistance(PositionBehavior node1, PositionBehavior node2)
         {
             return (node2.transform.position - node1.transform.position).magnitude;
         }

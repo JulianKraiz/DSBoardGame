@@ -23,7 +23,7 @@ public class BonefireTileManager : TileManager
 
             foreach (var player in players)
             {
-                player.isActive = false;
+                player.Deactivate();
             }
 
             foreach (var position in positions)

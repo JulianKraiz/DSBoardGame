@@ -30,6 +30,7 @@ public class EnemyGenerator : MonoBehaviour
             {
                 flatModifier = 4,
                 dodgeLevel = 1,
+                targetPlayers = true,
             }
         };
 
@@ -58,9 +59,11 @@ public class EnemyGenerator : MonoBehaviour
         {
             new AttackDetail()
             {
-                flatMagicModifier = 3,
+                flatModifier = 3,
+                magicAttack = true,
                 dodgeLevel = 1,
-                range = 10,
+                infiniteRange = true,
+                targetPlayers = true,
             }
         };
 

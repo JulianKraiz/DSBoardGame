@@ -14,7 +14,11 @@ public class EnemyProperties : UnitBasicProperties
 
     }
 
-    public override int StaminaLeft()
+    public override void ConsumeStamina(int amount)
+    {
+    }
+
+    public override int HasEnoughStaminaToMove()
     {
         return 10;
     }

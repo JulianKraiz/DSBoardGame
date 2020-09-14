@@ -63,6 +63,7 @@ public class PositionBehavior : MonoBehaviour
 
     public bool HasActiveUnit()
     {
+        var temp = NonBossUnits.Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
         return NonBossUnits.Any(u => u.GetComponent<UnitBasicProperties>().isActive);
     }
 
@@ -107,12 +108,12 @@ public class PositionBehavior : MonoBehaviour
 
     private void OnMouseOver()
     {
-        EventManager.RaiseEvent(EventTypes.PositionHovered, gameObject);
+        EventManager.RaiseEventGameObject(EventTypes.PositionHovered, gameObject);
     }
 
     private void OnMouseExit()
     {
-        EventManager.RaiseEvent(EventTypes.PositionHoveredExit, gameObject);
+        EventManager.RaiseEventGameObject(EventTypes.PositionHoveredExit, gameObject);
     }
 
     private void OrganizeCharacterOnPosition()
@@ -143,5 +144,10 @@ public class PositionBehavior : MonoBehaviour
     public void Hide()
     {
         render.enabled = false;
+    }
+
+    internal IEnumerable<GameObject> GetUnits()
+    {
+        return NonBossUnits.ToList();
     }
 }

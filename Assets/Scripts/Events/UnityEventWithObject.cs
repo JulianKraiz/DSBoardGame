@@ -4,7 +4,7 @@ using UnityEngine.Events;
 namespace BoardGame.Script.Events
 {
     [System.Serializable]
-    public class UnityEventWithObject : UnityEvent<GameObject>
+    public class UnityEventWithObject : UnityEvent<object>
     {
     }
 }

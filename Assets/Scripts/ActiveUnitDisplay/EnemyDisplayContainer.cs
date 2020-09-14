@@ -10,14 +10,14 @@ public class EnemyDisplayContainer : MonoBehaviour
 
     private Vector3 offsetPosition;
     private Quaternion offsetRotation;
-    private Dictionary<EnemyClassEnum,GameObject> enemyTypeDisplayed = new Dictionary<EnemyClassEnum, GameObject>();
+    private Dictionary<GameObject, GameObject> enemyTypeDisplayed = new Dictionary<GameObject, GameObject>();
 
     void Start()
     {
         offsetPosition = new Vector3(1.4f, 0f, 0f);
         offsetRotation = Quaternion.Euler(135, 0, 180);
-        EventManager.StartListening(EventTypes.EnemyCreated, AddEnemyDisplay);
-        EventManager.StartListening(EventTypes.EnemyRemoved, RemoveEnemyDisplay);
+        EventManager.StartListeningGameObject(EventTypes.EnemyCreated, AddEnemyDisplay);
+        EventManager.StartListeningGameObject(EventTypes.EnemyRemoved, RemoveEnemyDisplay);
     }
 
     
@@ -33,8 +33,7 @@ public class EnemyDisplayContainer : MonoBehaviour
 
     private void AddEnemyDisplay(GameObject enemy)
     {
-        var properties = enemy.GetComponent<EnemyProperties>();
-        if (!enemyTypeDisplayed.Keys.Contains(properties.enemyType))
+        if (!enemyTypeDisplayed.Keys.Contains(enemy))
         {
             var display = Instantiate(displayAsset, transform);
             display.transform.Translate(enemyTypeDisplayed.Keys.Count * offsetPosition);
@@ -42,17 +41,16 @@ public class EnemyDisplayContainer : MonoBehaviour
             var behavior = display.GetComponent<EnemyDisplayBehavior>();
             behavior.SetUnit(enemy);
             behavior.Initialize();
-            enemyTypeDisplayed.Add(properties.enemyType, display);
+            enemyTypeDisplayed.Add(enemy, display);
         }
     }
 
     private void RemoveEnemyDisplay(GameObject enemy)
     {
-        var properties = enemy.GetComponent<EnemyProperties>();
-        if(enemyTypeDisplayed.TryGetValue(properties.enemyType, out var display))
+        if(enemyTypeDisplayed.TryGetValue(enemy, out var display))
         {
             Destroy(display);
-            enemyTypeDisplayed.Remove(properties.enemyType);
+            enemyTypeDisplayed.Remove(enemy);
         }
     }
 }
