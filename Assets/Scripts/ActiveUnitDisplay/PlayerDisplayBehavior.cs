@@ -11,9 +11,8 @@ public class PlayerDisplayBehavior : MonoBehaviour
     private Vector3 smallScaleOffset;
     private Vector3 bigScaleOffset;
 
+    private Vector3 translateOffsetEnterPlane;
     private Vector3 equipementScaleOffset;
-
-    private Quaternion cardAngle;
 
     private PlayerProperties playerProperties;
 
@@ -42,21 +41,32 @@ public class PlayerDisplayBehavior : MonoBehaviour
     private GameObject sideEquipementCopy;
     private GameObject armourEquipementCopy;
 
-    private RaiseEventOnEnterExit colisionPlane;
+    private GameObject enterCollisionPlane;
+    private RaiseEventOnClicked enterColisionPlaneBehavior;
+
     private MeshRenderer focusedLayerRenderer;
 
     private int displayIndex;
-
+    private bool zoomedIn;
     void Start()
     {
-        colisionPlane = transform.Find("ColisionPlane").GetComponent<RaiseEventOnEnterExit>();
-        colisionPlane.PositionEnter += MouseEnter;
-        colisionPlane.PositionExit += MouseExit;
+        zoomedIn = false;
+        translateOffsetEnterPlane = new Vector3(0f, 0.0f, 0f);
+        translateOffset = new Vector3(10f, 0.2f, 0f);
+        translateOffsetVertical = new Vector3(0f, 0f, -8f);
+        translateOffsetVertical = new Vector3(0f, 0f, -8f);
+        translateOffset = translateOffset + (displayIndex == 1 || displayIndex == 0 ? 
+            new Vector3(0f, 0f, -8f) 
+            : new Vector3(0f, 0f, 6.7f));
 
-        smallScaleOffset = new Vector3(0.65f, 0.65f, 0.65f);
-        bigScaleOffset = new Vector3(2.5f, 2.5f, 1f);
-        cardAngle = Quaternion.Euler(45, -180, 0);
-        equipementScaleOffset = new Vector3(0.04f, 1f, 0.08f);
+        enterCollisionPlane = transform.Find("EnterColisionPlane").gameObject;
+        enterColisionPlaneBehavior = enterCollisionPlane.GetComponent<RaiseEventOnClicked>();
+        enterColisionPlaneBehavior.PositionClicked += EmitPlayerSheedClicked;
+
+        smallScaleOffset = transform.localScale;
+        bigScaleOffset = 3 * smallScaleOffset;
+
+        equipementScaleOffset = new Vector3(0.15f, 1f, 0.25f);
 
         estusTokenRenderer = transform.Find("EstusToken").GetComponent<MeshRenderer>();
         luckTokenRenderer = transform.Find("LuckToken").GetComponent<MeshRenderer>();
@@ -77,6 +87,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
 
+        EventManager.StartListeningGameObject(EventTypes.PlayerSheetClicked, ZoomToggle);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, DisplayFocusedOverlay);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, HideFocusedOverlay);
     }
@@ -114,7 +125,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
             copy.name = playerEquipement.name;
             copy.transform.localScale = equipementScaleOffset;
             copy.transform.position = anchor.transform.position;
-            copy.transform.rotation = cardAngle;
+            copy.transform.rotation = transform.rotation; 
             copy.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
         else if(playerEquipement == null && copy != null)
@@ -139,11 +150,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
     {
         displayIndex = index;
 
-        translateOffset = new Vector3(2.8f, 0f, -0.5f);
-        translateOffsetVertical = new Vector3(0f, -2f, 0f);
-        // find a less hardcoded way of setting the big pictur translation vertical offset.
-        translateOffset = translateOffset + (index == 1 || index == 2 ? 0 : 1) * translateOffsetVertical;
-
         var injuriesParent = transform.Find("InjuriesToken");
         injuriesToken = new List<MeshRenderer>();
         for (int i = 0; i < injuriesParent.childCount; i++)
@@ -157,8 +163,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
         {
             staminaToken.Add(staminaParent.GetChild(i).GetComponent<MeshRenderer>());
         }
-
-
     }
 
     private void SetBackgroundMaterial()
@@ -188,15 +192,27 @@ public class PlayerDisplayBehavior : MonoBehaviour
        
     }
 
-    private void MouseEnter(GameObject args)
+    private void EmitPlayerSheedClicked(GameObject source)
     {
-        transform.localPosition += translateOffset;
-        transform.localScale = bigScaleOffset;
+        EventManager.RaiseEventGameObject(EventTypes.PlayerSheetClicked, gameObject);
     }
-    private void MouseExit(GameObject args)
+
+    private void ZoomToggle(GameObject args)
     {
-        transform.localPosition -= translateOffset;
-        transform.localScale = smallScaleOffset;
+        if (!zoomedIn && args == gameObject)
+        {
+            enterCollisionPlane.transform.localPosition += translateOffsetEnterPlane;
+            transform.localPosition += translateOffset;
+            transform.localScale = bigScaleOffset;
+            zoomedIn = !zoomedIn;
+        }
+        else if (zoomedIn)
+        {
+            enterCollisionPlane.transform.localPosition -= translateOffsetEnterPlane;
+            transform.localPosition -= translateOffset;
+            transform.localScale = smallScaleOffset;
+            zoomedIn = !zoomedIn;
+        }
     }
 
     private void DisplayFocusedOverlay(GameObject unit)

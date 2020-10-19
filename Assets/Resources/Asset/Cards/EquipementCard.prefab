@@ -115,6 +115,8 @@ MonoBehaviour:
   blackMagicArmorDices: 0
   blueMagicArmorDices: 0
   orangeMagicArmorDices: 0
+  flatArmorResistence: 0
+  flatMagicArmorResistence: 0
   upgradeSlots: 0
   isOneHanded: 1
   isArmor: 0

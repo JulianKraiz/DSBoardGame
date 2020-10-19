@@ -30,6 +30,7 @@ namespace BoardGame.Script.Events
         CloseAttackDial,
         AttackTargetSelected,
         UnitDestroyed,
+        PlayerSheetClicked,
     }
 
     public class EventManager

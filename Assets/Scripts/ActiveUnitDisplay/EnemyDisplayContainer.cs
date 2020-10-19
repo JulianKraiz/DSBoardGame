@@ -14,7 +14,7 @@ public class EnemyDisplayContainer : MonoBehaviour
 
     void Start()
     {
-        offsetPosition = new Vector3(1.4f, 0f, 0f);
+        offsetPosition = new Vector3(11f, 0f, 0f);
         offsetRotation = Quaternion.Euler(135, 0, 180);
         EventManager.StartListeningGameObject(EventTypes.EnemyCreated, AddEnemyDisplay);
         EventManager.StartListeningGameObject(EventTypes.EnemyRemoved, RemoveEnemyDisplay);
@@ -36,8 +36,7 @@ public class EnemyDisplayContainer : MonoBehaviour
         if (!enemyTypeDisplayed.Keys.Contains(enemy))
         {
             var display = Instantiate(displayAsset, transform);
-            display.transform.Translate(enemyTypeDisplayed.Keys.Count * offsetPosition);
-            display.transform.rotation = offsetRotation;
+            display.transform.localPosition = enemyTypeDisplayed.Keys.Count * offsetPosition;
             var behavior = display.GetComponent<EnemyDisplayBehavior>();
             behavior.SetUnit(enemy);
             behavior.Initialize();

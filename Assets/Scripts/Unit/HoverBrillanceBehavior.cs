@@ -11,12 +11,14 @@ public class HoverBrillanceBehavior : MonoBehaviour
     public Material hoverBrillanceMaterial;
 
     private MeshRenderer capsuleRenderer;
+    private CapsuleCollider capsuleCollider;
 
     void Start()
     {
         capsuleRenderer = GetComponent<MeshRenderer>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleRenderer.material = standardBrillanceMaterial;
-        gameObject.SetActive(false);
+        setState(false);
     }
 
     void Update()
@@ -26,10 +28,7 @@ public class HoverBrillanceBehavior : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (PositionSelected != null)
-        {
-            PositionSelected(gameObject);
-        }
+        PositionSelected?.Invoke(gameObject);
     }
 
     private void OnMouseEnter()
@@ -47,17 +46,20 @@ public class HoverBrillanceBehavior : MonoBehaviour
         EventManager.RaiseEventGameObject(EventTypes.AttackTargetSelected, transform.parent.gameObject);
     }
 
-
-
     internal void Activate()
     {
-        gameObject.SetActive(true);
+        setState(true);
         OnMouseExit();
     }
 
     internal void Deactivate()
     {
-        gameObject.SetActive(false);
+        setState(false);
         OnMouseExit();
+    }
+    private void setState(bool state)
+    {
+        capsuleRenderer.enabled = state;
+        capsuleCollider.enabled = state;
     }
 }

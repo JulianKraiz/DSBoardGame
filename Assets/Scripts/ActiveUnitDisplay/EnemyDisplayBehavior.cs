@@ -9,15 +9,18 @@ public class EnemyDisplayBehavior : MonoBehaviour
 
     private MeshRenderer focusedLayerRenderer;
 
-    public Vector3 translateOffset;
-    public Vector3 smallScaleOffset;
-    public Vector3 bigScaleOffset;
+    private Vector3 translateOffset;
+    private Vector3 smallScale;
+    private Vector3 bigScale;
+
+    private bool zoomedIn;
 
     void Start()
     {
-        translateOffset = new Vector3(0f, -1.4f, 0f);
-        smallScaleOffset = new Vector3(0.1f, 1f, 0.15f);
-        bigScaleOffset = new Vector3(0.3f, 1f, 0.4f);
+        zoomedIn = false;
+        translateOffset = new Vector3(0f, -7f, -7.5f);
+        smallScale = transform.localScale;
+        bigScale = 3 * smallScale;
         EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, UnitHovered);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, UnitExited);
 
@@ -43,15 +46,30 @@ public class EnemyDisplayBehavior : MonoBehaviour
         }
     }
 
-    public void OnMouseEnter()
-    {
-        transform.localPosition += translateOffset;
-        transform.localScale = bigScaleOffset;
-    }
     public void OnMouseExit()
     {
-        transform.localPosition -= translateOffset;
-        transform.localScale = smallScaleOffset;
+        if (zoomedIn)
+        {
+            zoomedIn = !zoomedIn;
+            transform.localPosition -= translateOffset;
+            transform.localScale = smallScale;
+        }
+    }
+
+    public void OnMouseUp()
+    {
+        if (zoomedIn)
+        {
+            zoomedIn = !zoomedIn;
+            transform.localPosition -= translateOffset;
+            transform.localScale = smallScale;
+        }
+        else if (!zoomedIn)
+        {
+            zoomedIn = !zoomedIn;
+            transform.localPosition += translateOffset;
+            transform.localScale = bigScale;
+        }
     }
 
     private void UnitHovered(GameObject unit)
