@@ -17,7 +17,7 @@ public class EnemyDisplayContainer : MonoBehaviour
         offsetPosition = new Vector3(11f, 0f, 0f);
         offsetRotation = Quaternion.Euler(135, 0, 180);
         EventManager.StartListeningGameObject(EventTypes.EnemyCreated, AddEnemyDisplay);
-        EventManager.StartListeningGameObject(EventTypes.EnemyRemoved, RemoveEnemyDisplay);
+        EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, RemoveEnemyDisplay);
     }
 
     

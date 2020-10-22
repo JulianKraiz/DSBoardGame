@@ -14,7 +14,7 @@ public class TileManager : MonoBehaviour
     public List<UnitBasicProperties> players = new List<UnitBasicProperties>();
     public List<UnitBasicProperties> enemies = new List<UnitBasicProperties>();
 
-    public Dictionary<GameObject,UnitBasicProperties> playersToProperties = new Dictionary<GameObject, UnitBasicProperties>();
+    public Dictionary<GameObject, UnitBasicProperties> playersToProperties = new Dictionary<GameObject, UnitBasicProperties>();
     public Dictionary<GameObject, UnitBasicProperties> enemyToProperties = new Dictionary<GameObject, UnitBasicProperties>();
 
     public List<PositionBehavior> positions = new List<PositionBehavior>();
@@ -60,12 +60,6 @@ public class TileManager : MonoBehaviour
             child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
         }
 
-        EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
-        EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
-        EventManager.StartListeningObject(EventTypes.AttackSelected, ShowAvailableAttackTargets);
-        EventManager.StartListeningObject(EventTypes.AttackDeselected, HideUnitInBrillance);
-        EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
-        EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
     }
 
     void Update()
@@ -86,11 +80,76 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    private void ActivateNextUnit()
+    {
+        firstMovementFree = true;
+
+        bool isEnemyTurn = false;
+
+        var previousPlayer = players.FirstOrDefault(p => p.isActive);
+        var activeEnemy = enemies.FirstOrDefault(p => p.isActive);
+        if (previousPlayer != null)
+        {
+            // next turn is enemy
+            previousPlayer.Deactivate();
+            isEnemyTurn = true;
+            LastActiveEnemy = -1;
+        }
+        else if (activeEnemy != null)
+        {
+            activeEnemy.Deactivate();
+            if (LastActiveEnemy < enemies.Count - 1)
+            {
+                // next turn is still enemy
+                isEnemyTurn = true;
+            }
+            else
+            {
+                // next turn is player.
+                LastActivePlayer = LastActivePlayer < players.Count - 1 ? ++LastActivePlayer : 0;
+            }
+        }
+        else
+        {
+            isEnemyTurn = true;
+            LastActiveEnemy = -1;
+
+            // first turn, set the  next player to be the one carying the activation token, or the first players by default.
+            var lastactivePlayer = players.FirstOrDefault(p => p.hasActivationToken);
+            if (lastactivePlayer == null)
+            {
+                LastActivePlayer = -1;
+            }
+            LastActivePlayer = players.IndexOf(lastactivePlayer) - 1;
+        }
+
+        if (isEnemyTurn)
+        {
+            LastActiveEnemy++;
+            enemies[LastActiveEnemy].Activate();
+        }
+        else
+        {
+            LastActivePlayer++;
+            players[LastActivePlayer].Activate();
+        }
+    }
+
     #region Battle Preparation
     public virtual void PrepareTileEntered()
     {
         if (isFocused && !isCleared)
         {
+
+            EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
+            EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
+            EventManager.StartListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackDeselected, HideSelectedAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
+            EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
+            EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
+
             foreach (var position in positions)
             {
                 position.ResetPosition(true);
@@ -157,6 +216,7 @@ public class TileManager : MonoBehaviour
         enemies = enemies.OrderBy(p => p.initiative).ToList();
         foreach (var enemy in enemies)
         {
+            enemy.ResetStaminaAndInjuries();
             enemy.Deactivate();
         }
 
@@ -215,15 +275,27 @@ public class TileManager : MonoBehaviour
             unit.hasAggroToken = false;
             unit.hasActivationToken = false;
         }
+
+        EventManager.StopListeningGameObject(EventTypes.PositionHovered, ShowPath);
+        EventManager.StopListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
+        EventManager.StopListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
+        EventManager.StopListeningObject(EventTypes.AttackDeselected, HideHoveredAttackTargets);
+        EventManager.StopListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
+        EventManager.StopListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
+        EventManager.StopListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
+        EventManager.StopListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
     }
 
     private void RemoveEnemy(UnitBasicProperties enemy)
     {
         enemy.ClearEquipement();
-        Destroy(enemy.gameObject);
         enemyToProperties.Remove(enemy.gameObject);
         enemies.Remove(enemy);
-        EventManager.RaiseEventGameObject(EventTypes.EnemyRemoved, enemy.gameObject);
+        foreach (var position in positions)
+        {
+            position.RemoveNonBossUnit(enemy.gameObject);
+        }
+        Destroy(enemy.gameObject);
     }
 
     private void Cleared()
@@ -237,62 +309,7 @@ public class TileManager : MonoBehaviour
     }
     #endregion
 
-
-    private void ActivateNextUnit()
-    {
-        firstMovementFree = true;
-
-        bool isEnemyTurn = false;
-
-        var previousPlayer = players.FirstOrDefault(p => p.isActive);
-        var activeEnemy = enemies.FirstOrDefault(p => p.isActive);
-        if (previousPlayer != null)
-        {
-            // next turn is enemy
-            previousPlayer.Deactivate();
-            isEnemyTurn = true;
-            LastActiveEnemy = -1;
-        }
-        else if (activeEnemy != null)
-        {
-            activeEnemy.Deactivate();
-            if (LastActiveEnemy < enemies.Count - 1)
-            {
-                // next turn is still enemy
-                isEnemyTurn = true;
-            }
-            else
-            {
-                // next turn is player.
-                LastActivePlayer = LastActivePlayer < players.Count - 1 ? ++LastActivePlayer : 0;
-            }
-        }
-        else
-        {
-            isEnemyTurn = true;
-            LastActiveEnemy = -1;
-
-            // first turn, set the  next player to be the one carying the activation token, or the first players by default.
-            var lastactivePlayer = players.FirstOrDefault(p => p.hasActivationToken);
-            if (lastactivePlayer == null)
-            {
-                LastActivePlayer = -1;
-            }
-            LastActivePlayer = players.IndexOf(lastactivePlayer) - 1;
-        }
-
-        if (isEnemyTurn)
-        {
-            LastActiveEnemy++;
-            enemies[LastActiveEnemy].Activate();
-        }
-        else
-        {
-            LastActivePlayer++;
-            players[LastActivePlayer].Activate();
-        }
-    }
-
+    #region path
     private void PositionClicked(GameObject position)
     {
         if (isFocused)
@@ -348,49 +365,64 @@ public class TileManager : MonoBehaviour
             node.Hide();
         }
     }
+    #endregion
+
+    #region attacks
+    private void ShowSelectedAttackTargets(object attackObject)
+    {
+        currentSelectedAttack = (AttackRadialDetail)attackObject;
+        ShowAvailableAttackTargets(attackObject);
+    }
 
     private void ShowAvailableAttackTargets(object attackObject)
     {
-        if (isFocused)
+        InternalHideAttackTargets();
+        var currentAttack = (AttackRadialDetail)attackObject;
+
+        var potentialUnits = currentAttack.targetPlayers ? players : enemies;
+
+        var minRange = currentAttack.minimumRange;
+        var maxRange = currentAttack.infiniteRange ? 20 : currentAttack.range;
+        var startingPosition = positions.First(positions => positions.HasActiveUnit());
+
+        var inRangeNodes = GetAllNodeWithinRange(minRange, maxRange, startingPosition).Keys;
+
+        foreach (var node in inRangeNodes)
         {
-            HideUnitInBrillance(null);
-
-            currentSelectedAttack = (AttackRadialDetail)attackObject;
-
-            var potentialUnits = currentSelectedAttack.targetPlayers ? players : enemies;
-
-
-            var minRange = currentSelectedAttack.minimumRange;
-            var maxRange = currentSelectedAttack.infiniteRange ? 20 : currentSelectedAttack.range;
-            var startingPosition = positions.First(positions => positions.HasActiveUnit());
-
-            var inRangeNodes = GetAllNodeWithinRange(minRange, maxRange, startingPosition).Keys;
-
-            foreach (var node in inRangeNodes)
+            foreach (var unit in node.GetUnits())
             {
-                foreach (var unit in node.GetUnits())
+                var properties = unit.GetComponent<UnitBasicProperties>();
+                if (potentialUnits.Contains(properties))
                 {
-                    var properties = unit.GetComponent<UnitBasicProperties>();
-                    if (potentialUnits.Contains(properties))
-                    {
-                        properties.ShowHoverBrillance();
-                        currentUnitInBrillance.Add(properties);
-                    }
+                    properties.ShowHoverBrillance();
+                    currentUnitInBrillance.Add(properties);
                 }
             }
         }
     }
 
-    private void HideUnitInBrillance(object _)
+    private void HideSelectedAttackTargets(object _)
     {
-        if (isFocused)
+        InternalHideAttackTargets();
+        currentSelectedAttack = null;
+    }
+
+    private void HideHoveredAttackTargets(object _)
+    {
+        InternalHideAttackTargets();
+        if (currentSelectedAttack != null)
         {
-            foreach (var unit in currentUnitInBrillance)
-            {
-                unit.HideHoverBrillance();
-            }
-            currentUnitInBrillance.Clear();
+            ShowAvailableAttackTargets(currentSelectedAttack);
         }
+    }
+
+    private void InternalHideAttackTargets()
+    {
+        foreach (var unit in currentUnitInBrillance)
+        {
+            unit.HideHoverBrillance();
+        }
+        currentUnitInBrillance.Clear();
     }
 
     private void ApplyAttack(GameObject target)
@@ -401,15 +433,15 @@ public class TileManager : MonoBehaviour
         }
 
         var targetProperties = target.GetComponent<UnitBasicProperties>();
-        
+
         var targetPosition = positions.FirstOrDefault(p => p.HasUnit(target));
-        if(targetPosition == null)
+        if (targetPosition == null)
         {
             return;
         }
 
         var sourcePosition = positions.FirstOrDefault(p => p.HasActiveUnit());
-        if(sourcePosition == null)
+        if (sourcePosition == null)
         {
             return;
         }
@@ -419,7 +451,7 @@ public class TileManager : MonoBehaviour
             return;
         }
 
-        if(target.GetComponent<UnitBasicProperties>().isActive)
+        if (target.GetComponent<UnitBasicProperties>().isActive)
         {
             return;
         }
@@ -430,15 +462,15 @@ public class TileManager : MonoBehaviour
             return;
         }
 
-        // if player, roll / block mini game
+        // if player, roll / block => dice mini game
 
-        // if player, damage mini game
+        // if player, damage => dice mini game
         var attackDices = 0;
-        if(currentSelectedAttack.blackAttackDices > 0)
+        if (currentSelectedAttack.blackAttackDices > 0)
         {
             attackDices += DiceRollManager.RollBlackDices(currentSelectedAttack.blackAttackDices).Sum();
         }
-        if (currentSelectedAttack.blueAttackDices> 0)
+        if (currentSelectedAttack.blueAttackDices > 0)
         {
             attackDices += DiceRollManager.RollBlueDices(currentSelectedAttack.blueAttackDices).Sum();
         }
@@ -447,13 +479,16 @@ public class TileManager : MonoBehaviour
             attackDices += DiceRollManager.RollOrangeDices(currentSelectedAttack.orangeAttackDices).Sum();
         }
 
+        EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
+
         targetProperties.RecieveInjuries(currentSelectedAttack.flatModifier + attackDices);
 
-        if(targetProperties.StaminaLeft() <= 0)
+        if (targetProperties.StaminaLeft() <= 0)
         {
             EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, target);
         }
     }
+    #endregion
 
     private Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start)
     {
@@ -474,7 +509,7 @@ public class TileManager : MonoBehaviour
 
     private void UnitDestroyed(GameObject unit)
     {
-        if(playersToProperties.TryGetValue(unit, out var unitProperties))
+        if (playersToProperties.TryGetValue(unit, out var unitProperties))
         {
             // player is dead, back to bonefire, party is defeated.
         }

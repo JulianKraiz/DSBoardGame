@@ -18,7 +18,6 @@ namespace BoardGame.Script.Events
         PositionHovered,
         PositionHoveredExit,
         EnemyCreated,
-        EnemyRemoved,
         UnitHoverEntered,
         UnitHoverExited,
         ActiveUnitSelected,
@@ -27,10 +26,12 @@ namespace BoardGame.Script.Events
         AttackSelected,
         AttackDeselected,
         AttackHovered,
+        AttackHoverEnded,
         CloseAttackDial,
         AttackTargetSelected,
         UnitDestroyed,
         PlayerSheetClicked,
+        AttackApplied,
     }
 
     public class EventManager

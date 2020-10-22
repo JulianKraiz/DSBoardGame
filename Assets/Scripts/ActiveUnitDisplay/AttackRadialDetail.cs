@@ -27,6 +27,6 @@ namespace Assets.Scripts.ActiveUnitDisplay
 
         public bool targetPlayers = false;
         public bool affectAllInRangeUnits = false;
-
+        public AttackRadialSide side;
     }
 }

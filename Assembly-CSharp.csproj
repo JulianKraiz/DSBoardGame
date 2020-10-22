@@ -66,6 +66,7 @@
     <Compile Include="Assets\Models\Campfire\Script\FireLightScript.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttackRadialDetail.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttackRadialDisplayBehavior.cs" />
+    <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttackRadialSide.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttacksRadialDisplayContainer.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\EnemyDisplayBehavior.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\EnemyDisplayContainer.cs" />
