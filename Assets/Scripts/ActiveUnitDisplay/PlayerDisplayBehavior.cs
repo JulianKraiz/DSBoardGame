@@ -88,6 +88,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
 
         EventManager.StartListeningGameObject(EventTypes.PlayerSheetClicked, ZoomToggle);
+        EventManager.StartListeningGameObject(EventTypes.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, DisplayFocusedOverlay);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, HideFocusedOverlay);
     }
@@ -228,6 +229,18 @@ public class PlayerDisplayBehavior : MonoBehaviour
         if (unit == playerProperties.gameObject)
         {
             focusedLayerRenderer.enabled = false;
+        }
+    }
+
+    private void ToggleZoomUnitDisplay(GameObject unit)
+    {
+        if(playerProperties.gameObject == unit)
+        {
+            ZoomToggle(gameObject);
+        }
+        else
+        {
+            ZoomToggle(null);
         }
     }
 }

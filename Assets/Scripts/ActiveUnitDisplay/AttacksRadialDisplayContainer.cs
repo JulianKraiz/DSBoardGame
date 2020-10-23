@@ -31,8 +31,10 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         LeftAttack2 = transform.Find("LeftAttack2").GetComponent<AttackRadialDisplayBehavior>(); 
         LeftAttack3 = transform.Find("LeftAttack3").GetComponent<AttackRadialDisplayBehavior>(); 
         RightAttack1 = transform.Find("RightAttack1").GetComponent<AttackRadialDisplayBehavior>();
-        RightAttack3 = transform.Find("RightAttack2").GetComponent<AttackRadialDisplayBehavior>();
-        RightAttack2 = transform.Find("RightAttack3").GetComponent<AttackRadialDisplayBehavior>();
+        RightAttack2 = transform.Find("RightAttack2").GetComponent<AttackRadialDisplayBehavior>();
+        RightAttack3 = transform.Find("RightAttack3").GetComponent<AttackRadialDisplayBehavior>();
+
+        ClearAllDisplay();
     }
 
     void Update()
@@ -42,6 +44,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
     private void SetupUnitAttackPanels(GameObject unit)
     {
         ClearAllDisplay();
+
         currentUnit = unit;
 
         var basicProperties = currentUnit.GetComponent<UnitBasicProperties>();

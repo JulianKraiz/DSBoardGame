@@ -13,13 +13,11 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     public MeshRenderer disableLayerRenderer;
 
     private Vector3 propertyPositionOffsetPerIndex;
-    private Vector3 propertyTextPositionOffset;
-    private Vector3 propertyTextRangePositionOffset;
 
     private Material fade_green_material;
     private Material fade_red_material;
 
-    private AttackRadialSide Side;
+
     private TextMesh StaminaTextMesh;
     private TextMesh BlackDiceTextMesh;
     private TextMesh BlueDiceTextMesh;
@@ -27,23 +25,18 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private TextMesh RangeTextMesh;
     private TextMesh FlatBonusTextMesh;
 
-    private MeshRenderer StaminaTextRenderer;
-    private MeshRenderer BlackDiceTextRenderer;
-    private MeshRenderer BlueDiceTextRenderer;
-    private MeshRenderer OrangeDiceTextRenderer;
-    private MeshRenderer RangeTextRenderer;
-    private MeshRenderer FlatBonusTextRenderer;
+    private Transform BlackContainer;
+    private Transform BlueContainer;
+    private Transform OrangeContainer;
+    private Transform FlatContainer;
 
-    private MeshRenderer FlatBonusBackgroundRenderer;
-    private MeshRenderer BlackDiceBackgroundRenderer;
-    private MeshRenderer BlueDiceBackgroundRenderer;
-    private MeshRenderer OrangeDiceBackgroundRenderer;
-    private MeshRenderer MagicAttackBackgroundRenderer;
-    private MeshRenderer SplashNodeBackgroundRenderer;
-    private MeshRenderer RangeBackgroundRenderer;
-    private MeshRenderer InifiniteRangeBackgroundRenderer;
-    private MeshRenderer MinRange1BackgroundRenderer;
+    private Transform RangeContainer;
+    private Transform InifiniteRangeContainer;
+    private Transform MinRange1Container;
+    private Transform MagicContainer;
+    private Transform SplashNodeContainer;
 
+    private AttackRadialSide Side;
     private UnitBasicProperties UnitProperties;
     private AttackDetail RawAttackDetail;
     private AttackRadialDetail ComputedAttackDetail;
@@ -65,19 +58,17 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         RawAttackDetail = attack;
         UnitProperties = properties;
         Side = side;
-        
+
         IsSelected = false;
         IsDisabled = false;
         ComputeAttackDetail(RawAttackDetail, UnitProperties);
         SetupAttack(ComputedAttackDetail);
-        
+
     }
 
     public void Reset()
     {
-        propertyPositionOffsetPerIndex = new Vector3(1, 0, 0);
-        propertyTextPositionOffset = new Vector3(-0.15f, 0, 0.32f);
-        propertyTextRangePositionOffset = new Vector3(-0.2f, 0, 0.12f);
+        propertyPositionOffsetPerIndex = new Vector3(1.5f, 0, 0);
 
         backgroundLayerRenderer = transform.Find("background_layer").GetComponent<MeshRenderer>();
         hoverLayerRenderer = transform.Find("hover_layer").GetComponent<MeshRenderer>();
@@ -89,29 +80,24 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         lowRowAnchor = backgroundLayerRenderer.transform.Find("LowRowAnchor");
         highRowAnchor = backgroundLayerRenderer.transform.Find("HighRowAnchor");
 
+        BlueContainer = backgroundLayerRenderer.transform.Find("BlueDiceContainer");
+        BlackContainer= backgroundLayerRenderer.transform.Find("BlackDiceContainer");
+        OrangeContainer = backgroundLayerRenderer.transform.Find("OrangeDiceContainer");
+        FlatContainer = backgroundLayerRenderer.transform.Find("FlatBonusContainer");
+
+        RangeContainer = backgroundLayerRenderer.transform.Find("RangeContainer");
+        InifiniteRangeContainer = backgroundLayerRenderer.transform.Find("InfiniteRangeContainer");
+        MinRange1Container = backgroundLayerRenderer.transform.Find("MinRange1Container");
+        MagicContainer = backgroundLayerRenderer.transform.Find("MagicContainer");
+        SplashNodeContainer = backgroundLayerRenderer.transform.Find("SplashNodeContainer");
+
         StaminaTextMesh = backgroundLayerRenderer.transform.Find("StaminaCostText").GetComponent<TextMesh>();
-        BlackDiceTextMesh = backgroundLayerRenderer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
-        BlueDiceTextMesh = backgroundLayerRenderer.transform.Find("BlueDiceText").GetComponent<TextMesh>();
-        OrangeDiceTextMesh = backgroundLayerRenderer.transform.Find("OrangeDiceText").GetComponent<TextMesh>();
-        RangeTextMesh = backgroundLayerRenderer.transform.Find("RangeText").GetComponent<TextMesh>();
-        FlatBonusTextMesh = backgroundLayerRenderer.transform.Find("FlatBonusText").GetComponent<TextMesh>();
+        BlackDiceTextMesh = BlackContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
+        BlueDiceTextMesh = BlueContainer.transform.Find("BlueDiceText").GetComponent<TextMesh>();
+        OrangeDiceTextMesh = OrangeContainer.transform.Find("OrangeDiceText").GetComponent<TextMesh>();
 
-        StaminaTextRenderer = backgroundLayerRenderer.transform.Find("StaminaCostText").GetComponent<MeshRenderer>();
-        BlackDiceTextRenderer = backgroundLayerRenderer.transform.Find("BlackDiceText").GetComponent<MeshRenderer>();
-        BlueDiceTextRenderer = backgroundLayerRenderer.transform.Find("BlueDiceText").GetComponent<MeshRenderer>();
-        OrangeDiceTextRenderer = backgroundLayerRenderer.transform.Find("OrangeDiceText").GetComponent<MeshRenderer>();
-        RangeTextRenderer = backgroundLayerRenderer.transform.Find("RangeText").GetComponent<MeshRenderer>();
-        FlatBonusTextRenderer = backgroundLayerRenderer.transform.Find("FlatBonusText").GetComponent<MeshRenderer>();
-
-        FlatBonusBackgroundRenderer = backgroundLayerRenderer.transform.Find("FlatBonus").GetComponent<MeshRenderer>(); ;
-        BlackDiceBackgroundRenderer = backgroundLayerRenderer.transform.Find("BlackDices").GetComponent<MeshRenderer>(); ;
-        BlueDiceBackgroundRenderer = backgroundLayerRenderer.transform.Find("BlueDices").GetComponent<MeshRenderer>(); ;
-        OrangeDiceBackgroundRenderer = backgroundLayerRenderer.transform.Find("OrangeDices").GetComponent<MeshRenderer>(); ;
-        MagicAttackBackgroundRenderer = backgroundLayerRenderer.transform.Find("MagicAttack").GetComponent<MeshRenderer>();
-        SplashNodeBackgroundRenderer = backgroundLayerRenderer.transform.Find("SplashNode").GetComponent<MeshRenderer>();
-        MinRange1BackgroundRenderer = backgroundLayerRenderer.transform.Find("MinRange1").GetComponent<MeshRenderer>();
-        RangeBackgroundRenderer = backgroundLayerRenderer.transform.Find("Range").GetComponent<MeshRenderer>();
-        InifiniteRangeBackgroundRenderer = backgroundLayerRenderer.transform.Find("InfiniteRange").GetComponent<MeshRenderer>();
+        RangeTextMesh = RangeContainer.transform.Find("RangeText").GetComponent<TextMesh>();
+        FlatBonusTextMesh = FlatContainer.transform.Find("FlatBonusText").GetComponent<TextMesh>();
 
         IsSelected = false;
         IsDisabled = false;
@@ -148,17 +134,17 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private void SetupAttack(AttackRadialDetail detail)
     {
         var lowRowIndex = 0;
-        SetTextOrHide(lowRowAnchor, detail.blackAttackDices, BlackDiceTextMesh, BlackDiceTextRenderer, BlackDiceBackgroundRenderer, propertyTextPositionOffset, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.blueAttackDices, BlueDiceTextMesh, BlueDiceTextRenderer, BlueDiceBackgroundRenderer, propertyTextPositionOffset, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.orangeAttackDices, OrangeDiceTextMesh, OrangeDiceTextRenderer, OrangeDiceBackgroundRenderer, propertyTextPositionOffset, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.flatModifier, FlatBonusTextMesh, FlatBonusTextRenderer, FlatBonusBackgroundRenderer, propertyTextPositionOffset, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, detail.blackAttackDices, BlackContainer, BlackDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, detail.blueAttackDices, BlueContainer, BlueDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, detail.orangeAttackDices, OrangeContainer, OrangeDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, detail.flatModifier, FlatContainer, FlatBonusTextMesh, ref lowRowIndex);
 
         var highRowIndex = 0;
-        SetTextOrHide(highRowAnchor, detail.range, RangeTextMesh, RangeTextRenderer, RangeBackgroundRenderer, propertyTextRangePositionOffset,ref highRowIndex, !detail.infiniteRange);
-        SetTextOrHide(highRowAnchor, detail.infiniteRange ? 1 : 0, null, null, InifiniteRangeBackgroundRenderer, propertyTextPositionOffset, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.minimumRange, null, null, MinRange1BackgroundRenderer, propertyTextPositionOffset, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.magicAttack ? 1 : 0, null, null, MagicAttackBackgroundRenderer, propertyTextPositionOffset, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.nodeSplash ? 1 : 0, null, null, SplashNodeBackgroundRenderer, propertyTextPositionOffset, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, detail.range, RangeContainer, RangeTextMesh, ref highRowIndex, !detail.infiniteRange);
+        SetTextOrHide(highRowAnchor, detail.infiniteRange ? 1 : 0, InifiniteRangeContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, detail.minimumRange, MinRange1Container, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, detail.magicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, detail.nodeSplash ? 1 : 0, SplashNodeContainer, null, ref highRowIndex);
 
         hoverLayerRenderer.material = detail.notEnoughStamina ? fade_red_material : fade_green_material;
         hoverLayerRenderer.enabled = IsSelected;
@@ -166,7 +152,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         StaminaTextMesh.text = $"[{detail.staminaCost}]";
         RangeTextMesh.text = detail.range.ToString();
 
-        if(IsSelected)
+        if (IsSelected)
         {
             EventManager.RaiseEventObject(EventTypes.AttackSelected, ComputedAttackDetail);
         }
@@ -190,26 +176,18 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         ComputedAttackDetail.side = Side;
     }
 
-    private void SetTextOrHide(Transform anchor, int value, TextMesh textMesh, MeshRenderer textRenderer, MeshRenderer backgroundRenderer, Vector3 textOffset, ref int index, bool showAnyValue = false)
+    private void SetTextOrHide(Transform anchor, int value, Transform container, TextMesh textMesh, ref int index, bool showAnyValue = false)
     {
         var isVisible = value != 0 || showAnyValue;
 
-        if (textRenderer != null)
+        if (textMesh != null)
         {
-            textRenderer.enabled = isVisible;
             textMesh.text = value.ToString();
-
-            var offset = index * propertyPositionOffsetPerIndex + textOffset;
-            textRenderer.transform.localPosition = anchor.localPosition + offset;
         }
 
-        if (backgroundRenderer != null)
-        {
-            backgroundRenderer.enabled = isVisible;
-
-            var offset = index * propertyPositionOffsetPerIndex;
-            backgroundRenderer.transform.localPosition = anchor.localPosition + offset;
-        }
+        var offset = index * propertyPositionOffsetPerIndex;
+        container.transform.localPosition = anchor.localPosition + offset;
+        container.gameObject.SetActive(isVisible);
 
         index += isVisible ? 1 : 0;
     }
@@ -234,7 +212,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private void AttackHoveredEnd(GameObject _)
     {
         EventManager.RaiseEventObject(EventTypes.AttackHoverEnded, ComputedAttackDetail);
-        hoverLayerRenderer.enabled = IsSelected; 
+        hoverLayerRenderer.enabled = IsSelected;
     }
 
     private void AttackHovered(GameObject _)
@@ -245,7 +223,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
     private void DeselectAttackAndNotifySideExausted(object attackApplied)
     {
-        if(ComputedAttackDetail == attackApplied)
+        if (ComputedAttackDetail == attackApplied)
         {
             AttackClicked(null);
         }

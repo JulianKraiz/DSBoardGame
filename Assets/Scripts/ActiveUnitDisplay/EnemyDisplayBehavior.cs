@@ -18,11 +18,12 @@ public class EnemyDisplayBehavior : MonoBehaviour
     void Start()
     {
         zoomedIn = false;
-        translateOffset = new Vector3(0f, -7f, -7.5f);
+        translateOffset = new Vector3(-10f, .5f, -10f);
         smallScale = transform.localScale;
         bigScale = 3 * smallScale;
         EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, UnitHovered);
         EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, UnitExited);
+        EventManager.StartListeningGameObject(EventTypes.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
     }
@@ -88,6 +89,21 @@ public class EnemyDisplayBehavior : MonoBehaviour
         }
     }
 
+    private void ToggleZoomUnitDisplay(GameObject unit)
+    {
+        if (enemy == unit)
+        {
+            if (focusedLayerRenderer.enabled)
+            {
+                UnitExited(unit);
+            }
+            else 
+            {
+                UnitHovered(unit);
+            }
+        }
+    }
+
     private void SetBackgroundMaterial()
     {
         Material mat = null;
@@ -118,7 +134,7 @@ public class EnemyDisplayBehavior : MonoBehaviour
 
         var rend = GetComponent<MeshRenderer>();
         rend.material = mat;
-
-       
     }
+
+
 }

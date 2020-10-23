@@ -55,11 +55,6 @@ public class TileManager : MonoBehaviour
 
     protected virtual void StartInternal()
     {
-        foreach (var child in positions)
-        {
-            child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
-        }
-
     }
 
     void Update()
@@ -106,7 +101,7 @@ public class TileManager : MonoBehaviour
             else
             {
                 // next turn is player.
-                LastActivePlayer = LastActivePlayer < players.Count - 1 ? ++LastActivePlayer : 0;
+                LastActivePlayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer : -1;
             }
         }
         else
@@ -120,7 +115,10 @@ public class TileManager : MonoBehaviour
             {
                 LastActivePlayer = -1;
             }
-            LastActivePlayer = players.IndexOf(lastactivePlayer) - 1;
+            else
+            {
+                LastActivePlayer = players.IndexOf(lastactivePlayer) - 1;
+            }
         }
 
         if (isEnemyTurn)
@@ -138,27 +136,28 @@ public class TileManager : MonoBehaviour
     #region Battle Preparation
     public virtual void PrepareTileEntered()
     {
-        if (isFocused && !isCleared)
+        foreach (var child in positions)
         {
-
-            EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
-            EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
-            EventManager.StartListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
-            EventManager.StartListeningObject(EventTypes.AttackDeselected, HideSelectedAttackTargets);
-            EventManager.StartListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
-            EventManager.StartListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
-            EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
-            EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
-
-            foreach (var position in positions)
-            {
-                position.ResetPosition(true);
-            }
-
-            SetupEnemies();
-            SetupPlayers();
-            ActivateNextUnit();
+            child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
         }
+
+        EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
+        EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
+        EventManager.StartListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
+        EventManager.StartListeningObject(EventTypes.AttackDeselected, HideSelectedAttackTargets);
+        EventManager.StartListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
+        EventManager.StartListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
+        EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
+        EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
+
+        foreach (var position in positions)
+        {
+            position.ResetPosition(true);
+        }
+
+        SetupEnemies();
+        SetupPlayers();
+        ActivateNextUnit();
     }
 
     private void SetupPlayers()
@@ -248,7 +247,6 @@ public class TileManager : MonoBehaviour
                 return positions.Where(p => p.isSouth).ToList();
             }
 
-
             Debug.LogError($"room {gameObject.name} entered from side {enteredFrom} not recognized in preset of potential entrance.");
             return positions;
         }
@@ -284,6 +282,12 @@ public class TileManager : MonoBehaviour
         EventManager.StopListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
         EventManager.StopListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
         EventManager.StopListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
+
+
+        foreach (var child in positions)
+        {
+            child.GetComponent<PositionBehavior>().PositionClicked -= PositionClicked;
+        }
     }
 
     private void RemoveEnemy(UnitBasicProperties enemy)
@@ -312,47 +316,41 @@ public class TileManager : MonoBehaviour
     #region path
     private void PositionClicked(GameObject position)
     {
-        if (isFocused)
+        var pathcost = pathFinder.GetPathhStaminaCost(currentPath) - (firstMovementFree ? 1 : 0);
+
+        var currentUnit = players.FirstOrDefault(p => p.isActive) ?? enemies.FirstOrDefault(p => p.isActive);
+        var currentUnitObject = currentUnit.gameObject;
+
+        if (currentUnit.HasEnoughStaminaToMove() <= pathcost)
         {
-            var pathcost = pathFinder.GetPathhStaminaCost(currentPath) - (firstMovementFree ? 1 : 0);
-
-            var currentUnit = players.FirstOrDefault(p => p.isActive) ?? enemies.FirstOrDefault(p => p.isActive);
-            var currentUnitObject = currentUnit.gameObject;
-
-            if (currentUnit.HasEnoughStaminaToMove() <= pathcost)
-            {
-                return;
-            }
-
-            firstMovementFree = false;
-
-            var currentPosition = positions.FirstOrDefault(p => p.HasUnit(currentUnitObject));
-            currentPosition.RemoveNonBossUnit(currentUnitObject);
-
-            var targetposition = positions.First(pos => pos.gameObject == position);
-            targetposition.AddNonBossUnit(currentUnitObject);
-
-            currentUnit.ConsumeStamina(pathcost);
-
-            EventManager.RaiseEventGameObject(EventTypes.ActiveUnitMoved, currentUnit.gameObject);
+            return;
         }
+
+        firstMovementFree = false;
+
+        var currentPosition = positions.FirstOrDefault(p => p.HasUnit(currentUnitObject));
+        currentPosition.RemoveNonBossUnit(currentUnitObject);
+
+        var targetposition = positions.First(pos => pos.gameObject == position);
+        targetposition.AddNonBossUnit(currentUnitObject);
+
+        currentUnit.ConsumeStamina(pathcost);
+
+        EventManager.RaiseEventGameObject(EventTypes.ActiveUnitMoved, currentUnit.gameObject);
     }
 
     private void ShowPath(GameObject targetPosition)
     {
-        if (isFocused && isHovered)
-        {
-            var starting = positions.First(p => p.HasActiveUnit());
-            var target = positions.First(p => p.name == targetPosition.name);
+        var starting = positions.First(p => p.HasActiveUnit());
+        var target = positions.First(p => p.name == targetPosition.name);
 
-            var path = pathFinder.GetPath(starting, target);
-            if (path != null)
+        var path = pathFinder.GetPath(starting, target);
+        if (path != null)
+        {
+            currentPath = path;
+            foreach (var node in path)
             {
-                currentPath = path;
-                foreach (var node in path)
-                {
-                    node.Show();
-                }
+                node.Show();
             }
         }
     }
@@ -479,10 +477,9 @@ public class TileManager : MonoBehaviour
             attackDices += DiceRollManager.RollOrangeDices(currentSelectedAttack.orangeAttackDices).Sum();
         }
 
-        EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
-
         targetProperties.RecieveInjuries(currentSelectedAttack.flatModifier + attackDices);
 
+        EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
         if (targetProperties.StaminaLeft() <= 0)
         {
             EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, target);

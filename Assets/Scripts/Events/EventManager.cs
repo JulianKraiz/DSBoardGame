@@ -32,6 +32,7 @@ namespace BoardGame.Script.Events
         UnitDestroyed,
         PlayerSheetClicked,
         AttackApplied,
+        ToggleZoomUnitDisplay,
     }
 
     public class EventManager

@@ -108,20 +108,14 @@ public class UnitBasicProperties : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        EventManager.RaiseEventGameObject(EventTypes.UnitHoverEntered, gameObject);
     }
 
     private void OnMouseExit()
     {
-        EventManager.RaiseEventGameObject(EventTypes.UnitHoverExited, gameObject);
     }
 
     private void OnMouseDown()
     {
-        if(isActive)
-        {
-            EventManager.RaiseEventGameObject(EventTypes.ActiveUnitSelected, gameObject);
-        }
     }
 
     public virtual void ConsumeStamina(int amount)
