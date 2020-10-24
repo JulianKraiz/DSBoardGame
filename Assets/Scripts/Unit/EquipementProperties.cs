@@ -9,7 +9,7 @@ namespace Assets.Scripts.Unit
         public string equipementName;
 
         public int dodgeRollsDices = 0;
-        
+
         public int blackArmorDices = 0;
         public int blueArmorDices = 0;
         public int orangeArmorDices = 0;
@@ -36,6 +36,26 @@ namespace Assets.Scripts.Unit
             background = material;
             var temp = gameObject.GetComponent<MeshRenderer>();
             temp.material = background;
+        }
+
+        public void ContributeDiceToDefenseRolls(DefenseDices defense, bool magicAttack)
+        {
+            if (!magicAttack)
+            {
+                defense.BlackDices += blackArmorDices;
+                defense.BlueDices += blueArmorDices ;
+                defense.OrangeDices += orangeArmorDices ;
+                defense.FlatReduce += flatArmorResistence;
+            }
+            if (magicAttack)
+            {
+                defense.BlackDices += blackMagicArmorDices;
+                defense.BlueDices += blueMagicArmorDices;
+                defense.OrangeDices += orangeMagicArmorDices;
+                defense.FlatReduce += flatMagicArmorResistence;
+            }
+            
+            defense.DodgeDices += dodgeRollsDices;
         }
     }
 }

@@ -27,12 +27,15 @@ namespace BoardGame.Script.Events
         AttackDeselected,
         AttackHovered,
         AttackHoverEnded,
-        CloseAttackDial,
+        ResetAndHideAttackDial,
         AttackTargetSelected,
         UnitDestroyed,
         PlayerSheetClicked,
         AttackApplied,
         ToggleZoomUnitDisplay,
+        VictoryTileCleared,
+        ResetAndHideEnemyDisplays,
+        AddSoulsToCache,
     }
 
     public class EventManager

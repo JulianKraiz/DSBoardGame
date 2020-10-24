@@ -1,5 +1,6 @@
 ﻿using BoardGame.Script.Events;
 using BoardGame.Unit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,26 +10,21 @@ public class EnemyDisplayContainer : MonoBehaviour
     public GameObject displayAsset;
 
     private Vector3 offsetPosition;
-    private Quaternion offsetRotation;
     private Dictionary<GameObject, GameObject> enemyTypeDisplayed = new Dictionary<GameObject, GameObject>();
 
     void Start()
     {
         offsetPosition = new Vector3(11f, 0f, 0f);
-        offsetRotation = Quaternion.Euler(135, 0, 180);
         EventManager.StartListeningGameObject(EventTypes.EnemyCreated, AddEnemyDisplay);
         EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, RemoveEnemyDisplay);
+        EventManager.StartListeningGameObject(EventTypes.ResetAndHideEnemyDisplays, ResetAndHideEnemyDisplays);
     }
 
-    
+
 
     void Update()
     {
         
-    }
-
-    public void Initialize()
-    {
     }
 
     private void AddEnemyDisplay(GameObject enemy)
@@ -50,6 +46,15 @@ public class EnemyDisplayContainer : MonoBehaviour
         {
             Destroy(display);
             enemyTypeDisplayed.Remove(enemy);
+        }
+    }
+
+    private void ResetAndHideEnemyDisplays(GameObject arg0)
+    {
+        foreach(var display in enemyTypeDisplayed.ToList())
+        {
+            Destroy(display.Value);
+            enemyTypeDisplayed.Remove(display.Key);
         }
     }
 }

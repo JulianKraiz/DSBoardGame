@@ -88,7 +88,7 @@ namespace Assets.Scripts
             return result;
         }
 
-        public static List<int> RollDodgeDices(int numberOfDices)
+        public static List<int> SimulateRollDodgeDices(int numberOfDices)
         {
             var result = new List<int>();
             for (int i = 0; i < numberOfDices; i++)

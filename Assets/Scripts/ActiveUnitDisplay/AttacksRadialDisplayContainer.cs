@@ -26,6 +26,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         displayScale = new Vector3(0.2f, 0.2f, 0.2f);
         EventManager.StartListeningGameObject(EventTypes.UnitIsActivated, SetupUnitAttackPanels);
         EventManager.StartListeningObject(EventTypes.AttackApplied, DisableSide);
+        EventManager.StartListeningObject(EventTypes.ResetAndHideAttackDial, ClearAllFromEvent);
 
         LeftAttack1 = transform.Find("LeftAttack1").GetComponent<AttackRadialDisplayBehavior>(); 
         LeftAttack2 = transform.Find("LeftAttack2").GetComponent<AttackRadialDisplayBehavior>(); 
@@ -39,6 +40,12 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
 
     void Update()
     {
+    }
+
+    private void ClearAllFromEvent(object _)
+    {
+        currentUnit = null;
+        ClearAllDisplay();
     }
 
     private void SetupUnitAttackPanels(GameObject unit)

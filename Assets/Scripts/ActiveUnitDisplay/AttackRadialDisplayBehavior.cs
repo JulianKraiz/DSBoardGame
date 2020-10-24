@@ -172,7 +172,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         ComputedAttackDetail.staminaCost = attack.staminaCost;
         ComputedAttackDetail.notEnoughStamina = unitProperties.StaminaLeft() - attack.staminaCost <= 0;
         ComputedAttackDetail.flatModifier = attack.flatModifier;
-        ComputedAttackDetail.targetPlayers = attack.targetPlayers;
+        ComputedAttackDetail.targetAllies = attack.targetAllies;
         ComputedAttackDetail.side = Side;
     }
 

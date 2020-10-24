@@ -25,7 +25,7 @@ namespace Assets.Scripts.ActiveUnitDisplay
 
         public bool notEnoughStamina = false;
 
-        public bool targetPlayers = false;
+        public bool targetAllies = false;
         public bool affectAllInRangeUnits = false;
         public AttackRadialSide side;
     }

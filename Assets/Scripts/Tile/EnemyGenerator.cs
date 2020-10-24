@@ -12,6 +12,7 @@ public class EnemyGenerator : MonoBehaviour
 
         prop.enemyType = EnemyClassEnum.ArbalestHollowSoldier;
         prop.hitPoints = 1;
+        prop.side = UnitSide.Hollow;
 
         prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
         var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
@@ -30,7 +31,6 @@ public class EnemyGenerator : MonoBehaviour
             {
                 flatModifier = 4,
                 dodgeLevel = 1,
-                targetPlayers = true,
             }
         };
 
@@ -42,7 +42,7 @@ public class EnemyGenerator : MonoBehaviour
         var soldier = Instantiate(Resources.Load("Asset/ArcherHoolowSoldier"), parent) as GameObject;
         var prop = soldier.GetComponent<EnemyProperties>();
         prop.enemyType = EnemyClassEnum.HollowSoldier;
-
+        prop.side = UnitSide.Hollow;
         prop.hitPoints = 1;
 
         prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
@@ -63,7 +63,6 @@ public class EnemyGenerator : MonoBehaviour
                 magicAttack = true,
                 dodgeLevel = 1,
                 infiniteRange = true,
-                targetPlayers = true,
             }
         };
 

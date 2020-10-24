@@ -146,8 +146,8 @@ public class PositionBehavior : MonoBehaviour
         render.enabled = false;
     }
 
-    internal IEnumerable<GameObject> GetUnits()
+    internal IEnumerable<GameObject> GetUnits(UnitSide side)
     {
-        return NonBossUnits.ToList();
+        return NonBossUnits.Where(p => p.GetComponent<UnitBasicProperties>().side == side).ToList();
     }
 }

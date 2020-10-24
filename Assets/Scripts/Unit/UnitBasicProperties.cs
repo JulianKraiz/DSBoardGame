@@ -1,4 +1,5 @@
-﻿using BoardGame.Script.Events;
+﻿using Assets.Scripts.Unit;
+using BoardGame.Script.Events;
 using System;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ public class UnitBasicProperties : MonoBehaviour
     public GameObject rightEquipement;
     public GameObject armourEquipement;
     public GameObject sideEquipement;
+
+    public UnitSide side;
 
     private HoverBrillanceBehavior hoverBrillanceBehavior;
 
@@ -149,5 +152,22 @@ public class UnitBasicProperties : MonoBehaviour
         EventManager.RaiseEventGameObject(EventTypes.UnitSelected, gameObject);
     }
 
-    
+    public DefenseDices GetDefenseDices(bool magicAttack)
+    {
+        var result = new DefenseDices();
+        if (armourEquipement != null)
+        {
+            armourEquipement.GetComponent<EquipementProperties>().ContributeDiceToDefenseRolls(result, magicAttack);
+        }
+        if (leftEquipement != null)
+        {
+            leftEquipement.GetComponent<EquipementProperties>().ContributeDiceToDefenseRolls(result, magicAttack);
+        }
+        if(rightEquipement != null)
+        {
+            rightEquipement.GetComponent<EquipementProperties>().ContributeDiceToDefenseRolls(result, magicAttack);
+        }
+        
+        return result;
+    }
 }

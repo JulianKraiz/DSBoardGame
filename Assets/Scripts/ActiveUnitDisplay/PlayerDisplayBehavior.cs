@@ -73,12 +73,12 @@ public class PlayerDisplayBehavior : MonoBehaviour
         abilityTokenRenderer = transform.Find("AbilityToken").GetComponent<MeshRenderer>();
         emberTokenRenderer = transform.Find("EmberToken").GetComponent<MeshRenderer>();
 
-        estusOnMaterial = (Material)Resources.Load("Material/estus_on_material", typeof(Material));
-        estusOffMaterial = (Material)Resources.Load("Material/estus_off_material", typeof(Material));
-        luckOnMaterial = (Material)Resources.Load("Material/luck_on_material", typeof(Material));
-        luckOffMaterial = (Material)Resources.Load("Material/luck_off_material", typeof(Material));
-        abilityOnMaterial = (Material)Resources.Load("Material/ability_on_material", typeof(Material));
-        abilityOffMaterial = (Material)Resources.Load("Material/ability_off_material", typeof(Material));
+        estusOnMaterial = (Material)Resources.Load("Material/tokens/estus_on_material", typeof(Material));
+        estusOffMaterial = (Material)Resources.Load("Material/tokens/estus_off_material", typeof(Material));
+        luckOnMaterial = (Material)Resources.Load("Material/tokens/luck_on_material", typeof(Material));
+        luckOffMaterial = (Material)Resources.Load("Material/tokens/luck_off_material", typeof(Material));
+        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on_material", typeof(Material));
+        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off_material", typeof(Material));
 
         leftHandAnchor = transform.Find("LeftHandAnchor").gameObject;
         rightHandAnchor = transform.Find("RightHandAnchor").gameObject;

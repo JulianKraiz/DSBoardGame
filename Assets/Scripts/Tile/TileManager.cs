@@ -2,9 +2,11 @@
 using Assets.Scripts.ActiveUnitDisplay;
 using Assets.Scripts.Tile;
 using BoardGame.Script.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class TileManager : MonoBehaviour
 {
@@ -50,6 +52,8 @@ public class TileManager : MonoBehaviour
         currentPath = new List<PositionBehavior>();
         currentUnitInBrillance = new List<UnitBasicProperties>();
 
+        EventManager.StartListeningGameObject(EventTypes.TileIsEntered, IntializeFocusedTileHandler);
+
         StartInternal();
     }
 
@@ -64,7 +68,7 @@ public class TileManager : MonoBehaviour
 
     protected virtual void UpdateInternal()
     {
-        if (isFocused && isHovered && Input.GetButtonDown("End Turn"))
+        if (isFocused && isHovered && !isCleared && Input.GetButtonDown("End Turn"))
         {
             ActivateNextUnit();
         }
@@ -134,6 +138,14 @@ public class TileManager : MonoBehaviour
     }
 
     #region Battle Preparation
+    private void IntializeFocusedTileHandler(GameObject _)
+    {
+        if (isFocused && isHovered)
+        {
+            PrepareTileEntered();
+        }
+    }
+
     public virtual void PrepareTileEntered()
     {
         foreach (var child in positions)
@@ -253,7 +265,7 @@ public class TileManager : MonoBehaviour
     }
     #endregion
 
-    #region Tile Exit/Clean
+    #region Exit/Clean
     public virtual void ExitTile()
     {
         foreach (var child in positions)
@@ -261,7 +273,7 @@ public class TileManager : MonoBehaviour
             child.ResetPosition(false);
         }
 
-        foreach (var unit in enemies)
+        foreach (var unit in enemies.ToList())
         {
             RemoveEnemy(unit);
         }
@@ -288,6 +300,9 @@ public class TileManager : MonoBehaviour
         {
             child.GetComponent<PositionBehavior>().PositionClicked -= PositionClicked;
         }
+
+        EventManager.RaiseEventGameObject(EventTypes.ResetAndHideEnemyDisplays);
+        EventManager.RaiseEventObject(EventTypes.ResetAndHideAttackDial);
     }
 
     private void RemoveEnemy(UnitBasicProperties enemy)
@@ -363,6 +378,23 @@ public class TileManager : MonoBehaviour
             node.Hide();
         }
     }
+
+    private Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start)
+    {
+        var result = new Dictionary<PositionBehavior, int>();
+
+        var otherNodes = positions.ToList();
+
+        foreach (var other in otherNodes)
+        {
+            var path = pathFinder.GetPath(start, other);
+            if (path != null && path.Count >= minRange && path.Count <= maxRange)
+            {
+                result.Add(other, path.Count);
+            }
+        }
+        return result;
+    }
     #endregion
 
     #region attacks
@@ -375,9 +407,11 @@ public class TileManager : MonoBehaviour
     private void ShowAvailableAttackTargets(object attackObject)
     {
         InternalHideAttackTargets();
+
         var currentAttack = (AttackRadialDetail)attackObject;
 
-        var potentialUnits = currentAttack.targetPlayers ? players : enemies;
+        var currentSide = players.Any(p => p.isActive) ? UnitSide.Player : UnitSide.Hollow;
+        var targetSide = currentAttack.targetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
 
         var minRange = currentAttack.minimumRange;
         var maxRange = currentAttack.infiniteRange ? 20 : currentAttack.range;
@@ -387,14 +421,11 @@ public class TileManager : MonoBehaviour
 
         foreach (var node in inRangeNodes)
         {
-            foreach (var unit in node.GetUnits())
+            foreach (var unit in node.GetUnits(targetSide))
             {
                 var properties = unit.GetComponent<UnitBasicProperties>();
-                if (potentialUnits.Contains(properties))
-                {
-                    properties.ShowHoverBrillance();
-                    currentUnitInBrillance.Add(properties);
-                }
+                properties.ShowHoverBrillance();
+                currentUnitInBrillance.Add(properties);
             }
         }
     }
@@ -425,83 +456,64 @@ public class TileManager : MonoBehaviour
 
     private void ApplyAttack(GameObject target)
     {
-        if (target == null)
-        {
-            return;
-        }
-
         var targetProperties = target.GetComponent<UnitBasicProperties>();
+        ComputeAndApplyAttack(currentSelectedAttack, targetProperties, currentUnitInBrillance, positions);
+    }
 
-        var targetPosition = positions.FirstOrDefault(p => p.HasUnit(target));
-        if (targetPosition == null)
-        {
-            return;
-        }
+    private void ComputeAndApplyAttack(AttackRadialDetail attack, UnitBasicProperties originalTarget, IEnumerable<UnitBasicProperties> allAvailableTargets, IEnumerable<PositionBehavior> allPositions)
+    {
+        var source = players.FirstOrDefault(p => p.isActive) ?? enemies.First(u => u.isActive);
 
         var sourcePosition = positions.FirstOrDefault(p => p.HasActiveUnit());
-        if (sourcePosition == null)
+        var targetPosition = positions.FirstOrDefault(p => p.HasUnit(originalTarget.gameObject));
+
+        var currentSide = players.Any(p => p.isActive) ? UnitSide.Player : UnitSide.Hollow;
+        var targetSide = attack.targetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
+
+        IList<UnitBasicProperties> targets = new List<UnitBasicProperties>();
+        if (attack.nodeSplash)
         {
-            return;
+            targets = targetPosition.GetUnits(targetSide).Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
+        }
+        else
+        {
+            targets.Add(originalTarget);
         }
 
-        if (currentSelectedAttack == null)
+        var defensesPerUnit = new Dictionary<UnitBasicProperties, DefenseResult>();
+        foreach(var attackedTarget in targets)
         {
-            return;
-        }
+            var defense = attackedTarget.GetDefenseDices(attack.magicAttack);
+            // if player, roll / block => dice mini game
 
-        if (target.GetComponent<UnitBasicProperties>().isActive)
-        {
-            return;
-        }
+            // players should roll throug mini-game.
+            if(attackedTarget.side == UnitSide.Hollow || attackedTarget.side == UnitSide.Player)
+            {
+                var diceResult = SimulateDefenseDiceRolls(currentSelectedAttack, defense);
+                defensesPerUnit[attackedTarget] = diceResult;
+            }
 
-        var path = pathFinder.GetPath(sourcePosition, targetPosition);
-        if (path.Count < currentSelectedAttack.minimumRange && path.Count > currentSelectedAttack.range)
-        {
-            return;
         }
-
-        // if player, roll / block => dice mini game
 
         // if player, damage => dice mini game
         var attackDices = 0;
-        if (currentSelectedAttack.blackAttackDices > 0)
+        if (source.side == UnitSide.Hollow || source.side == UnitSide.Player)
         {
-            attackDices += DiceRollManager.RollBlackDices(currentSelectedAttack.blackAttackDices).Sum();
-        }
-        if (currentSelectedAttack.blueAttackDices > 0)
-        {
-            attackDices += DiceRollManager.RollBlueDices(currentSelectedAttack.blueAttackDices).Sum();
-        }
-        if (currentSelectedAttack.orangeAttackDices > 0)
-        {
-            attackDices += DiceRollManager.RollOrangeDices(currentSelectedAttack.orangeAttackDices).Sum();
+            attackDices = SimulateAttackDiceRolls(currentSelectedAttack);
         }
 
-        targetProperties.RecieveInjuries(currentSelectedAttack.flatModifier + attackDices);
-
-        EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
-        if (targetProperties.StaminaLeft() <= 0)
+        foreach (var attackedTarget in targets)
         {
-            EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, target);
-        }
-    }
-    #endregion
+            var finalDamage = Math.Max(0, attackDices - defensesPerUnit[attackedTarget].DamageReduction);
+            attackedTarget.RecieveInjuries(finalDamage);
 
-    private Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start)
-    {
-        var result = new Dictionary<PositionBehavior, int>();
-
-        var otherNodes = positions.ToList();
-
-        foreach (var other in otherNodes)
-        {
-            var path = pathFinder.GetPath(start, other);
-            if (path != null && path.Count >= minRange && path.Count <= maxRange)
+            if (attackedTarget.StaminaLeft() <= 0)
             {
-                result.Add(other, path.Count);
+                EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, attackedTarget.gameObject);
             }
         }
-        return result;
+
+        EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
     }
 
     private void UnitDestroyed(GameObject unit)
@@ -513,6 +525,49 @@ public class TileManager : MonoBehaviour
         else if (enemyToProperties.TryGetValue(unit, out var enemyProperties))
         {
             RemoveEnemy(enemyProperties);
+            if (enemies.Count == 0)
+            {
+                Cleared();
+                EventManager.RaiseEventObject(EventTypes.ResetAndHideAttackDial, gameObject);
+            }
         }
     }
+    #endregion
+
+
+    private DefenseResult SimulateDefenseDiceRolls(AttackRadialDetail attack, DefenseDices dicesToRoll)
+    {
+        //no simulation of dodge roll because you roll either dodge or block rolls.
+        var result = new DefenseResult();
+
+        var damageReduction = dicesToRoll.FlatReduce;
+        damageReduction += DiceRollManager.RollBlackDices(dicesToRoll.BlackDices).Sum();
+        damageReduction += DiceRollManager.RollBlueDices(dicesToRoll.BlueDices).Sum();
+        damageReduction += DiceRollManager.RollOrangeDices(dicesToRoll.OrangeDices).Sum();
+
+        result.DamageReduction = damageReduction;
+
+        return result;
+    }
+
+    private int SimulateAttackDiceRolls(AttackRadialDetail attack)
+    {
+        int attackDices = 0;
+        if (attack.blackAttackDices > 0)
+        {
+            attackDices += DiceRollManager.RollBlackDices(attack.blackAttackDices).Sum();
+        }
+        if (attack.blueAttackDices > 0)
+        {
+            attackDices += DiceRollManager.RollBlueDices(attack.blueAttackDices).Sum();
+        }
+        if (attack.orangeAttackDices > 0)
+        {
+            attackDices += DiceRollManager.RollOrangeDices(attack.orangeAttackDices).Sum();
+        }
+        attackDices += attack.flatModifier;
+
+        return attackDices;
+    }
+
 }
