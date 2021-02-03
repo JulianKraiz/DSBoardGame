@@ -36,10 +36,9 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private Transform MagicContainer;
     private Transform SplashNodeContainer;
 
-    private AttackRadialSide Side;
+    private AttackSide Side;
     private UnitBasicProperties UnitProperties;
-    private AttackDetail RawAttackDetail;
-    private AttackRadialDetail ComputedAttackDetail;
+    private AttackDetail AttackDetail;
 
     private bool IsSelected;
     private bool IsDisabled;
@@ -53,17 +52,15 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     {
     }
 
-    public void SetupTile(AttackDetail attack, UnitBasicProperties properties, AttackRadialSide side)
+    public void SetupTile(AttackDetail attack, UnitBasicProperties properties, AttackSide side)
     {
-        RawAttackDetail = attack;
+        AttackDetail = attack;
+        AttackDetail.side = side;
         UnitProperties = properties;
-        Side = side;
 
         IsSelected = false;
         IsDisabled = false;
-        ComputeAttackDetail(RawAttackDetail, UnitProperties);
-        SetupAttack(ComputedAttackDetail);
-
+        SetupAttack();
     }
 
     public void Reset()
@@ -127,55 +124,36 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private void CheckEnoughStaminaLeft(GameObject unit)
     {
         UnitProperties = unit.GetComponent<UnitBasicProperties>();
-        ComputeAttackDetail(RawAttackDetail, UnitProperties);
-        SetupAttack(ComputedAttackDetail);
+        SetupAttack();
     }
 
-    private void SetupAttack(AttackRadialDetail detail)
+    private void SetupAttack()
     {
         var lowRowIndex = 0;
-        SetTextOrHide(lowRowAnchor, detail.blackAttackDices, BlackContainer, BlackDiceTextMesh, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.blueAttackDices, BlueContainer, BlueDiceTextMesh, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.orangeAttackDices, OrangeContainer, OrangeDiceTextMesh, ref lowRowIndex);
-        SetTextOrHide(lowRowAnchor, detail.flatModifier, FlatContainer, FlatBonusTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, AttackDetail.blackAttackDices, BlackContainer, BlackDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, AttackDetail.blueAttackDices, BlueContainer, BlueDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, AttackDetail.orangeAttackDices, OrangeContainer, OrangeDiceTextMesh, ref lowRowIndex);
+        SetTextOrHide(lowRowAnchor, AttackDetail.flatModifier, FlatContainer, FlatBonusTextMesh, ref lowRowIndex);
 
         var highRowIndex = 0;
-        SetTextOrHide(highRowAnchor, detail.range, RangeContainer, RangeTextMesh, ref highRowIndex, !detail.infiniteRange);
-        SetTextOrHide(highRowAnchor, detail.infiniteRange ? 1 : 0, InifiniteRangeContainer, null, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.minimumRange, MinRange1Container, null, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.magicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
-        SetTextOrHide(highRowAnchor, detail.nodeSplash ? 1 : 0, SplashNodeContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetail.range, RangeContainer, RangeTextMesh, ref highRowIndex, !AttackDetail.infiniteRange);
+        SetTextOrHide(highRowAnchor, AttackDetail.infiniteRange ? 1 : 0, InifiniteRangeContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetail.minimumRange, MinRange1Container, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetail.magicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetail.nodeSplash ? 1 : 0, SplashNodeContainer, null, ref highRowIndex);
 
-        hoverLayerRenderer.material = detail.notEnoughStamina ? fade_red_material : fade_green_material;
+        hoverLayerRenderer.material = AttackDetail.notEnoughStamina(UnitProperties.StaminaLeft()) ? fade_red_material : fade_green_material;
         hoverLayerRenderer.enabled = IsSelected;
 
-        StaminaTextMesh.text = $"[{detail.staminaCost}]";
-        RangeTextMesh.text = detail.range.ToString();
+        StaminaTextMesh.text = $"[{AttackDetail.staminaCost}]";
+        RangeTextMesh.text = AttackDetail.range.ToString();
 
         if (IsSelected)
         {
-            EventManager.RaiseEventObject(EventTypes.AttackSelected, ComputedAttackDetail);
+            EventManager.RaiseEventObject(EventTypes.AttackSelected, AttackDetail);
         }
     }
-
-    private void ComputeAttackDetail(AttackDetail attack, UnitBasicProperties unitProperties)
-    {
-        ComputedAttackDetail = new AttackRadialDetail();
-        ComputedAttackDetail.blackAttackDices = attack.blackAttackDices;
-        ComputedAttackDetail.blueAttackDices = attack.blueAttackDices;
-        ComputedAttackDetail.orangeAttackDices = attack.orangeAttackDices;
-        ComputedAttackDetail.nodeSplash = attack.nodeSplash;
-        ComputedAttackDetail.range = attack.range;
-        ComputedAttackDetail.infiniteRange = attack.infiniteRange;
-        ComputedAttackDetail.minimumRange = attack.minimumRange;
-        ComputedAttackDetail.magicAttack = attack.magicAttack;
-        ComputedAttackDetail.staminaCost = attack.staminaCost;
-        ComputedAttackDetail.notEnoughStamina = unitProperties.StaminaLeft() - attack.staminaCost <= 0;
-        ComputedAttackDetail.flatModifier = attack.flatModifier;
-        ComputedAttackDetail.targetAllies = attack.targetAllies;
-        ComputedAttackDetail.side = Side;
-    }
-
+  
     private void SetTextOrHide(Transform anchor, int value, Transform container, TextMesh textMesh, ref int index, bool showAnyValue = false)
     {
         var isVisible = value != 0 || showAnyValue;
@@ -199,31 +177,31 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         if (!IsSelected)
         {
             IsSelected = true;
-            EventManager.RaiseEventObject(EventTypes.AttackSelected, ComputedAttackDetail);
+            EventManager.RaiseEventObject(EventTypes.AttackSelected, AttackDetail);
         }
         else
         {
             IsSelected = false;
-            EventManager.RaiseEventObject(EventTypes.AttackDeselected, ComputedAttackDetail);
+            EventManager.RaiseEventObject(EventTypes.AttackDeselected, AttackDetail);
             hoverLayerRenderer.enabled = false;
         }
     }
 
     private void AttackHoveredEnd(GameObject _)
     {
-        EventManager.RaiseEventObject(EventTypes.AttackHoverEnded, ComputedAttackDetail);
+        EventManager.RaiseEventObject(EventTypes.AttackHoverEnded, AttackDetail);
         hoverLayerRenderer.enabled = IsSelected;
     }
 
     private void AttackHovered(GameObject _)
     {
-        EventManager.RaiseEventObject(EventTypes.AttackHovered, ComputedAttackDetail);
+        EventManager.RaiseEventObject(EventTypes.AttackHovered, AttackDetail);
         hoverLayerRenderer.enabled = true;
     }
 
     private void DeselectAttackAndNotifySideExausted(object attackApplied)
     {
-        if (ComputedAttackDetail == attackApplied)
+        if (AttackDetail == attackApplied)
         {
             AttackClicked(null);
         }

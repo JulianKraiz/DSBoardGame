@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BoardGame.Unit;
+using Assets.Scripts.ActiveUnitDisplay;
 
 public class EnemyGenerator : MonoBehaviour
 {

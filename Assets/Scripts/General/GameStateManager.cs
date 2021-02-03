@@ -5,6 +5,7 @@ using UnityEngine;
 using BoardGame.Unit;
 using Assets.Scripts.Unit;
 using System;
+using Assets.Scripts.ActiveUnitDisplay;
 
 public class GameStateManager : MonoBehaviour
 {

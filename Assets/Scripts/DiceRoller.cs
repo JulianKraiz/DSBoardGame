@@ -98,5 +98,15 @@ namespace Assets.Scripts
             }
             return result;
         }
+
+        public static int RollDicesAndSum(int blackDices, int blueDices, int orangeDices, int flatModifier)
+        {
+            var damageReduction = flatModifier;
+            damageReduction += DiceRollManager.RollBlackDices(blackDices).Sum();
+            damageReduction += DiceRollManager.RollBlueDices(blueDices).Sum();
+            damageReduction += DiceRollManager.RollOrangeDices(orangeDices).Sum();
+
+            return damageReduction;
+        }
     }
 }

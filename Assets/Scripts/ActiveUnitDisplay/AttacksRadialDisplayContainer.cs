@@ -81,19 +81,19 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         {
             LeftAttack1.gameObject.SetActive(true);
             LeftAttack1.Reset();
-            LeftAttack1.SetupTile(attack, unitProperties, AttackRadialSide.Left);
+            LeftAttack1.SetupTile(attack, unitProperties, AttackSide.Left);
         }
         else if (index == 1)
         {
             LeftAttack2.gameObject.SetActive(true);
             LeftAttack2.Reset();
-            LeftAttack2.SetupTile(attack, unitProperties, AttackRadialSide.Left);
+            LeftAttack2.SetupTile(attack, unitProperties, AttackSide.Left);
         }
         else if (index == 2)
         {
             LeftAttack3.gameObject.SetActive(true);
             LeftAttack3.Reset();
-            LeftAttack3.SetupTile(attack, unitProperties, AttackRadialSide.Left);
+            LeftAttack3.SetupTile(attack, unitProperties, AttackSide.Left);
         }
     }
 
@@ -103,19 +103,19 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         {
             RightAttack1.gameObject.SetActive(true);
             RightAttack1.Reset();
-            RightAttack1.SetupTile(attack, unitProperties, AttackRadialSide.Right);
+            RightAttack1.SetupTile(attack, unitProperties, AttackSide.Right);
         }
         else if (index == 1)
         {
             RightAttack2.gameObject.SetActive(true);
             RightAttack2.Reset();
-            RightAttack2.SetupTile(attack, unitProperties, AttackRadialSide.Right);
+            RightAttack2.SetupTile(attack, unitProperties, AttackSide.Right);
         }
         else if (index == 2)
         {
             RightAttack3.gameObject.SetActive(true);
             RightAttack3.Reset();
-            RightAttack3.SetupTile(attack, unitProperties, AttackRadialSide.Right);
+            RightAttack3.SetupTile(attack, unitProperties, AttackSide.Right);
         }
     }
 
@@ -131,12 +131,12 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
 
     private void DisableSide(object attack)
     {
-        var detail = (AttackRadialDetail)attack;
-        if(detail.side == AttackRadialSide.Left || detail.side == AttackRadialSide.Both)
+        var detail = (AttackDetail)attack;
+        if(detail.side == AttackSide.Left || detail.side == AttackSide.Both)
         {
             DisableLeftDisplay();
         }
-        else if (detail.side == AttackRadialSide.Right || detail.side == AttackRadialSide.Both)
+        else if (detail.side == AttackSide.Right || detail.side == AttackSide.Both)
         {
             DisableRightDisplay();
         }

@@ -28,7 +28,7 @@ public class TileManager : MonoBehaviour
 
     private List<PositionBehavior> currentPath;
     private List<UnitBasicProperties> currentUnitInBrillance;
-    private AttackRadialDetail currentSelectedAttack;
+    private AttackDetail currentSelectedAttack;
 
     private int LastActivePlayer = 0;
     private int LastActiveEnemy = 0;
@@ -140,36 +140,37 @@ public class TileManager : MonoBehaviour
     #region Battle Preparation
     private void IntializeFocusedTileHandler(GameObject _)
     {
-        if (isFocused && isHovered)
-        {
-            PrepareTileEntered();
-        }
+        PrepareTileEntered();
     }
 
     public virtual void PrepareTileEntered()
     {
-        foreach (var child in positions)
+
+        if (isFocused && isHovered && !isCleared)
         {
-            child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
+            foreach (var child in positions)
+            {
+                child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
+            }
+
+            EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
+            EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
+            EventManager.StartListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackDeselected, HideSelectedAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
+            EventManager.StartListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
+            EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
+            EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
+
+            foreach (var position in positions)
+            {
+                position.ResetPosition(true);
+            }
+
+            SetupEnemies();
+            SetupPlayers();
+            ActivateNextUnit();
         }
-
-        EventManager.StartListeningGameObject(EventTypes.PositionHovered, ShowPath);
-        EventManager.StartListeningGameObject(EventTypes.PositionHoveredExit, StopShowPath);
-        EventManager.StartListeningObject(EventTypes.AttackSelected, ShowSelectedAttackTargets);
-        EventManager.StartListeningObject(EventTypes.AttackDeselected, HideSelectedAttackTargets);
-        EventManager.StartListeningObject(EventTypes.AttackHovered, ShowAvailableAttackTargets);
-        EventManager.StartListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
-        EventManager.StartListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
-        EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
-
-        foreach (var position in positions)
-        {
-            position.ResetPosition(true);
-        }
-
-        SetupEnemies();
-        SetupPlayers();
-        ActivateNextUnit();
     }
 
     private void SetupPlayers()
@@ -268,9 +269,9 @@ public class TileManager : MonoBehaviour
     #region Exit/Clean
     public virtual void ExitTile()
     {
-        foreach (var child in positions)
+        foreach (var position in positions)
         {
-            child.ResetPosition(false);
+            position.ResetPosition(false);
         }
 
         foreach (var unit in enemies.ToList())
@@ -281,7 +282,6 @@ public class TileManager : MonoBehaviour
         foreach (var unit in players)
         {
             unit.Deactivate();
-            unit.ResetStaminaAndInjuries();
             unit.hasAggroToken = false;
             unit.hasActivationToken = false;
         }
@@ -320,6 +320,11 @@ public class TileManager : MonoBehaviour
     private void Cleared()
     {
         isCleared = true;
+
+        foreach (var unit in players)
+        {
+            unit.ResetStaminaAndInjuries();
+        }
 
         var nextActiveplayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer + 1 : 0;
         players[nextActiveplayer].hasActivationToken = true;
@@ -400,7 +405,7 @@ public class TileManager : MonoBehaviour
     #region attacks
     private void ShowSelectedAttackTargets(object attackObject)
     {
-        currentSelectedAttack = (AttackRadialDetail)attackObject;
+        currentSelectedAttack = (AttackDetail)attackObject;
         ShowAvailableAttackTargets(attackObject);
     }
 
@@ -408,7 +413,7 @@ public class TileManager : MonoBehaviour
     {
         InternalHideAttackTargets();
 
-        var currentAttack = (AttackRadialDetail)attackObject;
+        var currentAttack = (AttackDetail)attackObject;
 
         var currentSide = players.Any(p => p.isActive) ? UnitSide.Player : UnitSide.Hollow;
         var targetSide = currentAttack.targetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
@@ -460,7 +465,7 @@ public class TileManager : MonoBehaviour
         ComputeAndApplyAttack(currentSelectedAttack, targetProperties, currentUnitInBrillance, positions);
     }
 
-    private void ComputeAndApplyAttack(AttackRadialDetail attack, UnitBasicProperties originalTarget, IEnumerable<UnitBasicProperties> allAvailableTargets, IEnumerable<PositionBehavior> allPositions)
+    private void ComputeAndApplyAttack(AttackDetail attack, UnitBasicProperties originalTarget, IEnumerable<UnitBasicProperties> allAvailableTargets, IEnumerable<PositionBehavior> allPositions)
     {
         var source = players.FirstOrDefault(p => p.isActive) ?? enemies.First(u => u.isActive);
 
@@ -481,13 +486,18 @@ public class TileManager : MonoBehaviour
         }
 
         var defensesPerUnit = new Dictionary<UnitBasicProperties, DefenseResult>();
-        foreach(var attackedTarget in targets)
+
+        foreach (var attackedTarget in targets)
         {
             var defense = attackedTarget.GetDefenseDices(attack.magicAttack);
             // if player, roll / block => dice mini game
 
-            // players should roll throug mini-game.
-            if(attackedTarget.side == UnitSide.Hollow || attackedTarget.side == UnitSide.Player)
+            if (attackedTarget.side == UnitSide.Player)
+            {
+                var diceResult = SimulateDefenseDiceRolls(currentSelectedAttack, defense);
+                defensesPerUnit[attackedTarget] = diceResult;
+            }
+            else if (attackedTarget.side == UnitSide.Hollow)
             {
                 var diceResult = SimulateDefenseDiceRolls(currentSelectedAttack, defense);
                 defensesPerUnit[attackedTarget] = diceResult;
@@ -499,7 +509,7 @@ public class TileManager : MonoBehaviour
         var attackDices = 0;
         if (source.side == UnitSide.Hollow || source.side == UnitSide.Player)
         {
-            attackDices = SimulateAttackDiceRolls(currentSelectedAttack);
+            attackDices = DiceRollManager.RollDicesAndSum(currentSelectedAttack.blackAttackDices, currentSelectedAttack.blueAttackDices, currentSelectedAttack.orangeAttackDices, currentSelectedAttack.flatModifier);
         }
 
         foreach (var attackedTarget in targets)
@@ -535,39 +545,17 @@ public class TileManager : MonoBehaviour
     #endregion
 
 
-    private DefenseResult SimulateDefenseDiceRolls(AttackRadialDetail attack, DefenseDices dicesToRoll)
+    private DefenseResult SimulateDefenseDiceRolls(AttackDetail attack, DefenseDices dicesToRoll)
     {
-        //no simulation of dodge roll because you roll either dodge or block rolls.
+        //no simulation of dodge roll because you either dodge or block.
         var result = new DefenseResult();
 
-        var damageReduction = dicesToRoll.FlatReduce;
-        damageReduction += DiceRollManager.RollBlackDices(dicesToRoll.BlackDices).Sum();
-        damageReduction += DiceRollManager.RollBlueDices(dicesToRoll.BlueDices).Sum();
-        damageReduction += DiceRollManager.RollOrangeDices(dicesToRoll.OrangeDices).Sum();
+        var damageReduction = DiceRollManager.RollDicesAndSum(dicesToRoll.BlackDices, dicesToRoll.BlueDices, dicesToRoll.OrangeDices, dicesToRoll.FlatReduce);
 
         result.DamageReduction = damageReduction;
 
         return result;
     }
 
-    private int SimulateAttackDiceRolls(AttackRadialDetail attack)
-    {
-        int attackDices = 0;
-        if (attack.blackAttackDices > 0)
-        {
-            attackDices += DiceRollManager.RollBlackDices(attack.blackAttackDices).Sum();
-        }
-        if (attack.blueAttackDices > 0)
-        {
-            attackDices += DiceRollManager.RollBlueDices(attack.blueAttackDices).Sum();
-        }
-        if (attack.orangeAttackDices > 0)
-        {
-            attackDices += DiceRollManager.RollOrangeDices(attack.orangeAttackDices).Sum();
-        }
-        attackDices += attack.flatModifier;
-
-        return attackDices;
-    }
 
 }

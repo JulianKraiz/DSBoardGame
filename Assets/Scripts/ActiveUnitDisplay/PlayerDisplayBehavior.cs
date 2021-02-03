@@ -101,9 +101,9 @@ public class PlayerDisplayBehavior : MonoBehaviour
             {
                 injuriesToken[i].enabled = i < playerProperties.injuries;
             }
-            for (int i = staminaToken.Count - 1; i >= 0; i--)
+            for (int i = 0; i < staminaToken.Count; i++)
             {
-                staminaToken[i].enabled = staminaToken.Count - 1 - i < playerProperties.stamina;
+                staminaToken[i].enabled = i < playerProperties.stamina;
             }
 
             emberTokenRenderer.enabled = playerProperties.hasEmber;
