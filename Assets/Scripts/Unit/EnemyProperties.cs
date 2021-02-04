@@ -1,5 +1,4 @@
 ﻿using BoardGame.Unit;
-using UnityEngine;
 
 public class EnemyProperties : UnitBasicProperties
 {

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-public class TileMonsterSettings
+﻿public class TileMonsterSettings
 {
     public int encounterLevel { get; set; }
     public int swordhollowSoldierCount { get; set; }

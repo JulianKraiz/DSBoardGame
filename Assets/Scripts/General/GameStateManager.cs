@@ -1,11 +1,9 @@
-﻿using BoardGame.Script.Events;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BoardGame.Unit;
 using Assets.Scripts.Unit;
-using System;
-using Assets.Scripts.ActiveUnitDisplay;
+using Assets.Scripts.Unit.Model.Attacks;
 
 public class GameStateManager : MonoBehaviour
 {
@@ -85,12 +83,12 @@ public class GameStateManager : MonoBehaviour
             {
                 new AttackDetail()
                 {
-                    blackAttackDices = 2,
+                    BlackDices = 2,
                     staminaCost = 0,
                 },
                 new AttackDetail()
                 {
-                    blackAttackDices = 2,
+                    BlackDices = 2,
                     staminaCost = 2,
                     nodeSplash = true,
                 }
@@ -131,14 +129,14 @@ public class GameStateManager : MonoBehaviour
             {
                 new AttackDetail()
                 {
-                    blackAttackDices = 1,
+                    BlackDices = 1,
                     staminaCost = 0,
                     minimumRange = 1,
                     range = 1
                 },
                 new AttackDetail()
                 {
-                    blackAttackDices = 1,
+                    BlackDices = 1,
                     flatModifier = 1,
                     staminaCost = 3,
                     minimumRange = 1,
@@ -202,13 +200,13 @@ public class GameStateManager : MonoBehaviour
             {
                 new AttackDetail()
                 {
-                    blueAttackDices = 1,
+                    BlueDices = 1,
                     staminaCost = 0,
                 },
                 new AttackDetail()
                 {
-                    blackAttackDices = 1,
-                    blueAttackDices = 1,
+                    BlackDices = 1,
+                    BlueDices = 1,
                     staminaCost = 4,
                 }
         };
@@ -246,13 +244,13 @@ public class GameStateManager : MonoBehaviour
             {
                 new AttackDetail()
                 {
-                    blueAttackDices = 2,
+                    BlueDices = 2,
                     flatModifier = -1,
                     staminaCost = 0,
                 },
                 new AttackDetail()
                 {
-                    blackAttackDices = 3,
+                    BlackDices = 3,
                     flatModifier = -1,
                     staminaCost = 3,
             }

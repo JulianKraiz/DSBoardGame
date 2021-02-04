@@ -1,5 +1,4 @@
 ﻿using BoardGame.Script.Events;
-using System;
 using UnityEngine;
 
 public class HoverBrillanceBehavior : MonoBehaviour

@@ -1,6 +1,5 @@
 ﻿using BoardGame.Unit;
 using System;
-using UnityEngine;
 
 public class PlayerProperties : UnitBasicProperties
 {

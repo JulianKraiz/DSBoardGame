@@ -1,10 +1,7 @@
-﻿using Assets.Scripts.ActiveUnitDisplay;
-using Assets.Scripts.Unit;
+﻿using Assets.Scripts.Unit;
+using Assets.Scripts.Unit.Model.Attacks;
 using BoardGame.Script.Events;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public class AttacksRadialDisplayContainer : MonoBehaviour
 {

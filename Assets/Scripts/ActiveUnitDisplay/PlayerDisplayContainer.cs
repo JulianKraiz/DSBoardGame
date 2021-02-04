@@ -1,6 +1,4 @@
-﻿using BoardGame.Script.Events;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerDisplayContainer : MonoBehaviour
@@ -25,11 +23,10 @@ public class PlayerDisplayContainer : MonoBehaviour
     public void Initialize()
     {
         var players = GameObject.FindGameObjectsWithTag("Player");
-        var buffPositionOffset = offsetPosition;
         var index = 0;
         foreach (var player in players)
         {
-            buffPositionOffset = index * offsetPosition;
+            var buffPositionOffset = index * offsetPosition;
             var display = Instantiate(displayAsset, transform);
             display.transform.localPosition = buffPositionOffset;
             var behavior = display.GetComponent<PlayerDisplayBehavior>();

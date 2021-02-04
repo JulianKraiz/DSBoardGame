@@ -1,6 +1,4 @@
 ﻿using BoardGame.Script.Events;
-using BoardGame.Unit;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

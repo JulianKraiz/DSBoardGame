@@ -1,10 +1,12 @@
 ﻿using Assets.Scripts.Unit;
 using BoardGame.Script.Events;
-using System;
 using UnityEngine;
 
 public class UnitBasicProperties : MonoBehaviour
 {
+    public Material portrait;
+    public Material tile;
+
     public bool isActive { get; private set; }
     public int initiative;
     public int hitPoints;

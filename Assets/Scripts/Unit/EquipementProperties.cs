@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.ActiveUnitDisplay;
+﻿using Assets.Scripts.Unit.Model.Attacks;
 using System.Collections.Generic;
 using UnityEngine;
 

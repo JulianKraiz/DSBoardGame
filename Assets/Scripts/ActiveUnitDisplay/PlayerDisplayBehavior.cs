@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using BoardGame.Unit;
 using BoardGame.Script.Events;
 
 public class PlayerDisplayBehavior : MonoBehaviour
@@ -168,29 +167,10 @@ public class PlayerDisplayBehavior : MonoBehaviour
 
     private void SetBackgroundMaterial()
     {
-        Material mat = null;
-        if (playerProperties.playerType == PlayerClassEnum.Herald)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/herald_tile_material", typeof(Material));
-        }
-        else if (playerProperties.playerType == PlayerClassEnum.Warrior)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/warrior_tile_material", typeof(Material));
-        }
-        else if (playerProperties.playerType == PlayerClassEnum.Assassin)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/assassin_tile_material", typeof(Material));
-        }
-        else if (playerProperties.playerType == PlayerClassEnum.Knight)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/knight_tile_material", typeof(Material));
-        }
-
+        Material mat = playerProperties.tile;
         var plane = transform.Find("BackgroundTile");
         var rend = plane.GetComponent<MeshRenderer>();
         rend.material = mat;
-
-       
     }
 
     private void EmitPlayerSheedClicked(GameObject source)

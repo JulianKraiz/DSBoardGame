@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -36,6 +33,9 @@ namespace BoardGame.Script.Events
         VictoryTileCleared,
         ResetAndHideEnemyDisplays,
         AddSoulsToCache,
+        EncountersToResolve,
+        DiceStoppedMoving,
+        EncountersResolved,
     }
 
     public class EventManager

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using BoardGame.Unit;
 using BoardGame.Script.Events;
 
 public class EnemyDisplayBehavior : MonoBehaviour
@@ -106,32 +105,7 @@ public class EnemyDisplayBehavior : MonoBehaviour
 
     private void SetBackgroundMaterial()
     {
-        Material mat = null;
-        if (enemyProperties.enemyType == EnemyClassEnum.HollowSoldier)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/hollow_arbalest_soldier_tile_material", typeof(Material));
-        }
-        else if (enemyProperties.enemyType == EnemyClassEnum.ArbalestHollowSoldier)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/hollow_soldier_tile_material", typeof(Material));
-        }
-        else if (enemyProperties.enemyType == EnemyClassEnum.LargeHollowSoldier)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/hollow_large_soldier_tile_material", typeof(Material));
-        }
-        else if (enemyProperties.enemyType == EnemyClassEnum.Sentinel)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/sentinel_tile_material", typeof(Material));
-        }
-        else if (enemyProperties.enemyType == EnemyClassEnum.SilverKnightBowman)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/silver_knight_great_bowman_tile_material", typeof(Material));
-        }
-        else if (enemyProperties.enemyType == EnemyClassEnum.SilverKnightSwordman)
-        {
-            mat = (Material)Resources.Load("Material/UnitBackground/silver_knight_swordman_tile_material", typeof(Material));
-        }
-
+        Material mat = enemyProperties.tile;
         var rend = GetComponent<MeshRenderer>();
         rend.material = mat;
     }

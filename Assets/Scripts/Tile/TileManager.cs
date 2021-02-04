@@ -1,8 +1,6 @@
-﻿using Assets.Scripts;
-using Assets.Scripts.ActiveUnitDisplay;
-using Assets.Scripts.Tile;
+﻿using Assets.Scripts.Tile;
+using Assets.Scripts.Unit.Model.Attacks;
 using BoardGame.Script.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -173,6 +171,7 @@ public class TileManager : MonoBehaviour
         }
     }
 
+
     private void SetupPlayers()
     {
 
@@ -294,7 +293,6 @@ public class TileManager : MonoBehaviour
         EventManager.StopListeningObject(EventTypes.AttackHoverEnded, HideHoveredAttackTargets);
         EventManager.StopListeningGameObject(EventTypes.AttackTargetSelected, ApplyAttack);
         EventManager.StopListeningGameObject(EventTypes.UnitDestroyed, UnitDestroyed);
-
 
         foreach (var child in positions)
         {
@@ -435,10 +433,14 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    private void HideSelectedAttackTargets(object _)
+    private void HideSelectedAttackTargets(object deselectedLoad)
     {
-        InternalHideAttackTargets();
-        currentSelectedAttack = null;
+        var deselectedAttack = (AttackDetail)deselectedLoad;
+        if (deselectedAttack == currentSelectedAttack)
+        {
+            InternalHideAttackTargets();
+            currentSelectedAttack = null;
+        }
     }
 
     private void HideHoveredAttackTargets(object _)
@@ -467,6 +469,8 @@ public class TileManager : MonoBehaviour
 
     private void ComputeAndApplyAttack(AttackDetail attack, UnitBasicProperties originalTarget, IEnumerable<UnitBasicProperties> allAvailableTargets, IEnumerable<PositionBehavior> allPositions)
     {
+        var encounters = new List<Encounter>();
+
         var source = players.FirstOrDefault(p => p.isActive) ?? enemies.First(u => u.isActive);
 
         var sourcePosition = positions.FirstOrDefault(p => p.HasActiveUnit());
@@ -485,46 +489,37 @@ public class TileManager : MonoBehaviour
             targets.Add(originalTarget);
         }
 
-        var defensesPerUnit = new Dictionary<UnitBasicProperties, DefenseResult>();
-
-        foreach (var attackedTarget in targets)
+        foreach (var target in targets)
         {
-            var defense = attackedTarget.GetDefenseDices(attack.magicAttack);
-            // if player, roll / block => dice mini game
-
-            if (attackedTarget.side == UnitSide.Player)
-            {
-                var diceResult = SimulateDefenseDiceRolls(currentSelectedAttack, defense);
-                defensesPerUnit[attackedTarget] = diceResult;
-            }
-            else if (attackedTarget.side == UnitSide.Hollow)
-            {
-                var diceResult = SimulateDefenseDiceRolls(currentSelectedAttack, defense);
-                defensesPerUnit[attackedTarget] = diceResult;
-            }
-
+            var encounter = new Encounter();
+            encounter.Attacker = source;
+            encounter.Defender = target;
+            encounter.Attack = attack;
+            encounter.Defense = target.GetDefenseDices(attack.magicAttack);
+            encounters.Add(encounter);
         }
 
-        // if player, damage => dice mini game
-        var attackDices = 0;
-        if (source.side == UnitSide.Hollow || source.side == UnitSide.Player)
-        {
-            attackDices = DiceRollManager.RollDicesAndSum(currentSelectedAttack.blackAttackDices, currentSelectedAttack.blueAttackDices, currentSelectedAttack.orangeAttackDices, currentSelectedAttack.flatModifier);
-        }
+        EventManager.RaiseEventObject(EventTypes.EncountersToResolve, encounters);
+        EventManager.StartListeningObject(EventTypes.EncountersResolved, CheckUnitStatusAfterEncounter);
+    }
 
-        foreach (var attackedTarget in targets)
+    private void CheckUnitStatusAfterEncounter(object encounterLoad)
+    {
+        EventManager.StopListeningObject(EventTypes.EncountersResolved, CheckUnitStatusAfterEncounter);
+        var encounters = (List<Encounter>)encounterLoad;
+        foreach (var encounter in encounters)
         {
-            var finalDamage = Math.Max(0, attackDices - defensesPerUnit[attackedTarget].DamageReduction);
-            attackedTarget.RecieveInjuries(finalDamage);
-
-            if (attackedTarget.StaminaLeft() <= 0)
+            var target = encounter.Defender;
+            if (target.StaminaLeft() <= 0)
             {
-                EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, attackedTarget.gameObject);
+                EventManager.RaiseEventGameObject(EventTypes.UnitDestroyed, target.gameObject);
             }
         }
-
         EventManager.RaiseEventObject(EventTypes.AttackApplied, currentSelectedAttack);
     }
+
+
+
 
     private void UnitDestroyed(GameObject unit)
     {
@@ -543,19 +538,4 @@ public class TileManager : MonoBehaviour
         }
     }
     #endregion
-
-
-    private DefenseResult SimulateDefenseDiceRolls(AttackDetail attack, DefenseDices dicesToRoll)
-    {
-        //no simulation of dodge roll because you either dodge or block.
-        var result = new DefenseResult();
-
-        var damageReduction = DiceRollManager.RollDicesAndSum(dicesToRoll.BlackDices, dicesToRoll.BlueDices, dicesToRoll.OrangeDices, dicesToRoll.FlatReduce);
-
-        result.DamageReduction = damageReduction;
-
-        return result;
-    }
-
-
 }
