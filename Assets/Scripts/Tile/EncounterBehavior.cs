@@ -460,6 +460,7 @@ public class EncounterBehavior : MonoBehaviour
             }
             unit.hasLuckToken = false;
         }
+        SetConfirmButtonVisibility(false);
     }
 
     private void DiceSelectedForRethrow(GameObject dice)
@@ -467,7 +468,6 @@ public class EncounterBehavior : MonoBehaviour
         diceResultRecieved--;
         ThrowOneDice(dice);
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
-        SetConfirmButtonVisibility(false);
     }
 
     private void UseEstusEvent(GameObject position)
