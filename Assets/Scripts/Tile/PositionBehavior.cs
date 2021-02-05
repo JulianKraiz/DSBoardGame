@@ -32,6 +32,7 @@ public class PositionBehavior : MonoBehaviour
     void Start()
     {
         render = gameObject.GetComponent<MeshRenderer>();
+        _canRender = false;
     }
 
     void Update()
@@ -103,17 +104,20 @@ public class PositionBehavior : MonoBehaviour
 
     private void OnMouseDown()
     {
-        PositionClicked(gameObject);
+        if (PositionClicked != null)
+        {
+            PositionClicked(gameObject);
+        }
     }
 
     private void OnMouseOver()
     {
-        EventManager.RaiseEventGameObject(EventTypes.PositionHovered, gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.PositionHovered, gameObject);
     }
 
     private void OnMouseExit()
     {
-        EventManager.RaiseEventGameObject(EventTypes.PositionHoveredExit, gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.PositionHoveredExit, gameObject);
     }
 
     private void OrganizeCharacterOnPosition()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7442142779134391538}
   - component: {fileID: 7335650936216386942}
   - component: {fileID: 5806017419309484460}
+  - component: {fileID: 2722514016222621183}
   m_Layer: 0
   m_Name: EstusToken
   m_TagString: Untagged
@@ -94,6 +95,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2722514016222621183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778047769874241623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b5db97abee9a66499c7e31dbebd8bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2092537514606474207
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,6 +149,7 @@ GameObject:
   - component: {fileID: 8202349382342053900}
   - component: {fileID: 6451971427357276871}
   - component: {fileID: 4905042233440799156}
+  - component: {fileID: 6555377388441242409}
   m_Layer: 0
   m_Name: AbilityToken
   m_TagString: Untagged
@@ -183,7 +197,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 55fe0d9157e10ee47a8bf04832ce386e, type: 2}
+  - {fileID: 2100000, guid: 3d64d29297e3c4c4caf1a84a43f8069f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -218,6 +232,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &6555377388441242409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280439478309424340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b5db97abee9a66499c7e31dbebd8bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3592160292589424881
 GameObject:
   m_ObjectHideFlags: 0

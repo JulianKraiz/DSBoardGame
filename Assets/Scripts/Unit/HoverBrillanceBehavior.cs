@@ -33,24 +33,24 @@ public class HoverBrillanceBehavior : MonoBehaviour
     private void OnMouseEnter()
     {
         capsuleRenderer.material = hoverBrillanceMaterial;
-        EventManager.RaiseEventGameObject(EventTypes.UnitHoverEntered, transform.parent.gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.UnitHoverEntered, transform.parent.gameObject);
     }
 
     private void OnMouseExit()
     {
         capsuleRenderer.material = standardBrillanceMaterial;
-        EventManager.RaiseEventGameObject(EventTypes.UnitHoverExited, transform.parent.gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.UnitHoverExited, transform.parent.gameObject);
     }
 
     private void OnMouseUp()
     {
         if (capsuleRenderer.enabled)
         {
-            EventManager.RaiseEventGameObject(EventTypes.AttackTargetSelected, transform.parent.gameObject);
+            EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, transform.parent.gameObject);
         }
         else
         {
-            EventManager.RaiseEventGameObject(EventTypes.ToggleZoomUnitDisplay, transform.parent.gameObject);
+            EventManager.RaiseEvent(GameObjectEventType.ToggleZoomUnitDisplay, transform.parent.gameObject);
         }
     }
 

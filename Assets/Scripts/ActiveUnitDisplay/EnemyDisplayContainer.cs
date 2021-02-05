@@ -13,9 +13,9 @@ public class EnemyDisplayContainer : MonoBehaviour
     void Start()
     {
         offsetPosition = new Vector3(11f, 0f, 0f);
-        EventManager.StartListeningGameObject(EventTypes.EnemyCreated, AddEnemyDisplay);
-        EventManager.StartListeningGameObject(EventTypes.UnitDestroyed, RemoveEnemyDisplay);
-        EventManager.StartListeningGameObject(EventTypes.ResetAndHideEnemyDisplays, ResetAndHideEnemyDisplays);
+        EventManager.StartListening(GameObjectEventType.EnemyCreated, AddEnemyDisplay);
+        EventManager.StartListening(GameObjectEventType.UnitDestroyed, RemoveEnemyDisplay);
+        EventManager.StartListening(GameObjectEventType.ResetAndHideEnemyDisplays, ResetAndHideEnemyDisplays);
     }
 
 

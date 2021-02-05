@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8807044622130884582}
   - component: {fileID: 8807044622130884583}
   - component: {fileID: 8807044622130884576}
-  - component: {fileID: 8807044622130884577}
   - component: {fileID: 8807044622130884581}
   m_Layer: 0
   m_Name: R3C3
@@ -96,18 +95,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622130884577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622130884579}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622130884581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +134,6 @@ GameObject:
   - component: {fileID: 8807044622168335752}
   - component: {fileID: 8807044622168335753}
   - component: {fileID: 8807044622168335754}
-  - component: {fileID: 8807044622168335755}
   - component: {fileID: 8807044622168335759}
   m_Layer: 0
   m_Name: R2C2
@@ -231,18 +217,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622168335755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622168335749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622168335759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +299,6 @@ GameObject:
   - component: {fileID: 8807044622278119649}
   - component: {fileID: 8807044622278119650}
   - component: {fileID: 8807044622278119651}
-  - component: {fileID: 8807044622278119644}
   - component: {fileID: 8807044622278119648}
   m_Layer: 0
   m_Name: R1C1
@@ -409,18 +382,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622278119644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622278119646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622278119648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -617,7 +578,6 @@ GameObject:
   - component: {fileID: 8807044622488223110}
   - component: {fileID: 8807044622488223111}
   - component: {fileID: 8807044622488223104}
-  - component: {fileID: 8807044622488223105}
   - component: {fileID: 8807044622488223109}
   m_Layer: 0
   m_Name: R1C3
@@ -701,18 +661,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622488223105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622488223107}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622488223109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -752,7 +700,6 @@ GameObject:
   - component: {fileID: 8807044622736977586}
   - component: {fileID: 8807044622736977587}
   - component: {fileID: 8807044622736977580}
-  - component: {fileID: 8807044622736977581}
   - component: {fileID: 8807044622736977585}
   m_Layer: 0
   m_Name: R2C5
@@ -836,18 +783,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622736977581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622736977583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622736977585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887,7 +822,6 @@ GameObject:
   - component: {fileID: 8807044622748572143}
   - component: {fileID: 8807044622748572136}
   - component: {fileID: 8807044622748572137}
-  - component: {fileID: 8807044622748572138}
   - component: {fileID: 8807044622748572142}
   m_Layer: 0
   m_Name: R1C4
@@ -971,18 +905,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622748572138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622748572132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622748572142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1022,7 +944,6 @@ GameObject:
   - component: {fileID: 8807044622827063609}
   - component: {fileID: 8807044622827063610}
   - component: {fileID: 8807044622827063611}
-  - component: {fileID: 8807044622827063604}
   - component: {fileID: 8807044622827063608}
   m_Layer: 0
   m_Name: R2C1
@@ -1106,18 +1027,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044622827063604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622827063606}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044622827063608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1157,7 +1066,6 @@ GameObject:
   - component: {fileID: 8807044623071718958}
   - component: {fileID: 8807044623071718959}
   - component: {fileID: 8807044623071718952}
-  - component: {fileID: 8807044623071718953}
   - component: {fileID: 8807044623071718957}
   m_Layer: 0
   m_Name: R3C5
@@ -1241,18 +1149,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623071718953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623071718955}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623071718957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1292,7 +1188,6 @@ GameObject:
   - component: {fileID: 8807044623125301472}
   - component: {fileID: 8807044623125301473}
   - component: {fileID: 8807044623125301474}
-  - component: {fileID: 8807044623125301475}
   - component: {fileID: 8807044623125301479}
   m_Layer: 0
   m_Name: R2C4
@@ -1376,18 +1271,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623125301475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623125301469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623125301479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1427,7 +1310,6 @@ GameObject:
   - component: {fileID: 8807044623340562207}
   - component: {fileID: 8807044623340562200}
   - component: {fileID: 8807044623340562201}
-  - component: {fileID: 8807044623340562202}
   - component: {fileID: 8807044623340562206}
   m_Layer: 0
   m_Name: R1C5
@@ -1511,18 +1393,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623340562202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623340562196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623340562206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1562,7 +1432,6 @@ GameObject:
   - component: {fileID: 8807044623584937418}
   - component: {fileID: 8807044623584937419}
   - component: {fileID: 8807044623584937412}
-  - component: {fileID: 8807044623584937417}
   - component: {fileID: 8807044623584937416}
   m_Layer: 0
   m_Name: R3C1
@@ -1646,18 +1515,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623584937417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623584937414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623584937416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1697,7 +1554,6 @@ GameObject:
   - component: {fileID: 8807044623703485978}
   - component: {fileID: 8807044623703485979}
   - component: {fileID: 8807044623703485972}
-  - component: {fileID: 8807044623703485973}
   - component: {fileID: 8807044623703485977}
   m_Layer: 0
   m_Name: R1C2
@@ -1781,18 +1637,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623703485973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623703485975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623703485977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1832,7 +1676,6 @@ GameObject:
   - component: {fileID: 8807044623783568120}
   - component: {fileID: 8807044623783568121}
   - component: {fileID: 8807044623783568122}
-  - component: {fileID: 8807044623783568123}
   - component: {fileID: 8807044623783568127}
   m_Layer: 0
   m_Name: R2C3
@@ -1916,18 +1759,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8807044623783568123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044623783568117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8807044623783568127
 MonoBehaviour:
   m_ObjectHideFlags: 0

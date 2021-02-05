@@ -53,9 +53,23 @@ public class EncounterBehavior : MonoBehaviour
     private MeshRenderer dodgeButtonRenderer;
     private MeshRenderer attackButtonRenderer;
 
+    private MeshRenderer attackEstusRenderer;
+    private MeshRenderer attackLuckRenderer;
+    private MeshRenderer defenseEstusRenderer;
+    private MeshRenderer defenseLuckRenderer;
+    private MeshRenderer defenseEmberRenderer;
+
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
+    private GameObject confirmButton;
+
+    private Material estusOnMaterial;
+    private Material estusOffMaterial;
+    private Material luckOnMaterial;
+    private Material luckOffMaterial;
+    private Material abilityOnMaterial;
+    private Material abilityOffMaterial;
 
     private Vector3 anchorOffset;
     private Vector3 offsetDiceResultPresentation;
@@ -70,7 +84,7 @@ public class EncounterBehavior : MonoBehaviour
     {
         dices = new List<GameObject>();
         anchorOffset = new Vector3(1.35f, 0f, 0f);
-        offsetDiceResultPresentation = new Vector3(0, 0, 1);
+        offsetDiceResultPresentation = new Vector3(2, 0, 0);
         attackerPortraitRenderer = attackerPortrait.GetComponent<MeshRenderer>();
         defenderPortraitRenderer = defenderPortrait.GetComponent<MeshRenderer>();
 
@@ -81,6 +95,24 @@ public class EncounterBehavior : MonoBehaviour
         attackButton = attackOptions.transform.Find("ChooseAttackButton").gameObject;
         attackButtonRenderer = attackButton.GetComponent<MeshRenderer>();
 
+        transform.Find("AttackOptions/EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
+        transform.Find("AttackOptions/LuckToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
+        transform.Find("DefenseOptions/EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
+        transform.Find("DefenseOptions/LuckToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
+
+        estusOnMaterial = (Material)Resources.Load("Material/tokens/estus_on_material", typeof(Material));
+        estusOffMaterial = (Material)Resources.Load("Material/tokens/estus_off_material", typeof(Material));
+        luckOnMaterial = (Material)Resources.Load("Material/tokens/luck_on_material", typeof(Material));
+        luckOffMaterial = (Material)Resources.Load("Material/tokens/luck_off_material", typeof(Material));
+        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on", typeof(Material));
+        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off", typeof(Material));
+
+        attackEstusRenderer = transform.Find("AttackOptions/EstusToken").GetComponent<MeshRenderer>();
+        attackLuckRenderer = transform.Find("AttackOptions/LuckToken").GetComponent<MeshRenderer>();
+        defenseEstusRenderer = transform.Find("DefenseOptions/EstusToken").GetComponent<MeshRenderer>();
+        defenseLuckRenderer = transform.Find("DefenseOptions/LuckToken").GetComponent<MeshRenderer>();
+        defenseEmberRenderer = transform.Find("DefenseOptions/EmberToken").GetComponent<MeshRenderer>();
+        confirmButton = transform.Find("ConfirmResult").gameObject;
 
         blockButton.GetComponent<RaiseEventOnClicked>().PositionClicked += BlockSelected;
         blockButton.GetComponent<RaiseEventOnEnterExit>().PositionEnter += BlockHovered;
@@ -93,6 +125,8 @@ public class EncounterBehavior : MonoBehaviour
         attackButton.GetComponent<RaiseEventOnClicked>().PositionClicked += AttackSelected;
         attackButton.GetComponent<RaiseEventOnEnterExit>().PositionEnter += AttackHovered;
         attackButton.GetComponent<RaiseEventOnEnterExit>().PositionExit += AttackHoverEnded;
+
+        confirmButton.transform.Find("BackgroundButton").GetComponent<RaiseEventOnClicked>().PositionClicked += ConfirmResult;
 
         attackBlackDiceContainer = attackOptions.transform.Find("BlackDiceContainer").gameObject;
         attackBlackDiceText = attackBlackDiceContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
@@ -118,7 +152,7 @@ public class EncounterBehavior : MonoBehaviour
         defenseDodgeDiceText = defenseDodgeDiceContainer.transform.Find("DodgeDiceText").GetComponent<TextMesh>();
         defenseAnchor = defenseOptions.transform.Find("Anchor").gameObject;
 
-        EventManager.StartListeningObject(EventTypes.EncountersToResolve, Resolve);
+        EventManager.StartListening(ObjectEventType.EncountersToResolve, Resolve);
 
         SetGlobalVisibility(false);
     }
@@ -133,14 +167,21 @@ public class EncounterBehavior : MonoBehaviour
                 currentEncounter = encounterToResolve.First();
                 SetupEncounterDisplay();
             }
-            else if(encounterToResolve.Count == 0)
+            else if (encounterToResolve.Count == 0)
             {
                 isResolving = false;
-                EventManager.RaiseEventObject(EventTypes.EncountersResolved, encounterResolved.ToList());
+                EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved.ToList());
                 encounterResolved = new List<Encounter>();
                 SetGlobalVisibility(false);
             }
         }
+        if (currentEncounter != null)
+        {
+            SetTokenVisibility();
+        }
+
+
+
     }
 
     public void Resolve(object eventLoad)
@@ -155,7 +196,7 @@ public class EncounterBehavior : MonoBehaviour
         attackerPortraitRenderer.material = currentEncounter.Attacker.portrait;
         defenderPortraitRenderer.material = currentEncounter.Defender.portrait;
 
-        if(currentEncounter.Attacker.side == UnitSide.Hollow)
+        if (currentEncounter.Attacker.side == UnitSide.Hollow)
         {
             blockButton.SetActive(true);
             dodgeButton.SetActive(true);
@@ -201,6 +242,7 @@ public class EncounterBehavior : MonoBehaviour
         return;
     }
 
+    #region option select
     private void DodgeHoverEnded(GameObject position)
     {
         dodgeButtonRenderer.enabled = false;
@@ -259,7 +301,9 @@ public class EncounterBehavior : MonoBehaviour
         diceResultRecieved = 0;
         ThrowDices();
     }
+    #endregion
 
+    #region dice
     private void SpawnDices(int blackDicesCount, int blueDicesCount, int orangeDicesCount, int dodgeDicesCount)
     {
         foreach (var dice in dices)
@@ -290,7 +334,7 @@ public class EncounterBehavior : MonoBehaviour
     private GameObject SpawnDice(GameObject diceTemplate)
     {
         var dice = Instantiate(diceTemplate);
-        var offsetPoint = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+        var offsetPoint = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f), 0);
         dice.transform.position = throwPoint.transform.position + offsetPoint;
         dice.transform.localRotation = Quaternion.Euler(Random.Range(0, 90), Random.Range(0, 90), Random.Range(0, 90));
 
@@ -299,14 +343,20 @@ public class EncounterBehavior : MonoBehaviour
 
     private void ThrowDices()
     {
-
         foreach (var dice in dices)
         {
-            var body = dice.GetComponent<Rigidbody>();
-            body.isKinematic = false;
-            dice.GetComponent<Rigidbody>().AddForceAtPosition(new Vector3(0, Random.Range(4f, 5f), Random.Range(6f, 8f)), dice.transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0, 0.5f), Random.Range(-0.5f, 0.5f)), ForceMode.Impulse);
+            ThrowOneDice(dice);
         }
-        EventManager.StartListeningGameObject(EventTypes.DiceStoppedMoving, AddDiceResult);
+        EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
+    }
+
+    private void ThrowOneDice(GameObject dice)
+    {
+        var behavior = dice.GetComponent<DiceBahevior>();
+        behavior.ResetForThrow();
+        var body = dice.GetComponent<Rigidbody>();
+        body.isKinematic = false;
+        dice.GetComponent<Rigidbody>().AddForceAtPosition(new Vector3(0, Random.Range(1f, 1.5f), Random.Range(1.5f, 2f)), dice.transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0, 0.5f), Random.Range(-0.5f, 0.5f)), ForceMode.Impulse);
     }
 
     public void AddDiceResult(GameObject diceResult)
@@ -315,34 +365,62 @@ public class EncounterBehavior : MonoBehaviour
         var body = diceResult.GetComponent<Rigidbody>();
 
         diceResultRecieved++;
-        if (rollType == EncounterRollType.Block)
-        {
-            currentEncounter.DefenseRoll += behavior.GetValue();
-        }
-        else if (rollType == EncounterRollType.Dodge)
-        {
-            currentEncounter.DodgeRoll += behavior.GetValue();
-        }
-        else if (rollType == EncounterRollType.Attack)
-        {
-            currentEncounter.DamageRoll += behavior.GetValue();
-        }
+        
 
         body.isKinematic = true;
 
         if (diceResultRecieved == dices.Count)
         {
-            EventManager.StopListeningGameObject(EventTypes.DiceStoppedMoving, AddDiceResult);
+            EventManager.StopListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
+
             foreach (var dice in dices)
             {
-                dice.transform.position = throwPoint.transform.position + offsetDiceResultPresentation;
+                if (rollType == EncounterRollType.Block)
+                {
+                    currentEncounter.DefenseRoll += behavior.GetValue();
+                }
+                else if (rollType == EncounterRollType.Dodge)
+                {
+                    currentEncounter.DodgeRoll += behavior.GetValue();
+                }
+                else if (rollType == EncounterRollType.Attack)
+                {
+                    currentEncounter.DamageRoll += behavior.GetValue();
+                }
             }
-            Invoke(nameof(ApplyResult), 2f);
+           
+            int i = 0;
+            foreach (var dice in dices)
+            {
+                dice.transform.position = throwPoint.transform.position + offsetDiceResultPresentation * i;
+                i++;
+            }
+
+            var player = GetPlayerPropertiesFromRoll();
+            if (!player.hasLuckToken && !player.hasEstus)
+            {
+                Invoke(nameof(ApplyResult), 2f);
+            }
+            else
+            {
+                SetConfirmButtonVisibility(true);
+            }
         }
     }
 
+    private void ConfirmResult(GameObject position)
+    {
+        ApplyResult();
+    }
+    #endregion
+
     private void ApplyResult()
     {
+        foreach (var dice in dices)
+        {
+            dice.GetComponent<RaiseEventOnClicked>().PositionClicked -= ThrowOneDice;
+        }
+
         var damageToApply = currentEncounter.DamageRoll;
 
         if (rollType == EncounterRollType.Block || rollType == EncounterRollType.Attack)
@@ -358,6 +436,11 @@ public class EncounterBehavior : MonoBehaviour
             currentEncounter.Defender.ConsumeStamina(1);
         }
 
+        if (damageToApply >= 3 && currentEncounter.Defender.side == UnitSide.Player && ((PlayerProperties)currentEncounter.Defender).hasEmber)
+        {
+            damageToApply -= 1;
+        }
+
         currentEncounter.Defender.RecieveInjuries(damageToApply);
         currentEncounter.Attacker.ConsumeStamina(currentEncounter.Attack.staminaCost);
 
@@ -366,6 +449,38 @@ public class EncounterBehavior : MonoBehaviour
         currentEncounter = null;
     }
 
+    private void UseLuckEvent(GameObject position)
+    {
+        var unit = currentEncounter.Attacker.side == UnitSide.Player ? (PlayerProperties)currentEncounter.Attacker : (PlayerProperties)currentEncounter.Defender;
+        if (unit.hasLuckToken)
+        {
+            foreach (var dice in dices)
+            {
+                dice.GetComponent<RaiseEventOnClicked>().PositionClicked += DiceSelectedForRethrow;
+            }
+            unit.hasLuckToken = false;
+        }
+    }
+
+    private void DiceSelectedForRethrow(GameObject dice)
+    {
+        diceResultRecieved--;
+        ThrowOneDice(dice);
+        EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
+        SetConfirmButtonVisibility(false);
+    }
+
+    private void UseEstusEvent(GameObject position)
+    {
+        var unit = currentEncounter.Attacker.side == UnitSide.Player ? (PlayerProperties)currentEncounter.Attacker : (PlayerProperties)currentEncounter.Defender;
+        if (unit.hasEstus)
+        {
+            unit.hasEstus = false;
+            unit.ResetStaminaAndInjuries();
+        }
+    }
+
+    #region visibility
     private void SetGlobalVisibility(bool visible)
     {
         blockButton.SetActive(false);
@@ -374,6 +489,8 @@ public class EncounterBehavior : MonoBehaviour
 
         attackerPortrait.SetActive(visible);
         defenderPortrait.SetActive(visible);
+
+        SetConfirmButtonVisibility(false);
 
         attackOptions.SetActive(visible);
         attackIcon.SetActive(visible);
@@ -387,9 +504,53 @@ public class EncounterBehavior : MonoBehaviour
         dices.Clear();
     }
 
+    private void SetConfirmButtonVisibility(bool visibility)
+    {
+        confirmButton.SetActive(visibility);
+    }
+
+    private void SetTokenVisibility()
+    {
+        var attackerUnitIsPlayer = currentEncounter.Attacker.side == UnitSide.Player;
+        var defendererUnitIsPlayer = currentEncounter.Defender.side == UnitSide.Player;
+
+        attackEstusRenderer.enabled = attackerUnitIsPlayer;
+        attackLuckRenderer.enabled = attackerUnitIsPlayer;
+        
+        if(attackerUnitIsPlayer)
+        {
+            attackEstusRenderer.material = ((PlayerProperties)currentEncounter.Attacker).hasEstus ? estusOnMaterial : estusOffMaterial;
+            attackLuckRenderer.material = ((PlayerProperties)currentEncounter.Attacker).hasLuckToken ? luckOnMaterial : luckOffMaterial;
+        }
+
+        defenseEstusRenderer.enabled = defendererUnitIsPlayer;
+        defenseLuckRenderer.enabled = defendererUnitIsPlayer;
+        defenseEmberRenderer.enabled = defendererUnitIsPlayer;
+
+        if(defendererUnitIsPlayer)
+        {
+            defenseEstusRenderer.material = ((PlayerProperties)currentEncounter.Defender).hasEstus ? estusOnMaterial : estusOffMaterial;
+            defenseLuckRenderer.material = ((PlayerProperties)currentEncounter.Defender).hasLuckToken ? luckOnMaterial : luckOffMaterial;
+        }
+    }
+    #endregion
+
     private void NotifyEncountersResolved()
     {
-        EventManager.RaiseEventGameObject(EventTypes.EncountersResolved, gameObject);
+        EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved);
+    }
+
+    private PlayerProperties GetPlayerPropertiesFromRoll()
+    {
+        if (rollType == EncounterRollType.Attack)
+        {
+            return (PlayerProperties)currentEncounter.Attacker;
+        }
+        else if (rollType == EncounterRollType.Block || rollType == EncounterRollType.Dodge)
+        {
+            return (PlayerProperties)currentEncounter.Defender;
+        }
+        throw new System.Exception($"Roll type unknown: {rollType}");
     }
 }
 

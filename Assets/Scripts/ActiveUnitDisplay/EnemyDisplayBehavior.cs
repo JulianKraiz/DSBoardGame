@@ -20,9 +20,9 @@ public class EnemyDisplayBehavior : MonoBehaviour
         translateOffset = new Vector3(-10f, .5f, -10f);
         smallScale = transform.localScale;
         bigScale = 3 * smallScale;
-        EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, UnitHovered);
-        EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, UnitExited);
-        EventManager.StartListeningGameObject(EventTypes.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
+        EventManager.StartListening(GameObjectEventType.UnitHoverEntered, UnitHovered);
+        EventManager.StartListening(GameObjectEventType.UnitHoverExited, UnitExited);
+        EventManager.StartListening(GameObjectEventType.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
     }

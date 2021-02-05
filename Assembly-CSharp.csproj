@@ -72,7 +72,6 @@
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\PlayerDisplayContainer.cs" />
     <Compile Include="Assets\Scripts\Dices\DiceBahevior.cs" />
     <Compile Include="Assets\Scripts\Dices\DiceRoller.cs" />
-    <Compile Include="Assets\Scripts\Events\DisplayWhenHover.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
     <Compile Include="Assets\Scripts\Events\RaiseEventOnClicked.cs" />
     <Compile Include="Assets\Scripts\Events\RaiseEventOnEnterExit.cs" />

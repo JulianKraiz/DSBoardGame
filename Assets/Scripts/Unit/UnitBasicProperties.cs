@@ -7,7 +7,7 @@ public class UnitBasicProperties : MonoBehaviour
     public Material portrait;
     public Material tile;
 
-    public bool isActive { get; private set; }
+    public bool isActive { get; protected set; }
     public int initiative;
     public int hitPoints;
     public int injuries;
@@ -62,7 +62,7 @@ public class UnitBasicProperties : MonoBehaviour
         isActive = true;
         hasActivationToken = false;
         ActivateInternal();
-        EventManager.RaiseEventGameObject(EventTypes.UnitIsActivated, gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.UnitIsActivated, gameObject);
     }
 
     public void Deactivate()
@@ -151,7 +151,7 @@ public class UnitBasicProperties : MonoBehaviour
 
     private void BrillanceCapsuleClicked(GameObject position)
     {
-        EventManager.RaiseEventGameObject(EventTypes.UnitSelected, gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.UnitSelected, gameObject);
     }
 
     public DefenseDices GetDefenseDices(bool magicAttack)

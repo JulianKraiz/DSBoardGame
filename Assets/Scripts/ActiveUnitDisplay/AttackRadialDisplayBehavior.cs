@@ -115,9 +115,9 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     {
         if (!EventsRegistered)
         {
-            EventManager.StartListeningObject(EventTypes.AttackSelected, AttackSelectedEventRecieved);
-            EventManager.StartListeningGameObject(EventTypes.ActiveUnitMoved, CheckEnoughStaminaLeft);
-            EventManager.StartListeningObject(EventTypes.AttackApplied, DeselectAttackAndNotifySideExausted);
+            EventManager.StartListening(ObjectEventType.AttackSelected, AttackSelectedEventRecieved);
+            EventManager.StartListening(ObjectEventType.AttackApplied, DeselectAttackAndNotifySideExausted);
+            EventManager.StartListening(GameObjectEventType.ActiveUnitMoved, CheckEnoughStaminaLeft);
             hoverLayerRenderer.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += AttackClicked;
             hoverLayerRenderer.gameObject.GetComponent<RaiseEventOnEnterExit>().PositionEnter += AttackHovered;
             hoverLayerRenderer.gameObject.GetComponent<RaiseEventOnEnterExit>().PositionExit += AttackHoveredEnd;
@@ -154,7 +154,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
         if (IsSelected)
         {
-            EventManager.RaiseEventObject(EventTypes.AttackSelected, AttackDetail);
+            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetail);
         }
     }
   
@@ -189,12 +189,12 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         if (!IsSelected)
         {
             IsSelected = true;
-            EventManager.RaiseEventObject(EventTypes.AttackSelected, AttackDetail);
+            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetail);
         }
         else
         {
             IsSelected = false;
-            EventManager.RaiseEventObject(EventTypes.AttackDeselected, AttackDetail);
+            EventManager.RaiseEvent(ObjectEventType.AttackDeselected, AttackDetail);
         }
         selectedLayerRenderer.enabled = IsSelected;
         hoverLayerRenderer.enabled = !IsSelected;
@@ -202,14 +202,14 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
     private void AttackHoveredEnd(GameObject _)
     {
-        EventManager.RaiseEventObject(EventTypes.AttackHoverEnded, AttackDetail);
+        EventManager.RaiseEvent(ObjectEventType.AttackHoverEnded, AttackDetail);
         hoverLayerRenderer.enabled = false;
         selectedLayerRenderer.enabled = IsSelected;
     }
 
     private void AttackHovered(GameObject _)
     {
-        EventManager.RaiseEventObject(EventTypes.AttackHovered, AttackDetail);
+        EventManager.RaiseEvent(ObjectEventType.AttackHovered, AttackDetail);
         hoverLayerRenderer.enabled = !IsSelected;
         selectedLayerRenderer.enabled = IsSelected;
     }

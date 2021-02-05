@@ -30,8 +30,8 @@ public class SoulCacheManager : MonoBehaviour
 
         soulCountText.text = string.Empty;
         
-        EventManager.StartListeningObject(EventTypes.AddSoulsToCache, AddOrRemoveSouls);
-        EventManager.StartListeningGameObject(EventTypes.TileCleared, CountAndAddSoulsGained);
+        EventManager.StartListening(ObjectEventType.AddSoulsToCache, AddOrRemoveSouls);
+        EventManager.StartListening(GameObjectEventType.TileCleared, CountAndAddSoulsGained);
     }
 
     private void AddOrRemoveSouls(object countObject)

@@ -66,7 +66,7 @@ public class WallNavigationManager : MonoBehaviour
             }
         }
 
-        EventManager.StartListeningGameObject(EventTypes.TileCleared, UpdateWall);
+        EventManager.StartListening(GameObjectEventType.TileCleared, UpdateWall);
     }
 
     void Update()

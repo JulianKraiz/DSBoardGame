@@ -10,7 +10,7 @@ public class VideoPlayersManager : MonoBehaviour
         VictoryPlayer = transform.Find("VictoryPlayer").GetComponent<VideoPlayer>();
         VictoryPlayer.enabled = false;
 
-        EventManager.StartListeningGameObject(EventTypes.TileCleared, ShowVictoryClip);
+        EventManager.StartListening(GameObjectEventType.TileCleared, ShowVictoryClip);
     }
 
     private void ShowVictoryClip(GameObject _)

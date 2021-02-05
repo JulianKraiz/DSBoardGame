@@ -25,6 +25,7 @@ public class DiceBahevior : MonoBehaviour
 
     void Start()
     {
+        ResetForThrow();
         body = GetComponent<Rigidbody>();
     }
 
@@ -34,7 +35,7 @@ public class DiceBahevior : MonoBehaviour
 
         if (!emitedEvent && wasMoving && body.velocity == Vector3.zero)
         {
-            EventManager.RaiseEventGameObject(EventTypes.DiceStoppedMoving, gameObject);
+            EventManager.RaiseEvent(GameObjectEventType.DiceStoppedMoving, gameObject);
             emitedEvent = true;
         }
 
@@ -74,5 +75,11 @@ public class DiceBahevior : MonoBehaviour
         }
 
         throw new System.Exception($"No anchor matching with position {highestPosition}");
+    }
+
+    internal void ResetForThrow()
+    {
+        wasMoving = false;
+        emitedEvent = false;
     }
 }

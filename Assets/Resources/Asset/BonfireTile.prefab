@@ -319,6 +319,8 @@ MonoBehaviour:
   isCleared: 1
   isFocused: 1
   players: []
+  enemies: []
+  positions: []
 --- !u!1 &4805120907806097645
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +333,6 @@ GameObject:
   - component: {fileID: 4805120907806097635}
   - component: {fileID: 4805120907806097632}
   - component: {fileID: 4805120907806097633}
-  - component: {fileID: 4805120907806097646}
   - component: {fileID: 4805120907806097647}
   m_Layer: 0
   m_Name: R2
@@ -415,18 +416,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4805120907806097646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4805120907806097645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4805120907806097647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,10 +428,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce46f304499e1b44e8a1e3cf0bc6c6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NorthPosition: {fileID: 0}
+  NorthEastPosition: {fileID: 0}
+  EastPosition: {fileID: 0}
+  SouthEastPosition: {fileID: 0}
+  SouthPosition: {fileID: 0}
+  SouthWestPosition: {fileID: 0}
+  WestPosition: {fileID: 0}
+  NorthWestPosition: {fileID: 0}
   isNorth: 1
   isSouth: 1
   isWest: 1
   isEast: 1
+  isSpawnOne: 0
+  isSpawnTwo: 0
+  isGreenSlot: 0
 --- !u!1 &4805120907912968917
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,7 +801,6 @@ GameObject:
   - component: {fileID: 4805120908215911300}
   - component: {fileID: 4805120908215911301}
   - component: {fileID: 4805120908215911298}
-  - component: {fileID: 4805120908215911299}
   - component: {fileID: 4805120908215911296}
   m_Layer: 0
   m_Name: R1
@@ -885,18 +884,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4805120908215911299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4805120908215911310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4805120908215911296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -909,10 +896,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce46f304499e1b44e8a1e3cf0bc6c6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NorthPosition: {fileID: 0}
+  NorthEastPosition: {fileID: 0}
+  EastPosition: {fileID: 0}
+  SouthEastPosition: {fileID: 0}
+  SouthPosition: {fileID: 0}
+  SouthWestPosition: {fileID: 0}
+  WestPosition: {fileID: 0}
+  NorthWestPosition: {fileID: 0}
   isNorth: 1
   isSouth: 1
   isWest: 1
   isEast: 1
+  isSpawnOne: 0
+  isSpawnTwo: 0
+  isGreenSlot: 0
 --- !u!1 &4805120908510583661
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,7 +923,6 @@ GameObject:
   - component: {fileID: 4805120908510583651}
   - component: {fileID: 4805120908510583648}
   - component: {fileID: 4805120908510583649}
-  - component: {fileID: 4805120908510583662}
   - component: {fileID: 4805120908510583663}
   m_Layer: 0
   m_Name: R3
@@ -1009,18 +1006,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4805120908510583662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4805120908510583661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73e99740350b902448185a60d7cf6f95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4805120908510583663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1033,10 +1018,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce46f304499e1b44e8a1e3cf0bc6c6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NorthPosition: {fileID: 0}
+  NorthEastPosition: {fileID: 0}
+  EastPosition: {fileID: 0}
+  SouthEastPosition: {fileID: 0}
+  SouthPosition: {fileID: 0}
+  SouthWestPosition: {fileID: 0}
+  WestPosition: {fileID: 0}
+  NorthWestPosition: {fileID: 0}
   isNorth: 1
   isSouth: 1
   isWest: 1
   isEast: 1
+  isSpawnOne: 0
+  isSpawnTwo: 0
+  isGreenSlot: 0
 --- !u!1001 &4805120906612743570
 PrefabInstance:
   m_ObjectHideFlags: 0

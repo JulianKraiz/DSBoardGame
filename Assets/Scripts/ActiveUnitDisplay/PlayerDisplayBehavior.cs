@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using BoardGame.Script.Events;
+using System;
 
 public class PlayerDisplayBehavior : MonoBehaviour
 {
@@ -53,7 +54,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
         translateOffsetEnterPlane = new Vector3(0f, 0.0f, 0f);
         translateOffset = new Vector3(10f, 0.2f, 0f);
         translateOffsetVertical = new Vector3(0f, 0f, -8f);
-        translateOffsetVertical = new Vector3(0f, 0f, -8f);
         translateOffset = translateOffset + (displayIndex == 1 || displayIndex == 0 ? 
             new Vector3(0f, 0f, -8f) 
             : new Vector3(0f, 0f, 6.7f));
@@ -61,6 +61,9 @@ public class PlayerDisplayBehavior : MonoBehaviour
         enterCollisionPlane = transform.Find("EnterColisionPlane").gameObject;
         enterColisionPlaneBehavior = enterCollisionPlane.GetComponent<RaiseEventOnClicked>();
         enterColisionPlaneBehavior.PositionClicked += EmitPlayerSheedClicked;
+
+        transform.Find("EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
+        transform.Find("AbilityToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseAbilityEvent;
 
         smallScaleOffset = transform.localScale;
         bigScaleOffset = 3 * smallScaleOffset;
@@ -76,8 +79,8 @@ public class PlayerDisplayBehavior : MonoBehaviour
         estusOffMaterial = (Material)Resources.Load("Material/tokens/estus_off_material", typeof(Material));
         luckOnMaterial = (Material)Resources.Load("Material/tokens/luck_on_material", typeof(Material));
         luckOffMaterial = (Material)Resources.Load("Material/tokens/luck_off_material", typeof(Material));
-        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on_material", typeof(Material));
-        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off_material", typeof(Material));
+        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on", typeof(Material));
+        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off", typeof(Material));
 
         leftHandAnchor = transform.Find("LeftHandAnchor").gameObject;
         rightHandAnchor = transform.Find("RightHandAnchor").gameObject;
@@ -86,10 +89,10 @@ public class PlayerDisplayBehavior : MonoBehaviour
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
 
-        EventManager.StartListeningGameObject(EventTypes.PlayerSheetClicked, ZoomToggle);
-        EventManager.StartListeningGameObject(EventTypes.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
-        EventManager.StartListeningGameObject(EventTypes.UnitHoverEntered, DisplayFocusedOverlay);
-        EventManager.StartListeningGameObject(EventTypes.UnitHoverExited, HideFocusedOverlay);
+        EventManager.StartListening(GameObjectEventType.PlayerSheetClicked, ZoomToggle);
+        EventManager.StartListening(GameObjectEventType.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
+        EventManager.StartListening(GameObjectEventType.UnitHoverEntered, DisplayFocusedOverlay);
+        EventManager.StartListening(GameObjectEventType.UnitHoverExited, HideFocusedOverlay);
     }
 
     void Update()
@@ -175,7 +178,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
 
     private void EmitPlayerSheedClicked(GameObject source)
     {
-        EventManager.RaiseEventGameObject(EventTypes.PlayerSheetClicked, gameObject);
+        EventManager.RaiseEvent(GameObjectEventType.PlayerSheetClicked, gameObject);
     }
 
     private void ZoomToggle(GameObject args)
@@ -221,6 +224,23 @@ public class PlayerDisplayBehavior : MonoBehaviour
         else
         {
             ZoomToggle(null);
+        }
+    }
+
+    private void UseAbilityEvent(GameObject position)
+    {
+        if(playerProperties.isActive)
+        {
+
+        }
+    }
+
+    private void UseEstusEvent(GameObject position)
+    {
+        if (playerProperties.isActive && playerProperties.hasEstus)
+        {
+            playerProperties.ResetStaminaAndInjuries();
+            playerProperties.hasEstus = false;
         }
     }
 }

@@ -6,42 +6,47 @@ using UnityEngine.Events;
 namespace BoardGame.Script.Events
 {
 
-    public enum EventTypes
+    public enum GameObjectEventType
     {
         TileIsEntered,
         TileCleared,
-        PositionClicked,
         UnitIsActivated,
         PositionHovered,
         PositionHoveredExit,
         EnemyCreated,
         UnitHoverEntered,
         UnitHoverExited,
-        ActiveUnitSelected,
         ActiveUnitMoved,
         UnitSelected,
-        AttackSelected,
-        AttackDeselected,
-        AttackHovered,
-        AttackHoverEnded,
         ResetAndHideAttackDial,
         AttackTargetSelected,
         UnitDestroyed,
         PlayerSheetClicked,
-        AttackApplied,
         ToggleZoomUnitDisplay,
-        VictoryTileCleared,
         ResetAndHideEnemyDisplays,
+        DiceStoppedMoving,
+        AbilityTrigger,
+        LuckTrigger,
+        EstusTrigger
+    }
+
+    public enum ObjectEventType
+    {
+        AttackApplied,
+        AttackSelected,
+        AttackDeselected,
+        AttackHovered,
+        AttackHoverEnded,
+        PlayerSheetClicked,
         AddSoulsToCache,
         EncountersToResolve,
-        DiceStoppedMoving,
         EncountersResolved,
     }
 
     public class EventManager
     {
-        private Dictionary<EventTypes, UnityEventWithGameObject> _eventRegisterGameObject = new Dictionary<EventTypes, UnityEventWithGameObject>();
-        private Dictionary<EventTypes, UnityEventWithObject> _eventRegisterObject = new Dictionary<EventTypes, UnityEventWithObject>();
+        private Dictionary<GameObjectEventType, UnityEventWithGameObject> _eventRegisterGameObject = new Dictionary<GameObjectEventType, UnityEventWithGameObject>();
+        private Dictionary<ObjectEventType, UnityEventWithObject> _eventRegisterObject = new Dictionary<ObjectEventType, UnityEventWithObject>();
 
         static EventManager()
         {
@@ -54,7 +59,7 @@ namespace BoardGame.Script.Events
 
         public static EventManager Instance { get; private set; }
 
-        public static void StartListeningGameObject(EventTypes eventType, UnityAction<GameObject> action)
+        public static void StartListening(GameObjectEventType eventType, UnityAction<GameObject> action)
         {
             if (!Instance._eventRegisterGameObject.Keys.Contains(eventType))
             {
@@ -65,7 +70,7 @@ namespace BoardGame.Script.Events
             eventListener.AddListener(action);
         }
 
-        public static void StopListeningGameObject(EventTypes eventType, UnityAction<GameObject> action)
+        public static void StopListening(GameObjectEventType eventType, UnityAction<GameObject> action)
         {
             if (Instance._eventRegisterGameObject.TryGetValue(eventType, out var listener))
             {
@@ -73,7 +78,7 @@ namespace BoardGame.Script.Events
             }
         }
 
-        public static void RaiseEventGameObject(EventTypes eventType, GameObject arg = null)
+        public static void RaiseEvent(GameObjectEventType eventType, GameObject arg = null)
         {
             if (Instance._eventRegisterGameObject.TryGetValue(eventType, out var listener))
             {
@@ -81,7 +86,7 @@ namespace BoardGame.Script.Events
             }
         }
 
-        public static void StartListeningObject(EventTypes eventType, UnityAction<object> action)
+        public static void StartListening(ObjectEventType eventType, UnityAction<object> action)
         {
             if (!Instance._eventRegisterObject.Keys.Contains(eventType))
             {
@@ -92,7 +97,7 @@ namespace BoardGame.Script.Events
             eventListener.AddListener(action);
         }
 
-        public static void StopListeningObject(EventTypes eventType, UnityAction<object> action)
+        public static void StopListening(ObjectEventType eventType, UnityAction<object> action)
         {
             if (Instance._eventRegisterObject.TryGetValue(eventType, out var listener))
             {
@@ -100,12 +105,14 @@ namespace BoardGame.Script.Events
             }
         }
 
-        public static void RaiseEventObject(EventTypes eventType, object arg = null)
+        public static void RaiseEvent(ObjectEventType eventType, object arg = null)
         {
             if (Instance._eventRegisterObject.TryGetValue(eventType, out var listener))
             {
                 listener.Invoke(arg);
             }
         }
+
+
     }
 }
