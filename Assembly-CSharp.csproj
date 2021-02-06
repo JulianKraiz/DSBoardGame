@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\EnemyDisplayContainer.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\PlayerDisplayBehavior.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\PlayerDisplayContainer.cs" />
+    <Compile Include="Assets\Scripts\ActiveUnitDisplay\TokenBehavior.cs" />
     <Compile Include="Assets\Scripts\Dices\DiceBahevior.cs" />
     <Compile Include="Assets\Scripts\Dices\DiceRoller.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Assets\Scripts\Tile\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\Tile\HoverFocusedTile.cs" />
     <Compile Include="Assets\Scripts\Tile\Model\TileMonsterSettings.cs" />
+    <Compile Include="Assets\Scripts\Tile\Model\TokenType.cs" />
     <Compile Include="Assets\Scripts\Tile\NavigationMapping.cs" />
     <Compile Include="Assets\Scripts\Tile\PathFinder.cs" />
     <Compile Include="Assets\Scripts\Tile\PositionBehavior.cs" />

@@ -7,7 +7,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
 {
 
     private Vector3 translateOffset;
-    private Vector3 translateOffsetVertical;
     private Vector3 smallScaleOffset;
     private Vector3 bigScaleOffset;
 
@@ -19,22 +18,15 @@ public class PlayerDisplayBehavior : MonoBehaviour
     private List<MeshRenderer> injuriesToken;
     private List<MeshRenderer> staminaToken;
 
-    private MeshRenderer estusTokenRenderer;
-    private MeshRenderer luckTokenRenderer;
-    private MeshRenderer emberTokenRenderer;
-    private MeshRenderer abilityTokenRenderer;
+    public TokenBehavior estusTokenBehavior;
+    public TokenBehavior luckTokenBehavior;
+    public TokenBehavior emberTokenBehavior;
+    public TokenBehavior abilityTokenBehavior;
 
-    private Material estusOnMaterial;
-    private Material estusOffMaterial;
-    private Material luckOnMaterial;
-    private Material luckOffMaterial;
-    private Material abilityOnMaterial;
-    private Material abilityOffMaterial;
-
-    private GameObject leftHandAnchor;
-    private GameObject rightHandAnchor;
-    private GameObject sideAnchor;
-    private GameObject armourAnchor;
+    public GameObject leftHandAnchor;
+    public GameObject rightHandAnchor;
+    public GameObject sideAnchor;
+    public GameObject armourAnchor;
 
     private GameObject leftEquipementCopy;
     private GameObject rightEquipementCopy;
@@ -53,39 +45,20 @@ public class PlayerDisplayBehavior : MonoBehaviour
         zoomedIn = false;
         translateOffsetEnterPlane = new Vector3(0f, 0.0f, 0f);
         translateOffset = new Vector3(10f, 0.2f, 0f);
-        translateOffsetVertical = new Vector3(0f, 0f, -8f);
         translateOffset = translateOffset + (displayIndex == 1 || displayIndex == 0 ? 
             new Vector3(0f, 0f, -8f) 
             : new Vector3(0f, 0f, 6.7f));
 
         enterCollisionPlane = transform.Find("EnterColisionPlane").gameObject;
         enterColisionPlaneBehavior = enterCollisionPlane.GetComponent<RaiseEventOnClicked>();
-        enterColisionPlaneBehavior.PositionClicked += EmitPlayerSheedClicked;
+        enterColisionPlaneBehavior.PositionClicked += EmitPlayerSheetClicked;
 
-        transform.Find("EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
-        transform.Find("AbilityToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseAbilityEvent;
+        abilityTokenBehavior.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += UseAbilityEvent;
 
         smallScaleOffset = transform.localScale;
         bigScaleOffset = 3 * smallScaleOffset;
 
         equipementScaleOffset = new Vector3(0.15f, 1f, 0.25f);
-
-        estusTokenRenderer = transform.Find("EstusToken").GetComponent<MeshRenderer>();
-        luckTokenRenderer = transform.Find("LuckToken").GetComponent<MeshRenderer>();
-        abilityTokenRenderer = transform.Find("AbilityToken").GetComponent<MeshRenderer>();
-        emberTokenRenderer = transform.Find("EmberToken").GetComponent<MeshRenderer>();
-
-        estusOnMaterial = (Material)Resources.Load("Material/tokens/estus_on_material", typeof(Material));
-        estusOffMaterial = (Material)Resources.Load("Material/tokens/estus_off_material", typeof(Material));
-        luckOnMaterial = (Material)Resources.Load("Material/tokens/luck_on_material", typeof(Material));
-        luckOffMaterial = (Material)Resources.Load("Material/tokens/luck_off_material", typeof(Material));
-        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on", typeof(Material));
-        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off", typeof(Material));
-
-        leftHandAnchor = transform.Find("LeftHandAnchor").gameObject;
-        rightHandAnchor = transform.Find("RightHandAnchor").gameObject;
-        sideAnchor = transform.Find("SideAnchor").gameObject;
-        armourAnchor = transform.Find("ArmourAnchor").gameObject;
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
 
@@ -107,11 +80,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
             {
                 staminaToken[i].enabled = i < playerProperties.stamina;
             }
-
-            emberTokenRenderer.enabled = playerProperties.hasEmber;
-            estusTokenRenderer.material = playerProperties.hasEstus ? estusOnMaterial : estusOffMaterial;
-            luckTokenRenderer.material = playerProperties.hasLuckToken ? luckOnMaterial : luckOffMaterial;
-            abilityTokenRenderer.material = playerProperties.hasAbility ? abilityOnMaterial : abilityOffMaterial;
 
             leftEquipementCopy = CopyAndPlaceEquipement(playerProperties.leftEquipement, leftHandAnchor, leftEquipementCopy);
             rightEquipementCopy = CopyAndPlaceEquipement(playerProperties.rightEquipement, rightHandAnchor, rightEquipementCopy);
@@ -166,6 +134,11 @@ public class PlayerDisplayBehavior : MonoBehaviour
         {
             staminaToken.Add(staminaParent.GetChild(i).GetComponent<MeshRenderer>());
         }
+
+        estusTokenBehavior.SetUnit(playerProperties);
+        luckTokenBehavior.SetUnit(playerProperties);
+        emberTokenBehavior.SetUnit(playerProperties);
+        abilityTokenBehavior.SetUnit(playerProperties);
     }
 
     private void SetBackgroundMaterial()
@@ -176,7 +149,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
         rend.material = mat;
     }
 
-    private void EmitPlayerSheedClicked(GameObject source)
+    private void EmitPlayerSheetClicked(GameObject source)
     {
         EventManager.RaiseEvent(GameObjectEventType.PlayerSheetClicked, gameObject);
     }
@@ -232,15 +205,6 @@ public class PlayerDisplayBehavior : MonoBehaviour
         if(playerProperties.isActive)
         {
 
-        }
-    }
-
-    private void UseEstusEvent(GameObject position)
-    {
-        if (playerProperties.isActive && playerProperties.hasEstus)
-        {
-            playerProperties.ResetStaminaAndInjuries();
-            playerProperties.hasEstus = false;
         }
     }
 }

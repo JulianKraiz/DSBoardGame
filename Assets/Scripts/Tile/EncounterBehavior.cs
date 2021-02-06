@@ -53,23 +53,16 @@ public class EncounterBehavior : MonoBehaviour
     private MeshRenderer dodgeButtonRenderer;
     private MeshRenderer attackButtonRenderer;
 
-    private MeshRenderer attackEstusRenderer;
-    private MeshRenderer attackLuckRenderer;
-    private MeshRenderer defenseEstusRenderer;
-    private MeshRenderer defenseLuckRenderer;
-    private MeshRenderer defenseEmberRenderer;
+    public TokenBehavior attackEstusBehavior;
+    public TokenBehavior attackLuckBehavior;
+    public TokenBehavior defenseEstusBehavior;
+    public TokenBehavior defenseLuckBehavior;
+    public TokenBehavior defenseEmberBehavior;
 
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
     private GameObject confirmButton;
-
-    private Material estusOnMaterial;
-    private Material estusOffMaterial;
-    private Material luckOnMaterial;
-    private Material luckOffMaterial;
-    private Material abilityOnMaterial;
-    private Material abilityOffMaterial;
 
     private Vector3 anchorOffset;
     private Vector3 offsetDiceResultPresentation;
@@ -95,23 +88,9 @@ public class EncounterBehavior : MonoBehaviour
         attackButton = attackOptions.transform.Find("ChooseAttackButton").gameObject;
         attackButtonRenderer = attackButton.GetComponent<MeshRenderer>();
 
-        transform.Find("AttackOptions/EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
-        transform.Find("AttackOptions/LuckToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
-        transform.Find("DefenseOptions/EstusToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseEstusEvent;
-        transform.Find("DefenseOptions/LuckToken").GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
+        attackLuckBehavior.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
+        defenseLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
 
-        estusOnMaterial = (Material)Resources.Load("Material/tokens/estus_on_material", typeof(Material));
-        estusOffMaterial = (Material)Resources.Load("Material/tokens/estus_off_material", typeof(Material));
-        luckOnMaterial = (Material)Resources.Load("Material/tokens/luck_on_material", typeof(Material));
-        luckOffMaterial = (Material)Resources.Load("Material/tokens/luck_off_material", typeof(Material));
-        abilityOnMaterial = (Material)Resources.Load("Material/tokens/ability_on", typeof(Material));
-        abilityOffMaterial = (Material)Resources.Load("Material/tokens/ability_off", typeof(Material));
-
-        attackEstusRenderer = transform.Find("AttackOptions/EstusToken").GetComponent<MeshRenderer>();
-        attackLuckRenderer = transform.Find("AttackOptions/LuckToken").GetComponent<MeshRenderer>();
-        defenseEstusRenderer = transform.Find("DefenseOptions/EstusToken").GetComponent<MeshRenderer>();
-        defenseLuckRenderer = transform.Find("DefenseOptions/LuckToken").GetComponent<MeshRenderer>();
-        defenseEmberRenderer = transform.Find("DefenseOptions/EmberToken").GetComponent<MeshRenderer>();
         confirmButton = transform.Find("ConfirmResult").gameObject;
 
         blockButton.GetComponent<RaiseEventOnClicked>().PositionClicked += BlockSelected;
@@ -175,13 +154,6 @@ public class EncounterBehavior : MonoBehaviour
                 SetGlobalVisibility(false);
             }
         }
-        if (currentEncounter != null)
-        {
-            SetTokenVisibility();
-        }
-
-
-
     }
 
     public void Resolve(object eventLoad)
@@ -195,6 +167,12 @@ public class EncounterBehavior : MonoBehaviour
     {
         attackerPortraitRenderer.material = currentEncounter.Attacker.portrait;
         defenderPortraitRenderer.material = currentEncounter.Defender.portrait;
+
+        attackEstusBehavior.SetUnit(currentEncounter.Attacker);
+        attackLuckBehavior.SetUnit(currentEncounter.Attacker);
+        defenseEstusBehavior.SetUnit(currentEncounter.Defender);
+        defenseLuckBehavior.SetUnit(currentEncounter.Defender);
+        defenseEmberBehavior.SetUnit(currentEncounter.Defender);
 
         if (currentEncounter.Attacker.side == UnitSide.Hollow)
         {
@@ -223,8 +201,7 @@ public class EncounterBehavior : MonoBehaviour
         PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, currentEncounter.Defense.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
         PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, currentEncounter.Defense.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
 
-        currentEncounter.DamageRoll = currentEncounter.Attack.flatModifier;
-        currentEncounter.DefenseRoll = currentEncounter.Defense.FlatReduce;
+    
     }
 
     private void PlaceAndDisplayModifier(GameObject container, TextMesh text, int value, GameObject anchor, Vector3 offset, bool showZero, ref int offsetIndex)
@@ -334,7 +311,7 @@ public class EncounterBehavior : MonoBehaviour
     private GameObject SpawnDice(GameObject diceTemplate)
     {
         var dice = Instantiate(diceTemplate);
-        var offsetPoint = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f), 0);
+        var offsetPoint = new Vector3(Random.Range(-1.5f, 1.5f), 0, 0);
         dice.transform.position = throwPoint.transform.position + offsetPoint;
         dice.transform.localRotation = Quaternion.Euler(Random.Range(0, 90), Random.Range(0, 90), Random.Range(0, 90));
 
@@ -361,20 +338,22 @@ public class EncounterBehavior : MonoBehaviour
 
     public void AddDiceResult(GameObject diceResult)
     {
-        var behavior = diceResult.GetComponent<DiceBahevior>();
-        var body = diceResult.GetComponent<Rigidbody>();
-
+        var body = diceResult.GetComponent<Rigidbody>().isKinematic = true;
         diceResultRecieved++;
-        
-
-        body.isKinematic = true;
 
         if (diceResultRecieved == dices.Count)
         {
             EventManager.StopListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
+            currentEncounter.DefenseRoll = 0;
+            currentEncounter.DamageRoll = 0;
+            currentEncounter.DodgeRoll = 0;
+
+            currentEncounter.DamageRoll = currentEncounter.Attack.flatModifier;
+            currentEncounter.DefenseRoll = currentEncounter.Defense.FlatReduce;
 
             foreach (var dice in dices)
             {
+                var behavior = dice.GetComponent<DiceBahevior>();
                 if (rollType == EncounterRollType.Block)
                 {
                     currentEncounter.DefenseRoll += behavior.GetValue();
@@ -396,8 +375,8 @@ public class EncounterBehavior : MonoBehaviour
                 i++;
             }
 
-            var player = GetPlayerPropertiesFromRoll();
-            if (!player.hasLuckToken && !player.hasEstus)
+            
+            if (CanAutoConfirmResult())
             {
                 Invoke(nameof(ApplyResult), 2f);
             }
@@ -470,16 +449,6 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
     }
 
-    private void UseEstusEvent(GameObject position)
-    {
-        var unit = currentEncounter.Attacker.side == UnitSide.Player ? (PlayerProperties)currentEncounter.Attacker : (PlayerProperties)currentEncounter.Defender;
-        if (unit.hasEstus)
-        {
-            unit.hasEstus = false;
-            unit.ResetStaminaAndInjuries();
-        }
-    }
-
     #region visibility
     private void SetGlobalVisibility(bool visible)
     {
@@ -502,36 +471,17 @@ public class EncounterBehavior : MonoBehaviour
             Destroy(dice);
         }
         dices.Clear();
+
+        attackEstusBehavior.SetUnit(null);
+        attackLuckBehavior.SetUnit(null);
+        defenseEstusBehavior.SetUnit(null);
+        defenseLuckBehavior.SetUnit(null);
+        defenseEmberBehavior.SetUnit(null);
     }
 
     private void SetConfirmButtonVisibility(bool visibility)
     {
         confirmButton.SetActive(visibility);
-    }
-
-    private void SetTokenVisibility()
-    {
-        var attackerUnitIsPlayer = currentEncounter.Attacker.side == UnitSide.Player;
-        var defendererUnitIsPlayer = currentEncounter.Defender.side == UnitSide.Player;
-
-        attackEstusRenderer.enabled = attackerUnitIsPlayer;
-        attackLuckRenderer.enabled = attackerUnitIsPlayer;
-        
-        if(attackerUnitIsPlayer)
-        {
-            attackEstusRenderer.material = ((PlayerProperties)currentEncounter.Attacker).hasEstus ? estusOnMaterial : estusOffMaterial;
-            attackLuckRenderer.material = ((PlayerProperties)currentEncounter.Attacker).hasLuckToken ? luckOnMaterial : luckOffMaterial;
-        }
-
-        defenseEstusRenderer.enabled = defendererUnitIsPlayer;
-        defenseLuckRenderer.enabled = defendererUnitIsPlayer;
-        defenseEmberRenderer.enabled = defendererUnitIsPlayer;
-
-        if(defendererUnitIsPlayer)
-        {
-            defenseEstusRenderer.material = ((PlayerProperties)currentEncounter.Defender).hasEstus ? estusOnMaterial : estusOffMaterial;
-            defenseLuckRenderer.material = ((PlayerProperties)currentEncounter.Defender).hasLuckToken ? luckOnMaterial : luckOffMaterial;
-        }
     }
     #endregion
 
@@ -540,17 +490,23 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved);
     }
 
-    private PlayerProperties GetPlayerPropertiesFromRoll()
+    private bool CanAutoConfirmResult()
     {
-        if (rollType == EncounterRollType.Attack)
+        var canAutoResolve = true;
+        if(currentEncounter.Defender is PlayerProperties)
         {
-            return (PlayerProperties)currentEncounter.Attacker;
+            var properties = (PlayerProperties)currentEncounter.Defender;
+            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
+                canAutoResolve = false;
         }
-        else if (rollType == EncounterRollType.Block || rollType == EncounterRollType.Dodge)
+        if (currentEncounter.Attacker is PlayerProperties)
         {
-            return (PlayerProperties)currentEncounter.Defender;
+            var properties = (PlayerProperties)currentEncounter.Attacker;
+            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
+                canAutoResolve = false;
         }
-        throw new System.Exception($"Roll type unknown: {rollType}");
+        return canAutoResolve;
+
     }
 }
 
