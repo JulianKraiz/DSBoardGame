@@ -22,33 +22,33 @@ public class EncounterBehavior : MonoBehaviour
     private MeshRenderer defenderPortraitRenderer;
     private MeshRenderer attackerPortraitRenderer;
 
-    private GameObject attackBlackDiceContainer;
-    private TextMesh attackBlackDiceText;
-    private GameObject attackBlueDiceContainer;
-    private TextMesh attackBlueDiceText;
-    private GameObject attackOrangeDiceContainer;
-    private TextMesh attackOrangeDiceText;
-    private GameObject attackFlatModifierContainer;
-    private TextMesh attackFlatModifierText;
-    private GameObject attackDodgeDiceContainer;
-    private TextMesh attackDodgeDiceText;
-    private GameObject attackAnchor;
+    public GameObject attackBlackDiceContainer;
+    public TextMesh attackBlackDiceText;
+    public GameObject attackBlueDiceContainer;
+    public TextMesh attackBlueDiceText;
+    public GameObject attackOrangeDiceContainer;
+    public TextMesh attackOrangeDiceText;
+    public GameObject attackFlatModifierContainer;
+    public TextMesh attackFlatModifierText;
+    public GameObject attackDodgeDiceContainer;
+    public TextMesh attackDodgeDiceText;
+    public GameObject attackAnchor;
 
-    private GameObject defenseBlackDiceContainer;
-    private TextMesh defenseBlackDiceText;
-    private GameObject defenseBlueDiceContainer;
-    private TextMesh defenseBlueDiceText;
-    private GameObject defenseOrangeDiceContainer;
-    private TextMesh defenseOrangeDiceText;
-    private GameObject defenseFlatModifierContainer;
-    private TextMesh defenseFlatModifierText;
-    private GameObject defenseDodgeDiceContainer;
-    private TextMesh defenseDodgeDiceText;
-    private GameObject defenseAnchor;
+    public GameObject defenseBlackDiceContainer;
+    public TextMesh defenseBlackDiceText;
+    public GameObject defenseBlueDiceContainer;
+    public TextMesh defenseBlueDiceText;
+    public GameObject defenseOrangeDiceContainer;
+    public TextMesh defenseOrangeDiceText;
+    public GameObject defenseFlatModifierContainer;
+    public TextMesh defenseFlatModifierText;
+    public GameObject defenseDodgeDiceContainer;
+    public TextMesh defenseDodgeDiceText;
+    public GameObject defenseAnchor;
 
-    private GameObject blockButton;
-    private GameObject dodgeButton;
-    private GameObject attackButton;
+    public GameObject blockButton;
+    public GameObject dodgeButton;
+    public GameObject attackButton;
     private MeshRenderer blockButtonRenderer;
     private MeshRenderer dodgeButtonRenderer;
     private MeshRenderer attackButtonRenderer;
@@ -59,10 +59,13 @@ public class EncounterBehavior : MonoBehaviour
     public TokenBehavior defenseLuckBehavior;
     public TokenBehavior defenseEmberBehavior;
 
+    public GameObject confirmButton;
+    public MoveChoserBehavior dodgeMover;
+
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
-    private GameObject confirmButton;
+    
 
     private Vector3 anchorOffset;
     private Vector3 offsetDiceResultPresentation;
@@ -75,23 +78,22 @@ public class EncounterBehavior : MonoBehaviour
 
     void Start()
     {
+        encounterResolved = new List<Encounter>();
+        encounterToResolve = new List<Encounter>();
         dices = new List<GameObject>();
+        
         anchorOffset = new Vector3(1.35f, 0f, 0f);
         offsetDiceResultPresentation = new Vector3(2, 0, 0);
+
         attackerPortraitRenderer = attackerPortrait.GetComponent<MeshRenderer>();
         defenderPortraitRenderer = defenderPortrait.GetComponent<MeshRenderer>();
 
-        blockButton = defenseOptions.transform.Find("ChooseBlockButton").gameObject;
         blockButtonRenderer = blockButton.GetComponent<MeshRenderer>();
-        dodgeButton = defenseOptions.transform.Find("ChooseDodgeButton").gameObject;
         dodgeButtonRenderer = dodgeButton.GetComponent<MeshRenderer>();
-        attackButton = attackOptions.transform.Find("ChooseAttackButton").gameObject;
         attackButtonRenderer = attackButton.GetComponent<MeshRenderer>();
 
         attackLuckBehavior.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
         defenseLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
-
-        confirmButton = transform.Find("ConfirmResult").gameObject;
 
         blockButton.GetComponent<RaiseEventOnClicked>().PositionClicked += BlockSelected;
         blockButton.GetComponent<RaiseEventOnEnterExit>().PositionEnter += BlockHovered;
@@ -106,30 +108,7 @@ public class EncounterBehavior : MonoBehaviour
         attackButton.GetComponent<RaiseEventOnEnterExit>().PositionExit += AttackHoverEnded;
 
         confirmButton.transform.Find("BackgroundButton").GetComponent<RaiseEventOnClicked>().PositionClicked += ConfirmResult;
-
-        attackBlackDiceContainer = attackOptions.transform.Find("BlackDiceContainer").gameObject;
-        attackBlackDiceText = attackBlackDiceContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
-        attackBlueDiceContainer = attackOptions.transform.Find("BlueDiceContainer").gameObject;
-        attackBlueDiceText = attackBlueDiceContainer.transform.Find("BlueDiceText").GetComponent<TextMesh>();
-        attackOrangeDiceContainer = attackOptions.transform.Find("OrangeDiceContainer").gameObject;
-        attackOrangeDiceText = attackOrangeDiceContainer.transform.Find("OrangeDiceText").GetComponent<TextMesh>();
-        attackFlatModifierContainer = attackOptions.transform.Find("FlatBonusContainer").gameObject;
-        attackFlatModifierText = attackFlatModifierContainer.transform.Find("FlatBonusText").GetComponent<TextMesh>();
-        attackDodgeDiceContainer = attackOptions.transform.Find("DodgeDiceContainer").gameObject;
-        attackDodgeDiceText = attackDodgeDiceContainer.transform.Find("DodgeDiceText").GetComponent<TextMesh>();
-        attackAnchor = attackOptions.transform.Find("Anchor").gameObject;
-
-        defenseBlackDiceContainer = defenseOptions.transform.Find("BlackDiceContainer").gameObject;
-        defenseBlackDiceText = defenseBlackDiceContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
-        defenseBlueDiceContainer = defenseOptions.transform.Find("BlueDiceContainer").gameObject;
-        defenseBlueDiceText = defenseBlueDiceContainer.transform.Find("BlueDiceText").GetComponent<TextMesh>();
-        defenseOrangeDiceContainer = defenseOptions.transform.Find("OrangeDiceContainer").gameObject;
-        defenseOrangeDiceText = defenseOrangeDiceContainer.transform.Find("OrangeDiceText").GetComponent<TextMesh>();
-        defenseFlatModifierContainer = defenseOptions.transform.Find("FlatBonusContainer").gameObject;
-        defenseFlatModifierText = defenseFlatModifierContainer.transform.Find("FlatBonusText").GetComponent<TextMesh>();
-        defenseDodgeDiceContainer = defenseOptions.transform.Find("DodgeDiceContainer").gameObject;
-        defenseDodgeDiceText = defenseDodgeDiceContainer.transform.Find("DodgeDiceText").GetComponent<TextMesh>();
-        defenseAnchor = defenseOptions.transform.Find("Anchor").gameObject;
+        dodgeMover.PositionClicked += DodgeMoveSelected;
 
         EventManager.StartListening(ObjectEventType.EncountersToResolve, Resolve);
 
@@ -233,6 +212,12 @@ public class EncounterBehavior : MonoBehaviour
 
     private void DodgeSelected(GameObject position)
     {
+        dodgeMover.SetupAndShow(currentEncounter.Defender);
+    }
+
+    private void DodgeMoveSelected(PositionBehavior _)
+    {
+        dodgeMover.SetupAndShow(null);
         blockButton.SetActive(false);
         dodgeButton.SetActive(false);
         rollType = EncounterRollType.Dodge;
@@ -387,6 +372,24 @@ public class EncounterBehavior : MonoBehaviour
         }
     }
 
+    private bool CanAutoConfirmResult()
+    {
+        var canAutoResolve = true;
+        if (currentEncounter.Defender is PlayerProperties)
+        {
+            var properties = (PlayerProperties)currentEncounter.Defender;
+            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
+                canAutoResolve = false;
+        }
+        if (currentEncounter.Attacker is PlayerProperties)
+        {
+            var properties = (PlayerProperties)currentEncounter.Attacker;
+            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
+                canAutoResolve = false;
+        }
+        return canAutoResolve;
+    }
+
     private void ConfirmResult(GameObject position)
     {
         ApplyResult();
@@ -449,6 +452,8 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
     }
 
+ 
+
     #region visibility
     private void SetGlobalVisibility(bool visible)
     {
@@ -458,6 +463,8 @@ public class EncounterBehavior : MonoBehaviour
 
         attackerPortrait.SetActive(visible);
         defenderPortrait.SetActive(visible);
+
+        dodgeMover.SetupAndShow(null);
 
         SetConfirmButtonVisibility(false);
 
@@ -490,24 +497,7 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved);
     }
 
-    private bool CanAutoConfirmResult()
-    {
-        var canAutoResolve = true;
-        if(currentEncounter.Defender is PlayerProperties)
-        {
-            var properties = (PlayerProperties)currentEncounter.Defender;
-            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
-                canAutoResolve = false;
-        }
-        if (currentEncounter.Attacker is PlayerProperties)
-        {
-            var properties = (PlayerProperties)currentEncounter.Attacker;
-            if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
-                canAutoResolve = false;
-        }
-        return canAutoResolve;
-
-    }
+   
 }
 
 public enum EncounterRollType

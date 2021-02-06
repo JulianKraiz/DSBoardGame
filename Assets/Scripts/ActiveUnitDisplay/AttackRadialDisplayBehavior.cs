@@ -36,7 +36,6 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private Transform MagicContainer;
     private Transform SplashNodeContainer;
 
-    private AttackSide Side;
     private UnitBasicProperties UnitProperties;
     private AttackDetail AttackDetail;
 

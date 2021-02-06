@@ -27,7 +27,7 @@ namespace BoardGame.Script.Events
         DiceStoppedMoving,
         AbilityTrigger,
         LuckTrigger,
-        EstusTrigger
+        EstusTrigger,
     }
 
     public enum ObjectEventType
@@ -41,6 +41,7 @@ namespace BoardGame.Script.Events
         AddSoulsToCache,
         EncountersToResolve,
         EncountersResolved,
+        UnitMoved,
     }
 
     public class EventManager

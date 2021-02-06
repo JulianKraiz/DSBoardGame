@@ -25,12 +25,13 @@ public class PositionBehavior : MonoBehaviour
     public bool isSpawnTwo;
     public bool isGreenSlot;
 
-    private List<GameObject> NonBossUnits = new List<GameObject>();
-    private MeshRenderer render = null;
+    private List<GameObject> nonBossUnits; 
+    private MeshRenderer render;
     private bool _canRender;
 
     void Start()
     {
+        nonBossUnits = new List<GameObject>();
         render = gameObject.GetComponent<MeshRenderer>();
         _canRender = false;
     }
@@ -42,30 +43,30 @@ public class PositionBehavior : MonoBehaviour
 
     public void AddNonBossUnit(GameObject unit)
     {
-        NonBossUnits.Add(unit);
+        nonBossUnits.Add(unit);
         OrganizeCharacterOnPosition();
     }
 
     public void RemoveNonBossUnit(GameObject unit)
     {
-        NonBossUnits.Remove(unit);
+        nonBossUnits.Remove(unit);
         OrganizeCharacterOnPosition();
     }
 
     public bool HasUnit(GameObject unit)
     {
-        return NonBossUnits.Contains(unit);
+        return nonBossUnits.Contains(unit);
     }
 
     public bool HasMaxUnit()
     {
-        return NonBossUnits.Count == 3;
+        return nonBossUnits.Count == 3;
     }
 
     public bool HasActiveUnit()
     {
-        var temp = NonBossUnits.Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
-        return NonBossUnits.Any(u => u.GetComponent<UnitBasicProperties>().isActive);
+        var temp = nonBossUnits.Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
+        return nonBossUnits.Any(u => u.GetComponent<UnitBasicProperties>().isActive);
     }
 
     public int GetNodeCost()
@@ -97,7 +98,7 @@ public class PositionBehavior : MonoBehaviour
 
     public void ResetPosition(bool canRender)
     {
-        NonBossUnits.Clear();
+        nonBossUnits.Clear();
         _canRender = canRender;
         OrganizeCharacterOnPosition();
     }
@@ -122,7 +123,7 @@ public class PositionBehavior : MonoBehaviour
 
     private void OrganizeCharacterOnPosition()
     {
-        var characters = NonBossUnits.ToList();
+        var characters = nonBossUnits.ToList();
         if (characters.Count >= 1)
         {
             var increment = 360 / characters.Count;
@@ -152,6 +153,6 @@ public class PositionBehavior : MonoBehaviour
 
     internal IEnumerable<GameObject> GetUnits(UnitSide side)
     {
-        return NonBossUnits.Where(p => p.GetComponent<UnitBasicProperties>().side == side).ToList();
+        return nonBossUnits.Where(p => p.GetComponent<UnitBasicProperties>().side == side).ToList();
     }
 }

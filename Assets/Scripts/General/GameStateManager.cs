@@ -44,6 +44,12 @@ public class GameStateManager : MonoBehaviour
         characterDisplayContainer.Initialize();
     }
 
+    public TileManager GetActiveTile()
+    {
+        var tileBehaviors = tiles.Select(t => t.GetComponent<TileManager>());
+        return tileBehaviors.First(b => b.isFocused);
+    }
+
     private void SetPlayerStartingEquipement()
     {
         var pProps = players.Select(p => p.GetComponent<PlayerProperties>());

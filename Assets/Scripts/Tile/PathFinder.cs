@@ -14,6 +14,23 @@ namespace Assets.Scripts.Tile
             return GetPath(start, target, new List<PositionBehavior>());
         }
 
+        public Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start, IList<PositionBehavior> positions)
+        {
+            var result = new Dictionary<PositionBehavior, int>();
+
+            var otherNodes = positions.ToList();
+
+            foreach (var other in otherNodes)
+            {
+                var path = GetPath(start, other);
+                if (path != null && path.Count >= minRange && path.Count <= maxRange)
+                {
+                    result.Add(other, path.Count);
+                }
+            }
+            return result;
+        }
+
         private List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
         {
             List<PositionBehavior> bestPath = null;

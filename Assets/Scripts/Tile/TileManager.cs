@@ -17,7 +17,7 @@ public class TileManager : MonoBehaviour
     public Dictionary<GameObject, UnitBasicProperties> playersToProperties = new Dictionary<GameObject, UnitBasicProperties>();
     public Dictionary<GameObject, UnitBasicProperties> enemyToProperties = new Dictionary<GameObject, UnitBasicProperties>();
 
-    public List<PositionBehavior> positions = new List<PositionBehavior>();
+    protected List<PositionBehavior> positions = new List<PositionBehavior>();
 
     public TileMonsterSettings monsterSettings;
 
@@ -165,6 +165,7 @@ public class TileManager : MonoBehaviour
             EventManager.StartListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
             EventManager.StartListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
             EventManager.StartListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
+            EventManager.StartListening(ObjectEventType.UnitMoved, UnitMoved);
 
             foreach (var position in positions)
             {
@@ -176,7 +177,6 @@ public class TileManager : MonoBehaviour
             ActivateNextUnit();
         }
     }
-
 
     private void SetupPlayers()
     {
@@ -299,6 +299,7 @@ public class TileManager : MonoBehaviour
         EventManager.StopListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
         EventManager.StopListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
         EventManager.StopListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
+        EventManager.StopListening(ObjectEventType.UnitMoved, UnitMoved);
 
         foreach (var child in positions)
         {
@@ -337,7 +338,12 @@ public class TileManager : MonoBehaviour
     }
     #endregion
 
-    #region path
+    #region Path
+    public List<PositionBehavior> GetPositions()
+    {
+        return positions.ToList();
+    }
+
     private void PositionClicked(GameObject position)
     {
         if (canMove)
@@ -354,17 +360,26 @@ public class TileManager : MonoBehaviour
 
             firstMovementFree = false;
 
-            var currentPosition = positions.FirstOrDefault(p => p.HasUnit(currentUnitObject));
-            currentPosition.RemoveNonBossUnit(currentUnitObject);
-
-            var targetposition = positions.First(pos => pos.gameObject == position);
-            targetposition.AddNonBossUnit(currentUnitObject);
+            var moveCommand = new UnitMovement()
+            {
+                MoveFrom = positions.FirstOrDefault(p => p.HasUnit(currentUnitObject)),
+                MoveTo = positions.First(pos => pos.gameObject == position),
+                Unit = currentUnitObject
+            };
+            UnitMoved(moveCommand);
 
             currentUnit.ConsumeStamina(pathcost);
 
             currentUnitHasMoved = true;
             EventManager.RaiseEvent(GameObjectEventType.ActiveUnitMoved, currentUnit.gameObject);
         }
+    }
+
+    private void UnitMoved(object unitMovement)
+    {
+        var movement = (UnitMovement)unitMovement;
+        movement.MoveFrom.RemoveNonBossUnit(movement.Unit);
+        movement.MoveTo.AddNonBossUnit(movement.Unit);
     }
 
     private void ShowPath(GameObject targetPosition)
@@ -394,23 +409,6 @@ public class TileManager : MonoBehaviour
             node.Hide();
         }
     }
-
-    private Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start)
-    {
-        var result = new Dictionary<PositionBehavior, int>();
-
-        var otherNodes = positions.ToList();
-
-        foreach (var other in otherNodes)
-        {
-            var path = pathFinder.GetPath(start, other);
-            if (path != null && path.Count >= minRange && path.Count <= maxRange)
-            {
-                result.Add(other, path.Count);
-            }
-        }
-        return result;
-    }
     #endregion
 
     #region attacks
@@ -433,7 +431,7 @@ public class TileManager : MonoBehaviour
         var maxRange = currentAttack.infiniteRange ? 20 : currentAttack.range;
         var startingPosition = positions.First(positions => positions.HasActiveUnit());
 
-        var inRangeNodes = GetAllNodeWithinRange(minRange, maxRange, startingPosition).Keys;
+        var inRangeNodes = pathFinder.GetAllNodeWithinRange(minRange, maxRange, startingPosition,positions).Keys;
 
         foreach (var node in inRangeNodes)
         {
