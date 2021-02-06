@@ -69,6 +69,7 @@ public class EnemyGenerator : MonoBehaviour
                 magicAttack = true,
                 dodgeLevel = 1,
                 infiniteRange = true,
+                repeat = 2,
             }
         };
 

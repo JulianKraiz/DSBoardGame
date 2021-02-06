@@ -15,6 +15,8 @@
         public bool infiniteRange = false;
         public int dodgeLevel = 0;
 
+        public int repeat = 1;
+
         public bool nodeSplash = false;
         public bool targetAllies = false;
         public bool affectAllInRangeUnits = false;

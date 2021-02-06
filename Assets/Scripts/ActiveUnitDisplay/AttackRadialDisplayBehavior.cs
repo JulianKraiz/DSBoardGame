@@ -24,6 +24,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private TextMesh OrangeDiceTextMesh;
     private TextMesh RangeTextMesh;
     private TextMesh FlatBonusTextMesh;
+    private TextMesh RepeatTextMesh;
 
     private Transform BlackContainer;
     private Transform BlueContainer;
@@ -35,6 +36,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private Transform MinRange1Container;
     private Transform MagicContainer;
     private Transform SplashNodeContainer;
+    private Transform RepeatContainer;
 
     private UnitBasicProperties UnitProperties;
     private AttackDetail AttackDetail;
@@ -87,6 +89,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         MinRange1Container = backgroundLayerRenderer.transform.Find("MinRange1Container");
         MagicContainer = backgroundLayerRenderer.transform.Find("MagicContainer");
         SplashNodeContainer = backgroundLayerRenderer.transform.Find("SplashNodeContainer");
+        RepeatContainer = backgroundLayerRenderer.transform.Find("RepeatContainer");
 
         StaminaTextMesh = backgroundLayerRenderer.transform.Find("StaminaCostText").GetComponent<TextMesh>();
         BlackDiceTextMesh = BlackContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
@@ -95,6 +98,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
         RangeTextMesh = RangeContainer.transform.Find("RangeText").GetComponent<TextMesh>();
         FlatBonusTextMesh = FlatContainer.transform.Find("FlatBonusText").GetComponent<TextMesh>();
+        RepeatTextMesh = RepeatContainer.transform.Find("RepeatText").GetComponent<TextMesh>();
 
         IsSelected = false;
         IsDisabled = false;
@@ -144,6 +148,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         SetTextOrHide(highRowAnchor, AttackDetail.minimumRange, MinRange1Container, null, ref highRowIndex);
         SetTextOrHide(highRowAnchor, AttackDetail.magicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
         SetTextOrHide(highRowAnchor, AttackDetail.nodeSplash ? 1 : 0, SplashNodeContainer, null, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetail.repeat == 1 ? 0 : AttackDetail.repeat, RepeatContainer, RepeatTextMesh, ref highRowIndex);
 
         hoverLayerRenderer.material = AttackDetail.notEnoughStamina(UnitProperties.StaminaLeft()) ? fade_red_material : fade_green_material;
         hoverLayerRenderer.enabled = IsSelected;

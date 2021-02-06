@@ -32,6 +32,8 @@ public class EncounterBehavior : MonoBehaviour
     public TextMesh attackFlatModifierText;
     public GameObject attackDodgeDiceContainer;
     public TextMesh attackDodgeDiceText;
+    public GameObject attackRepeatContainer;
+    public TextMesh attackRepeatText;
     public GameObject attackAnchor;
 
     public GameObject defenseBlackDiceContainer;
@@ -65,7 +67,7 @@ public class EncounterBehavior : MonoBehaviour
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
-    
+    private int attackRepeatCounter;
 
     private Vector3 anchorOffset;
     private Vector3 offsetDiceResultPresentation;
@@ -121,7 +123,7 @@ public class EncounterBehavior : MonoBehaviour
         {
             if (encounterToResolve.Any())
             {
-                SetGlobalVisibility(true);
+                attackRepeatCounter = 1;
                 currentEncounter = encounterToResolve.First();
                 SetupEncounterDisplay();
             }
@@ -144,6 +146,8 @@ public class EncounterBehavior : MonoBehaviour
 
     private void SetupEncounterDisplay()
     {
+        SetGlobalVisibility(true);
+
         attackerPortraitRenderer.material = currentEncounter.Attacker.portrait;
         defenderPortraitRenderer.material = currentEncounter.Defender.portrait;
 
@@ -173,6 +177,8 @@ public class EncounterBehavior : MonoBehaviour
         PlaceAndDisplayModifier(attackFlatModifierContainer, attackFlatModifierText, currentEncounter.Attack.flatModifier, attackAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
         PlaceAndDisplayModifier(attackDodgeDiceContainer, attackDodgeDiceText, currentEncounter.Attack.dodgeLevel, attackDodgeDiceContainer, Vector3.zero, currentEncounter.Attacker.side == UnitSide.Player ? false : true, ref index);
 
+        PlaceAndDisplayModifier(attackRepeatContainer, attackRepeatText, currentEncounter.Attack.repeat - attackRepeatCounter + 1, attackRepeatContainer, Vector3.zero, currentEncounter.Attack.repeat > 1 ? true : false, ref index, 1); ;
+
         index = 0;
         PlaceAndDisplayModifier(defenseBlackDiceContainer, defenseBlackDiceText, currentEncounter.Defense.BlackDices, defenseAnchor, anchorOffset, false, ref index);
         PlaceAndDisplayModifier(defenseBlueDiceContainer, defenseBlueDiceText, currentEncounter.Defense.BlueDices, defenseAnchor, anchorOffset, false, ref index);
@@ -180,12 +186,12 @@ public class EncounterBehavior : MonoBehaviour
         PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, currentEncounter.Defense.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
         PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, currentEncounter.Defense.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
 
-    
+        
     }
 
-    private void PlaceAndDisplayModifier(GameObject container, TextMesh text, int value, GameObject anchor, Vector3 offset, bool showZero, ref int offsetIndex)
+    private void PlaceAndDisplayModifier(GameObject container, TextMesh text, int value, GameObject anchor, Vector3 offset, bool showDefaultValue, ref int offsetIndex, int defaultValue = 0)
     {
-        if (value == 0 && !showZero)
+        if (value == defaultValue && !showDefaultValue)
         {
             container.SetActive(false);
             return;
@@ -428,9 +434,19 @@ public class EncounterBehavior : MonoBehaviour
 
         encounterToResolve.Remove(currentEncounter);
         encounterResolved.Add(currentEncounter);
-        currentEncounter = null;
+
+        if(attackRepeatCounter < currentEncounter.Attack.repeat)
+        {
+            attackRepeatCounter++;
+            SetupEncounterDisplay();
+        }
+        else{
+            currentEncounter = null;
+
+        }
     }
 
+    #region Token Effect
     private void UseLuckEvent(GameObject position)
     {
         var unit = currentEncounter.Attacker.side == UnitSide.Player ? (PlayerProperties)currentEncounter.Attacker : (PlayerProperties)currentEncounter.Defender;
@@ -451,8 +467,8 @@ public class EncounterBehavior : MonoBehaviour
         ThrowOneDice(dice);
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
     }
+    #endregion
 
- 
 
     #region visibility
     private void SetGlobalVisibility(bool visible)
