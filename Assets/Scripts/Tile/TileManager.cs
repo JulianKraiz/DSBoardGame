@@ -347,11 +347,12 @@ public class TileManager : MonoBehaviour
     {
         if (canMove)
         {
-            var pathcost = pathFinder.GetPathhStaminaCost(currentPath) - (firstMovementFree ? 1 : 0);
-
             var currentUnit = players.FirstOrDefault(p => p.isActive) ?? enemies.FirstOrDefault(p => p.isActive);
             var currentUnitObject = currentUnit.gameObject;
 
+            var pathcost = pathFinder.GetPathStaminaCost(currentPath,firstMovementFree, currentUnit.frozenToken);
+
+            
             if (currentUnit.HasEnoughStaminaToMove() <= pathcost)
             {
                 return;

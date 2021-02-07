@@ -64,9 +64,15 @@ namespace Assets.Scripts.Tile
             return bestPath;
         }
 
-        public int GetPathhStaminaCost(List<PositionBehavior> path)
+        public int GetPathStaminaCost(List<PositionBehavior> path, bool firstMovement, bool isFrozen)
         {
-            return path.Sum(p => p.GetNodeCost());
+            var cost = 0;
+            foreach(var node in path)
+            {
+                cost += node.GetNodeCost() - (firstMovement ? 1 : 0) + (isFrozen ? 1 : 0);
+                firstMovement = false;
+            }
+            return cost;
         }
 
         private float PathDistance(PositionBehavior start, List<PositionBehavior> path)

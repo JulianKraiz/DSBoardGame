@@ -436,7 +436,7 @@ public class EncounterBehavior : MonoBehaviour
                 damageToApply = 0;
                 hit = false;
             }
-            currentEncounter.Defender.ConsumeStamina(1);
+            currentEncounter.Defender.ConsumeStamina(1 + (currentEncounter.Defender.frozenToken ? 1 : 0));
         }
 
         currentEncounter.Defender.RecieveInjuries(damageToApply);
