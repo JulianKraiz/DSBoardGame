@@ -5,7 +5,6 @@ using System;
 
 public class PlayerDisplayBehavior : MonoBehaviour
 {
-
     private Vector3 translateOffset;
     private Vector3 smallScaleOffset;
     private Vector3 bigScaleOffset;
@@ -27,6 +26,11 @@ public class PlayerDisplayBehavior : MonoBehaviour
     public GameObject rightHandAnchor;
     public GameObject sideAnchor;
     public GameObject armourAnchor;
+
+    public GameObject bleedToken;
+    public GameObject poisonToken;
+    public GameObject staggerToken;
+    public GameObject frozenToken;
 
     private GameObject leftEquipementCopy;
     private GameObject rightEquipementCopy;
@@ -85,6 +89,11 @@ public class PlayerDisplayBehavior : MonoBehaviour
             rightEquipementCopy = CopyAndPlaceEquipement(playerProperties.rightEquipement, rightHandAnchor, rightEquipementCopy);
             sideEquipementCopy = CopyAndPlaceEquipement(playerProperties.sideEquipement, sideAnchor, sideEquipementCopy);
             armourEquipementCopy = CopyAndPlaceEquipement(playerProperties.armourEquipement, armourAnchor, armourEquipementCopy);
+
+            bleedToken.SetActive(playerProperties.bleedToken);
+            poisonToken.SetActive(playerProperties.poisonToken);
+            staggerToken.SetActive(playerProperties.staggerToken);
+            frozenToken.SetActive(playerProperties.frozenToken);
         }
     }
 

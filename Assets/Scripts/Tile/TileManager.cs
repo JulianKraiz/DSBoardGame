@@ -90,22 +90,19 @@ public class TileManager : MonoBehaviour
         var activeEnemy = enemies.FirstOrDefault(p => p.isActive);
         if (previousPlayer != null)
         {
-            // next turn is enemy
-            previousPlayer.Deactivate();
+            previousPlayer.EndOfTurn();
             isEnemyTurn = true;
             LastActiveEnemy = -1;
         }
         else if (activeEnemy != null)
         {
-            activeEnemy.Deactivate();
+            activeEnemy.EndOfTurn();
             if (LastActiveEnemy < enemies.Count - 1)
             {
-                // next turn is still enemy
                 isEnemyTurn = true;
             }
             else
             {
-                // next turn is player.
                 LastActivePlayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer : -1;
             }
         }
@@ -139,6 +136,8 @@ public class TileManager : MonoBehaviour
 
         currentUnitHasAttacked = false;
         currentUnitHasMoved = false;
+
+        CheckUnitsAlive();
     }
 
     #region Battle Preparation
@@ -187,8 +186,7 @@ public class TileManager : MonoBehaviour
 
         foreach (var player in players)
         {
-            player.ResetStaminaAndInjuries();
-            player.Deactivate();
+            player.EndOfTurn();
         }
 
         var potentialPositions = GetAuthorizedEntryPositions(enteredFrom);
@@ -329,6 +327,7 @@ public class TileManager : MonoBehaviour
         foreach (var unit in players)
         {
             unit.ResetStaminaAndInjuries();
+            unit.RemoveStatusEffect(false);
         }
 
         var nextActiveplayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer + 1 : 0;
@@ -425,13 +424,13 @@ public class TileManager : MonoBehaviour
         var currentAttack = (AttackDetail)attackObject;
 
         var currentSide = players.Any(p => p.isActive) ? UnitSide.Player : UnitSide.Hollow;
-        var targetSide = currentAttack.targetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
+        var targetSide = currentAttack.TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
 
-        var minRange = currentAttack.minimumRange;
-        var maxRange = currentAttack.infiniteRange ? 20 : currentAttack.range;
+        var minRange = currentAttack.MinimumRange;
+        var maxRange = currentAttack.InfiniteRange ? 20 : currentAttack.Range;
         var startingPosition = positions.First(positions => positions.HasActiveUnit());
 
-        var inRangeNodes = pathFinder.GetAllNodeWithinRange(minRange, maxRange, startingPosition,positions).Keys;
+        var inRangeNodes = pathFinder.GetAllNodeWithinRange(minRange, maxRange, startingPosition, positions).Keys;
 
         foreach (var node in inRangeNodes)
         {
@@ -475,10 +474,10 @@ public class TileManager : MonoBehaviour
     private void ApplyAttack(GameObject target)
     {
         var targetProperties = target.GetComponent<UnitBasicProperties>();
-        ComputeAndApplyAttack(currentSelectedAttack, targetProperties, currentUnitInBrillance, positions);
+        ComputeAndApplyAttack(currentSelectedAttack, targetProperties);
     }
 
-    private void ComputeAndApplyAttack(AttackDetail attack, UnitBasicProperties originalTarget, IEnumerable<UnitBasicProperties> allAvailableTargets, IEnumerable<PositionBehavior> allPositions)
+    private void ComputeAndApplyAttack(AttackDetail attack, UnitBasicProperties originalTarget)
     {
         var encounters = new List<Encounter>();
 
@@ -488,10 +487,10 @@ public class TileManager : MonoBehaviour
         var targetPosition = positions.FirstOrDefault(p => p.HasUnit(originalTarget.gameObject));
 
         var currentSide = players.Any(p => p.isActive) ? UnitSide.Player : UnitSide.Hollow;
-        var targetSide = attack.targetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
+        var targetSide = attack.TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
 
         IList<UnitBasicProperties> targets = new List<UnitBasicProperties>();
-        if (attack.nodeSplash)
+        if (attack.NodeSplash)
         {
             targets = targetPosition.GetUnits(targetSide).Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
         }
@@ -506,10 +505,10 @@ public class TileManager : MonoBehaviour
             encounter.Attacker = source;
             encounter.Defender = target;
             encounter.Attack = attack;
-            encounter.Defense = target.GetDefenseDices(attack.magicAttack);
+            encounter.Defense = target.GetDefenseDices(attack.MagicAttack);
             encounters.Add(encounter);
         }
-        
+
         EventManager.RaiseEvent(ObjectEventType.EncountersToResolve, encounters);
         EventManager.StartListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
     }
@@ -518,20 +517,29 @@ public class TileManager : MonoBehaviour
     {
         currentUnitHasAttacked = true;
         EventManager.StopListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
-        var encounters = (List<Encounter>)encounterLoad;
-        foreach (var encounter in encounters)
-        {
-            var target = encounter.Defender;
-            if (target.StaminaLeft() <= 0)
-            {
-                EventManager.RaiseEvent(GameObjectEventType.UnitDestroyed, target.gameObject);
-            }
-        }
+
+        CheckUnitsAlive();
+
         EventManager.RaiseEvent(ObjectEventType.AttackApplied, currentSelectedAttack);
     }
 
-
-
+    public void CheckUnitsAlive()
+    {
+        foreach (var enemy in enemies.ToList())
+        {
+            if (enemy.StaminaLeft() <= 0)
+            {
+                EventManager.RaiseEvent(GameObjectEventType.UnitDestroyed, enemy.gameObject);
+            }
+        }
+        foreach (var player in players.ToList())
+        {
+            if (player.StaminaLeft() <= 0)
+            {
+                EventManager.RaiseEvent(GameObjectEventType.UnitDestroyed, player.gameObject);
+            }
+        }
+    }
 
     private void UnitDestroyed(GameObject unit)
     {

@@ -2,29 +2,62 @@
 {
     public class AttackDetail
     {
-        public int staminaCost = 0;
+        public int StaminaCost = 0;
         public int BlackDices = 0;
         public int BlueDices = 0;
-        public int orangeAttackDices = 0;
-        public int flatModifier = 0;
+        public int OrangeAttackDices = 0;
+        public int FlatModifier = 0;
 
-        public bool magicAttack = false;
+        public bool MagicAttack = false;
 
-        public int minimumRange = 0;
-        public int range = 0;
-        public bool infiniteRange = false;
-        public int dodgeLevel = 0;
+        public int MinimumRange = 0;
+        public int Range = 0;
+        public bool InfiniteRange = false;
+        public int DodgeLevel = 0;
 
-        public int repeat = 1;
+        public int Repeat = 1;
+        internal bool Poison = false;
+        internal bool Stagger = false;
+        internal bool Bleed = false;
+        internal bool Frozen = false;
 
-        public bool nodeSplash = false;
-        public bool targetAllies = false;
-        public bool affectAllInRangeUnits = false;
-        public AttackSide side;
+        public bool NodeSplash = false;
+        public bool TargetAllies = false;
+        public bool AffectAllInRangeUnits = false;
+        public AttackSide Side;
+        
 
         public bool notEnoughStamina(int unitStamina)
         {
-            return unitStamina - staminaCost <= 0;
+            return unitStamina - StaminaCost <= 0;
+        }
+
+        public AttackDetail Clone()
+        {
+            var clone = new AttackDetail()
+            {
+                StaminaCost = this.StaminaCost,
+                BlackDices = this.BlackDices,
+                BlueDices = this.BlueDices,
+                OrangeAttackDices = this.OrangeAttackDices,
+                FlatModifier = this.FlatModifier,
+                MagicAttack = this.MagicAttack,
+                MinimumRange = this.MinimumRange,
+                Range = this.Range,
+                InfiniteRange = this.InfiniteRange,
+                DodgeLevel = this.DodgeLevel,
+
+                Repeat = this.Repeat,
+                Poison = this.Poison,
+                Stagger = this.Stagger,
+                Bleed = this.Bleed,
+                Frozen = this.Frozen,
+                NodeSplash = this.NodeSplash,
+                TargetAllies = this.TargetAllies,
+                AffectAllInRangeUnits = this.AffectAllInRangeUnits,
+                Side = this.Side,
+            };
+            return clone;
         }
     }
 }

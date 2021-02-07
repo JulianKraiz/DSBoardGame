@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Unit;
 using BoardGame.Script.Events;
+using System;
 using UnityEngine;
 
 public class UnitBasicProperties : MonoBehaviour
@@ -19,6 +20,12 @@ public class UnitBasicProperties : MonoBehaviour
 
     public bool hasActivationToken;
     public bool hasAggroToken;
+
+    public bool hasEmber = false;
+    public bool bleedToken;
+    public bool poisonToken;
+    public bool staggerToken;
+    public bool frozenToken;
 
     public GameObject leftEquipement;
     public GameObject rightEquipement;
@@ -146,7 +153,18 @@ public class UnitBasicProperties : MonoBehaviour
 
     public void RecieveInjuries(int injuriesRecieved)
     {
+        if (injuriesRecieved >= 3 && hasEmber)
+        {
+            injuriesRecieved -= 1;
+        }
+
         injuries += injuriesRecieved;
+
+        if (injuriesRecieved > 0 && bleedToken)
+        {
+            injuries += 2;
+            bleedToken = false;
+        }
     }
 
     private void BrillanceCapsuleClicked(GameObject position)
@@ -171,5 +189,29 @@ public class UnitBasicProperties : MonoBehaviour
         }
         
         return result;
+    }
+
+    public void EndOfTurn()
+    {
+        Deactivate();
+        ApplyStatusEffect();
+        RemoveStatusEffect();
+
+    }
+
+    private void ApplyStatusEffect()
+    {
+        if(poisonToken)
+        {
+            RecieveInjuries(1);
+        }
+    }
+
+    internal void RemoveStatusEffect(bool endOfActivationCleanse = true)
+    {
+        poisonToken = false;
+        staggerToken = false;
+        frozenToken = false;
+        bleedToken = endOfActivationCleanse ? bleedToken : false;
     }
 }

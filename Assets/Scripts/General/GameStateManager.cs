@@ -90,13 +90,13 @@ public class GameStateManager : MonoBehaviour
                 new AttackDetail()
                 {
                     BlackDices = 2,
-                    staminaCost = 0,
+                    StaminaCost = 0,
                 },
                 new AttackDetail()
                 {
                     BlackDices = 2,
-                    staminaCost = 2,
-                    nodeSplash = true,
+                    StaminaCost = 2,
+                    NodeSplash = true,
                 }
             };
         }
@@ -136,17 +136,17 @@ public class GameStateManager : MonoBehaviour
                 new AttackDetail()
                 {
                     BlackDices = 1,
-                    staminaCost = 0,
-                    minimumRange = 1,
-                    range = 1
+                    StaminaCost = 0,
+                    MinimumRange = 1,
+                    Range = 1
                 },
                 new AttackDetail()
                 {
                     BlackDices = 1,
-                    flatModifier = 1,
-                    staminaCost = 3,
-                    minimumRange = 1,
-                    range = 1
+                    FlatModifier = 1,
+                    StaminaCost = 3,
+                    MinimumRange = 1,
+                    Range = 1
                 }
         };
 
@@ -162,15 +162,15 @@ public class GameStateManager : MonoBehaviour
             {
                 new AttackDetail()
                 {
-                    staminaCost = 0,
-                    range = 2,
-                    flatModifier = -2,
+                    StaminaCost = 0,
+                    Range = 2,
+                    FlatModifier = -2,
                 },
                 new AttackDetail()
                 {
-                    staminaCost = 0,
-                    range = 2,
-                    flatModifier = -6
+                    StaminaCost = 0,
+                    Range = 2,
+                    FlatModifier = -6
                 }
         };
         }
@@ -207,13 +207,13 @@ public class GameStateManager : MonoBehaviour
                 new AttackDetail()
                 {
                     BlueDices = 1,
-                    staminaCost = 0,
+                    StaminaCost = 0,
                 },
                 new AttackDetail()
                 {
                     BlackDices = 1,
                     BlueDices = 1,
-                    staminaCost = 4,
+                    StaminaCost = 4,
                 }
         };
         }
@@ -251,14 +251,14 @@ public class GameStateManager : MonoBehaviour
                 new AttackDetail()
                 {
                     BlueDices = 2,
-                    flatModifier = -1,
-                    staminaCost = 0,
+                    FlatModifier = -1,
+                    StaminaCost = 0,
                 },
                 new AttackDetail()
                 {
                     BlackDices = 3,
-                    flatModifier = -1,
-                    staminaCost = 3,
+                    FlatModifier = -1,
+                    StaminaCost = 3,
             }
         };
         }

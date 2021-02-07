@@ -156,11 +156,11 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
     private void DisableSide(object attack)
     {
         var detail = (AttackDetail)attack;
-        if(detail.side == AttackSide.Left || detail.side == AttackSide.Both)
+        if(detail.Side == AttackSide.Left || detail.Side == AttackSide.Both)
         {
             DisableLeftDisplay();
         }
-        else if (detail.side == AttackSide.Right || detail.side == AttackSide.Both)
+        else if (detail.Side == AttackSide.Right || detail.Side == AttackSide.Both)
         {
             DisableRightDisplay();
         }

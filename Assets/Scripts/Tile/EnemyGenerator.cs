@@ -32,8 +32,8 @@ public class EnemyGenerator : MonoBehaviour
         {
             new AttackDetail()
             {
-                flatModifier = 4,
-                dodgeLevel = 1,
+                FlatModifier = 4,
+                DodgeLevel = 1,
             }
         };
 
@@ -51,6 +51,11 @@ public class EnemyGenerator : MonoBehaviour
         prop.side = UnitSide.Hollow;
         prop.hitPoints = 1;
 
+        prop.staggerToken = true;
+        prop.bleedToken = true;
+        prop.poisonToken = true;
+        prop.frozenToken = true;
+
         prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
         var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
         equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
@@ -65,11 +70,11 @@ public class EnemyGenerator : MonoBehaviour
         {
             new AttackDetail()
             {
-                flatModifier = 3,
-                magicAttack = true,
-                dodgeLevel = 1,
-                infiniteRange = true,
-                repeat = 2,
+                FlatModifier = 3,
+                MagicAttack = true,
+                DodgeLevel = 1,
+                InfiniteRange = true,
+                Frozen = true,
             }
         };
 

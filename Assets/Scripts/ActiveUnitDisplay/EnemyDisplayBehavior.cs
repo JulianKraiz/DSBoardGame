@@ -6,6 +6,11 @@ public class EnemyDisplayBehavior : MonoBehaviour
     private EnemyProperties enemyProperties;
     private GameObject enemy;
 
+    public GameObject bleedToken;
+    public GameObject poisonToken;
+    public GameObject staggerToken;
+    public GameObject frozenToken;
+
     private MeshRenderer focusedLayerRenderer;
 
     private Vector3 translateOffset;
@@ -34,6 +39,13 @@ public class EnemyDisplayBehavior : MonoBehaviour
 
     void Update()
     {
+        if(enemyProperties != null)
+        {
+            bleedToken.SetActive(enemyProperties.bleedToken);
+            poisonToken.SetActive(enemyProperties.poisonToken);
+            staggerToken.SetActive(enemyProperties.staggerToken);
+            frozenToken.SetActive(enemyProperties.frozenToken);
+        }
     }
 
     public void SetUnit(GameObject unit)

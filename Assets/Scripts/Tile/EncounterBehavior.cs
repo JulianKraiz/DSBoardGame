@@ -64,6 +64,16 @@ public class EncounterBehavior : MonoBehaviour
     public GameObject confirmButton;
     public MoveChoserBehavior dodgeMover;
 
+    public GameObject attackBleedToken;
+    public GameObject attackPoisonToken;
+    public GameObject attackStaggerToken;
+    public GameObject attackFrozenToken;
+
+    public GameObject defenseBleedToken;
+    public GameObject defensePoisonToken;
+    public GameObject defenseStaggerToken;
+    public GameObject defenseFrozenToken;
+
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
@@ -83,7 +93,7 @@ public class EncounterBehavior : MonoBehaviour
         encounterResolved = new List<Encounter>();
         encounterToResolve = new List<Encounter>();
         dices = new List<GameObject>();
-        
+
         anchorOffset = new Vector3(1.35f, 0f, 0f);
         offsetDiceResultPresentation = new Vector3(2, 0, 0);
 
@@ -173,11 +183,15 @@ public class EncounterBehavior : MonoBehaviour
         var index = 0;
         PlaceAndDisplayModifier(attackBlackDiceContainer, attackBlackDiceText, currentEncounter.Attack.BlackDices, attackAnchor, anchorOffset, false, ref index);
         PlaceAndDisplayModifier(attackBlueDiceContainer, attackBlueDiceText, currentEncounter.Attack.BlueDices, attackAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(attackOrangeDiceContainer, attackOrangeDiceText, currentEncounter.Attack.orangeAttackDices, attackAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(attackFlatModifierContainer, attackFlatModifierText, currentEncounter.Attack.flatModifier, attackAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
-        PlaceAndDisplayModifier(attackDodgeDiceContainer, attackDodgeDiceText, currentEncounter.Attack.dodgeLevel, attackDodgeDiceContainer, Vector3.zero, currentEncounter.Attacker.side == UnitSide.Player ? false : true, ref index);
+        PlaceAndDisplayModifier(attackOrangeDiceContainer, attackOrangeDiceText, currentEncounter.Attack.OrangeAttackDices, attackAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(attackFlatModifierContainer, attackFlatModifierText, currentEncounter.Attack.FlatModifier, attackAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
+        PlaceAndDisplayModifier(attackDodgeDiceContainer, attackDodgeDiceText, currentEncounter.Attack.DodgeLevel, attackDodgeDiceContainer, Vector3.zero, currentEncounter.Attacker.side == UnitSide.Player ? false : true, ref index);
 
-        PlaceAndDisplayModifier(attackRepeatContainer, attackRepeatText, currentEncounter.Attack.repeat - attackRepeatCounter + 1, attackRepeatContainer, Vector3.zero, currentEncounter.Attack.repeat > 1 ? true : false, ref index, 1); ;
+        PlaceAndDisplayModifier(attackRepeatContainer, attackRepeatText, currentEncounter.Attack.Repeat - attackRepeatCounter + 1, attackRepeatContainer, Vector3.zero, currentEncounter.Attack.Repeat > 1 ? true : false, ref index, 1); ;
+        attackBleedToken.SetActive(currentEncounter.Attack.Bleed);
+        attackPoisonToken.SetActive(currentEncounter.Attack.Poison);
+        attackStaggerToken.SetActive(currentEncounter.Attack.Stagger);
+        attackFrozenToken.SetActive(currentEncounter.Attack.Frozen);
 
         index = 0;
         PlaceAndDisplayModifier(defenseBlackDiceContainer, defenseBlackDiceText, currentEncounter.Defense.BlackDices, defenseAnchor, anchorOffset, false, ref index);
@@ -185,8 +199,12 @@ public class EncounterBehavior : MonoBehaviour
         PlaceAndDisplayModifier(defenseOrangeDiceContainer, defenseOrangeDiceText, currentEncounter.Defense.OrangeDices, defenseAnchor, anchorOffset, false, ref index);
         PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, currentEncounter.Defense.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
         PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, currentEncounter.Defense.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
+        defenseBleedToken.SetActive(currentEncounter.Defender.bleedToken);
+        defensePoisonToken.SetActive(currentEncounter.Defender.poisonToken);
+        defenseStaggerToken.SetActive(currentEncounter.Defender.staggerToken);
+        defenseFrozenToken.SetActive(currentEncounter.Defender.frozenToken);
 
-        
+
     }
 
     private void PlaceAndDisplayModifier(GameObject container, TextMesh text, int value, GameObject anchor, Vector3 offset, bool showDefaultValue, ref int offsetIndex, int defaultValue = 0)
@@ -259,7 +277,7 @@ public class EncounterBehavior : MonoBehaviour
     private void AttackHovered(GameObject position)
     {
         attackButtonRenderer.enabled = true;
-        SpawnDices(currentEncounter.Attack.BlackDices, currentEncounter.Attack.BlueDices, currentEncounter.Attack.orangeAttackDices, 0);
+        SpawnDices(currentEncounter.Attack.BlackDices, currentEncounter.Attack.BlueDices, currentEncounter.Attack.OrangeAttackDices, 0);
     }
 
     private void AttackSelected(GameObject position)
@@ -339,7 +357,7 @@ public class EncounterBehavior : MonoBehaviour
             currentEncounter.DamageRoll = 0;
             currentEncounter.DodgeRoll = 0;
 
-            currentEncounter.DamageRoll = currentEncounter.Attack.flatModifier;
+            currentEncounter.DamageRoll = currentEncounter.Attack.FlatModifier;
             currentEncounter.DefenseRoll = currentEncounter.Defense.FlatReduce;
 
             foreach (var dice in dices)
@@ -358,7 +376,7 @@ public class EncounterBehavior : MonoBehaviour
                     currentEncounter.DamageRoll += behavior.GetValue();
                 }
             }
-           
+
             int i = 0;
             foreach (var dice in dices)
             {
@@ -366,7 +384,7 @@ public class EncounterBehavior : MonoBehaviour
                 i++;
             }
 
-            
+
             if (CanAutoConfirmResult())
             {
                 Invoke(nameof(ApplyResult), 2f);
@@ -404,12 +422,8 @@ public class EncounterBehavior : MonoBehaviour
 
     private void ApplyResult()
     {
-        foreach (var dice in dices)
-        {
-            dice.GetComponent<RaiseEventOnClicked>().PositionClicked -= ThrowOneDice;
-        }
-
         var damageToApply = currentEncounter.DamageRoll;
+        var hit = true;
 
         if (rollType == EncounterRollType.Block || rollType == EncounterRollType.Attack)
         {
@@ -417,30 +431,32 @@ public class EncounterBehavior : MonoBehaviour
         }
         else if (rollType == EncounterRollType.Dodge)
         {
-            if (currentEncounter.DodgeRoll >= currentEncounter.Attack.dodgeLevel)
+            if (currentEncounter.DodgeRoll >= currentEncounter.Attack.DodgeLevel)
             {
                 damageToApply = 0;
+                hit = false;
             }
             currentEncounter.Defender.ConsumeStamina(1);
         }
 
-        if (damageToApply >= 3 && currentEncounter.Defender.side == UnitSide.Player && ((PlayerProperties)currentEncounter.Defender).hasEmber)
-        {
-            damageToApply -= 1;
-        }
-
         currentEncounter.Defender.RecieveInjuries(damageToApply);
-        currentEncounter.Attacker.ConsumeStamina(currentEncounter.Attack.staminaCost);
+        currentEncounter.Attacker.ConsumeStamina(currentEncounter.Attack.StaminaCost);
+
+        currentEncounter.Defender.bleedToken = hit && (currentEncounter.Defender.bleedToken || currentEncounter.Attack.Bleed);
+        currentEncounter.Defender.poisonToken = hit && (currentEncounter.Defender.poisonToken || currentEncounter.Attack.Poison);
+        currentEncounter.Defender.staggerToken = hit && (currentEncounter.Defender.staggerToken || currentEncounter.Attack.Stagger);
+        currentEncounter.Defender.frozenToken = hit && (currentEncounter.Defender.frozenToken || currentEncounter.Attack.Frozen);
 
         encounterToResolve.Remove(currentEncounter);
         encounterResolved.Add(currentEncounter);
 
-        if(attackRepeatCounter < currentEncounter.Attack.repeat)
+        if (attackRepeatCounter < currentEncounter.Attack.Repeat)
         {
             attackRepeatCounter++;
             SetupEncounterDisplay();
         }
-        else{
+        else
+        {
             currentEncounter = null;
 
         }
@@ -463,6 +479,11 @@ public class EncounterBehavior : MonoBehaviour
 
     private void DiceSelectedForRethrow(GameObject dice)
     {
+        foreach (var alldice in dices)
+        {
+            alldice.GetComponent<RaiseEventOnClicked>().PositionClicked -= DiceSelectedForRethrow;
+        }
+
         diceResultRecieved--;
         ThrowOneDice(dice);
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
@@ -500,6 +521,11 @@ public class EncounterBehavior : MonoBehaviour
         defenseEstusBehavior.SetUnit(null);
         defenseLuckBehavior.SetUnit(null);
         defenseEmberBehavior.SetUnit(null);
+
+        attackBleedToken.SetActive(false);
+        attackPoisonToken.SetActive(false);
+        attackStaggerToken.SetActive(false);
+        attackFrozenToken.SetActive(false);
     }
 
     private void SetConfirmButtonVisibility(bool visibility)
@@ -513,7 +539,7 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved);
     }
 
-   
+
 }
 
 public enum EncounterRollType
