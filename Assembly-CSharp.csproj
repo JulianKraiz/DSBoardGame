@@ -99,11 +99,15 @@
     <Compile Include="Assets\Scripts\Unit\EnemyProperties.cs" />
     <Compile Include="Assets\Scripts\Unit\EquipementProperties.cs" />
     <Compile Include="Assets\Scripts\Unit\HoverBrillanceBehavior.cs" />
+    <Compile Include="Assets\Scripts\Unit\IA\EnemyAttackResolver.cs" />
+    <Compile Include="Assets\Scripts\Unit\IA\EnemyAutoTurnResolver.cs" />
+    <Compile Include="Assets\Scripts\Unit\IA\EnemyMovementResolver.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Attacks\AttackDetail.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Attacks\AttackSide.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Attacks\DefenseDices.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Attacks\DefenseResult.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Attacks\Encounter.cs" />
+    <Compile Include="Assets\Scripts\Unit\Model\Attacks\PreferedTarget.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Units\EnemyClassEnum.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Units\PlayerClassEnum.cs" />
     <Compile Include="Assets\Scripts\Unit\Model\Units\UnitSide.cs" />

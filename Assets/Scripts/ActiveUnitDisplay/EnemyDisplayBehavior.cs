@@ -41,10 +41,10 @@ public class EnemyDisplayBehavior : MonoBehaviour
     {
         if(enemyProperties != null)
         {
-            bleedToken.SetActive(enemyProperties.bleedToken);
-            poisonToken.SetActive(enemyProperties.poisonToken);
-            staggerToken.SetActive(enemyProperties.staggerToken);
-            frozenToken.SetActive(enemyProperties.frozenToken);
+            bleedToken.SetActive(enemyProperties.isBleeding);
+            poisonToken.SetActive(enemyProperties.isPoisoned);
+            staggerToken.SetActive(enemyProperties.isStaggered);
+            frozenToken.SetActive(enemyProperties.isFrozen);
         }
     }
 

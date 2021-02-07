@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Unit.Model.Attacks
+﻿using System;
+
+namespace Assets.Scripts.Unit.Model.Attacks
 {
     public class AttackDetail
     {
@@ -25,7 +27,25 @@
         public bool TargetAllies = false;
         public bool AffectAllInRangeUnits = false;
         public AttackSide Side;
-        
+
+        public PreferedTarget targetPreference;
+
+        internal bool InRange(int pathLength)
+        {
+            if(pathLength < MinimumRange)
+            {
+                return false;
+            }
+            if(InfiniteRange)
+            {
+                return true;
+            }
+            else if(pathLength > Range)
+            {
+                return false;
+            }
+            return true;
+        }
 
         public bool notEnoughStamina(int unitStamina)
         {

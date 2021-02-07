@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Assets.Scripts.Tile
 {
-    public class PathFinder
+    public static class PathFinder
     {
-        public List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target)
+        public static List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target)
         {
             if (start == target)
             {
@@ -14,7 +14,7 @@ namespace Assets.Scripts.Tile
             return GetPath(start, target, new List<PositionBehavior>());
         }
 
-        public Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start, IList<PositionBehavior> positions)
+        public static Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start, IList<PositionBehavior> positions)
         {
             var result = new Dictionary<PositionBehavior, int>();
 
@@ -31,7 +31,7 @@ namespace Assets.Scripts.Tile
             return result;
         }
 
-        private List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
+        private static List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
         {
             List<PositionBehavior> bestPath = null;
 
@@ -64,7 +64,7 @@ namespace Assets.Scripts.Tile
             return bestPath;
         }
 
-        public int GetPathStaminaCost(List<PositionBehavior> path, bool firstMovement, bool isFrozen)
+        public static int GetPathStaminaCost(List<PositionBehavior> path, bool firstMovement, bool isFrozen)
         {
             var cost = 0;
             foreach(var node in path)
@@ -75,7 +75,7 @@ namespace Assets.Scripts.Tile
             return cost;
         }
 
-        private float PathDistance(PositionBehavior start, List<PositionBehavior> path)
+        private static float PathDistance(PositionBehavior start, List<PositionBehavior> path)
         {
             if (path == null)
             {
@@ -92,12 +92,12 @@ namespace Assets.Scripts.Tile
             return distance;
         }
 
-        private bool CloserNode(PositionBehavior nodeA, PositionBehavior nodeB, PositionBehavior target)
+        private static bool CloserNode(PositionBehavior nodeA, PositionBehavior nodeB, PositionBehavior target)
         {
             return NodeWorldDistance(nodeA, target) <= NodeWorldDistance(nodeB, target);
         }
 
-        private float NodeWorldDistance(PositionBehavior node1, PositionBehavior node2)
+        private static float NodeWorldDistance(PositionBehavior node1, PositionBehavior node2)
         {
             return (node2.transform.position - node1.transform.position).magnitude;
         }

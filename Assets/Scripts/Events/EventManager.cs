@@ -28,6 +28,7 @@ namespace BoardGame.Script.Events
         AbilityTrigger,
         LuckTrigger,
         EstusTrigger,
+        EndUnitTurn,
     }
 
     public enum ObjectEventType

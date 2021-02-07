@@ -22,7 +22,7 @@ public class TileManager : MonoBehaviour
     public TileMonsterSettings monsterSettings;
 
     protected EnemyGenerator enemyGenerator;
-    protected PathFinder pathFinder;
+    private EnemyAutoTurnResolver enemyAi;
 
     private List<PositionBehavior> currentPath;
     private List<UnitBasicProperties> currentUnitInBrillance;
@@ -48,8 +48,8 @@ public class TileManager : MonoBehaviour
             }
         }
 
+        enemyAi = FindObjectOfType<EnemyAutoTurnResolver>();
         enemyGenerator = GetComponent<EnemyGenerator>();
-        pathFinder = new PathFinder();
         currentPath = new List<PositionBehavior>();
         currentUnitInBrillance = new List<UnitBasicProperties>();
 
@@ -78,6 +78,11 @@ public class TileManager : MonoBehaviour
         {
             Cleared();
         }
+    }
+
+    private void EndUnitTurn(GameObject _)
+    {
+        ActivateNextUnit();
     }
 
     private void ActivateNextUnit()
@@ -123,21 +128,28 @@ public class TileManager : MonoBehaviour
             }
         }
 
+        currentUnitHasAttacked = false;
+        currentUnitHasMoved = false;
+        CheckUnitsAlive();
+
         if (isEnemyTurn)
         {
             LastActiveEnemy++;
             enemies[LastActiveEnemy].Activate();
+            enemyAi.ResolveEnemyTurn(enemies[LastActiveEnemy].gameObject);
         }
         else
         {
+            players[LastActivePlayer].hasAggroToken = false;
+
             LastActivePlayer++;
             players[LastActivePlayer].Activate();
+
+            players[LastActivePlayer].hasAggroToken = true;
         }
 
-        currentUnitHasAttacked = false;
-        currentUnitHasMoved = false;
-
-        CheckUnitsAlive();
+        
+        
     }
 
     #region Battle Preparation
@@ -165,6 +177,7 @@ public class TileManager : MonoBehaviour
             EventManager.StartListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
             EventManager.StartListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
             EventManager.StartListening(ObjectEventType.UnitMoved, UnitMoved);
+            EventManager.StartListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
 
             foreach (var position in positions)
             {
@@ -286,7 +299,6 @@ public class TileManager : MonoBehaviour
         {
             unit.Deactivate();
             unit.hasAggroToken = false;
-            unit.hasActivationToken = false;
         }
 
         EventManager.StopListening(GameObjectEventType.PositionHovered, ShowPath);
@@ -298,6 +310,7 @@ public class TileManager : MonoBehaviour
         EventManager.StopListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
         EventManager.StopListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
         EventManager.StopListening(ObjectEventType.UnitMoved, UnitMoved);
+        EventManager.StopListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
 
         foreach (var child in positions)
         {
@@ -350,7 +363,7 @@ public class TileManager : MonoBehaviour
             var currentUnit = players.FirstOrDefault(p => p.isActive) ?? enemies.FirstOrDefault(p => p.isActive);
             var currentUnitObject = currentUnit.gameObject;
 
-            var pathcost = pathFinder.GetPathStaminaCost(currentPath,firstMovementFree, currentUnit.frozenToken);
+            var pathcost = PathFinder.GetPathStaminaCost(currentPath,firstMovementFree, currentUnit.isFrozen);
 
             
             if (currentUnit.HasEnoughStaminaToMove() <= pathcost)
@@ -389,7 +402,7 @@ public class TileManager : MonoBehaviour
             var starting = positions.First(p => p.HasActiveUnit());
             var target = positions.First(p => p.name == targetPosition.name);
 
-            var path = pathFinder.GetPath(starting, target);
+            var path = PathFinder.GetPath(starting, target);
             if (path != null)
             {
                 currentPath = path;
@@ -431,7 +444,7 @@ public class TileManager : MonoBehaviour
         var maxRange = currentAttack.InfiniteRange ? 20 : currentAttack.Range;
         var startingPosition = positions.First(positions => positions.HasActiveUnit());
 
-        var inRangeNodes = pathFinder.GetAllNodeWithinRange(minRange, maxRange, startingPosition, positions).Keys;
+        var inRangeNodes = PathFinder.GetAllNodeWithinRange(minRange, maxRange, startingPosition, positions).Keys;
 
         foreach (var node in inRangeNodes)
         {
@@ -514,7 +527,7 @@ public class TileManager : MonoBehaviour
         EventManager.StartListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
     }
 
-    private void CheckUnitStatusAfterEncounter(object encounterLoad)
+    private void CheckUnitStatusAfterEncounter(object _)
     {
         currentUnitHasAttacked = true;
         EventManager.StopListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);

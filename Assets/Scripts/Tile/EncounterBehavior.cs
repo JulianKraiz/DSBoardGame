@@ -199,10 +199,10 @@ public class EncounterBehavior : MonoBehaviour
         PlaceAndDisplayModifier(defenseOrangeDiceContainer, defenseOrangeDiceText, currentEncounter.Defense.OrangeDices, defenseAnchor, anchorOffset, false, ref index);
         PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, currentEncounter.Defense.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
         PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, currentEncounter.Defense.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
-        defenseBleedToken.SetActive(currentEncounter.Defender.bleedToken);
-        defensePoisonToken.SetActive(currentEncounter.Defender.poisonToken);
-        defenseStaggerToken.SetActive(currentEncounter.Defender.staggerToken);
-        defenseFrozenToken.SetActive(currentEncounter.Defender.frozenToken);
+        defenseBleedToken.SetActive(currentEncounter.Defender.isBleeding);
+        defensePoisonToken.SetActive(currentEncounter.Defender.isPoisoned);
+        defenseStaggerToken.SetActive(currentEncounter.Defender.isStaggered);
+        defenseFrozenToken.SetActive(currentEncounter.Defender.isFrozen);
 
 
     }
@@ -436,16 +436,16 @@ public class EncounterBehavior : MonoBehaviour
                 damageToApply = 0;
                 hit = false;
             }
-            currentEncounter.Defender.ConsumeStamina(1 + (currentEncounter.Defender.frozenToken ? 1 : 0));
+            currentEncounter.Defender.ConsumeStamina(1 + (currentEncounter.Defender.isFrozen ? 1 : 0));
         }
 
         currentEncounter.Defender.RecieveInjuries(damageToApply);
         currentEncounter.Attacker.ConsumeStamina(currentEncounter.Attack.StaminaCost);
 
-        currentEncounter.Defender.bleedToken = hit && (currentEncounter.Defender.bleedToken || currentEncounter.Attack.Bleed);
-        currentEncounter.Defender.poisonToken = hit && (currentEncounter.Defender.poisonToken || currentEncounter.Attack.Poison);
-        currentEncounter.Defender.staggerToken = hit && (currentEncounter.Defender.staggerToken || currentEncounter.Attack.Stagger);
-        currentEncounter.Defender.frozenToken = hit && (currentEncounter.Defender.frozenToken || currentEncounter.Attack.Frozen);
+        currentEncounter.Defender.isBleeding = hit && (currentEncounter.Defender.isBleeding || currentEncounter.Attack.Bleed);
+        currentEncounter.Defender.isPoisoned = hit && (currentEncounter.Defender.isPoisoned || currentEncounter.Attack.Poison);
+        currentEncounter.Defender.isStaggered = hit && (currentEncounter.Defender.isStaggered || currentEncounter.Attack.Stagger);
+        currentEncounter.Defender.isFrozen = hit && (currentEncounter.Defender.isFrozen || currentEncounter.Attack.Frozen);
 
         encounterToResolve.Remove(currentEncounter);
         encounterResolved.Add(currentEncounter);

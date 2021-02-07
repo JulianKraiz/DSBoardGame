@@ -32,6 +32,9 @@ public class PlayerDisplayBehavior : MonoBehaviour
     public GameObject staggerToken;
     public GameObject frozenToken;
 
+    public GameObject aggroToken;
+    public GameObject activationToken;
+
     private GameObject leftEquipementCopy;
     private GameObject rightEquipementCopy;
     private GameObject sideEquipementCopy;
@@ -90,10 +93,13 @@ public class PlayerDisplayBehavior : MonoBehaviour
             sideEquipementCopy = CopyAndPlaceEquipement(playerProperties.sideEquipement, sideAnchor, sideEquipementCopy);
             armourEquipementCopy = CopyAndPlaceEquipement(playerProperties.armourEquipement, armourAnchor, armourEquipementCopy);
 
-            bleedToken.SetActive(playerProperties.bleedToken);
-            poisonToken.SetActive(playerProperties.poisonToken);
-            staggerToken.SetActive(playerProperties.staggerToken);
-            frozenToken.SetActive(playerProperties.frozenToken);
+            bleedToken.SetActive(playerProperties.isBleeding);
+            poisonToken.SetActive(playerProperties.isPoisoned);
+            staggerToken.SetActive(playerProperties.isStaggered);
+            frozenToken.SetActive(playerProperties.isFrozen);
+
+            aggroToken.SetActive(playerProperties.hasAggroToken);
+            activationToken.SetActive(playerProperties.hasActivationToken);
         }
     }
 

@@ -34,6 +34,7 @@ public class EnemyGenerator : MonoBehaviour
             {
                 FlatModifier = 4,
                 DodgeLevel = 1,
+                targetPreference = PreferedTarget.Closest,
             }
         };
 
@@ -69,6 +70,7 @@ public class EnemyGenerator : MonoBehaviour
                 MagicAttack = true,
                 DodgeLevel = 1,
                 InfiniteRange = true,
+                targetPreference = PreferedTarget.Aggro,
             }
         };
 

@@ -138,10 +138,10 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
     private void ApplyStagger()
     {
-        AttackDetailModified.StaminaCost += UnitProperties.staggerToken ? 1 : 0;
+        AttackDetailModified.StaminaCost += UnitProperties.isStaggered ? 1 : 0;
         if (UnitProperties is EnemyProperties)
         {
-            AttackDetailModified.FlatModifier = System.Math.Max(0, AttackDetailModified.FlatModifier - (UnitProperties.staggerToken ? 1 : 0));
+            AttackDetailModified.FlatModifier = System.Math.Max(0, AttackDetailModified.FlatModifier - (UnitProperties.isStaggered ? 1 : 0));
         }
     }
 

@@ -22,10 +22,10 @@ public class UnitBasicProperties : MonoBehaviour
     public bool hasAggroToken;
 
     public bool hasEmber = false;
-    public bool bleedToken;
-    public bool poisonToken;
-    public bool staggerToken;
-    public bool frozenToken;
+    public bool isBleeding;
+    public bool isPoisoned;
+    public bool isStaggered;
+    public bool isFrozen;
 
     public GameObject leftEquipement;
     public GameObject rightEquipement;
@@ -67,7 +67,6 @@ public class UnitBasicProperties : MonoBehaviour
     public void Activate()
     {
         isActive = true;
-        hasActivationToken = false;
         ActivateInternal();
         EventManager.RaiseEvent(GameObjectEventType.UnitIsActivated, gameObject);
     }
@@ -160,10 +159,10 @@ public class UnitBasicProperties : MonoBehaviour
 
         injuries += injuriesRecieved;
 
-        if (injuriesRecieved > 0 && bleedToken)
+        if (injuriesRecieved > 0 && isBleeding)
         {
             injuries += 2;
-            bleedToken = false;
+            isBleeding = false;
         }
     }
 
@@ -201,7 +200,7 @@ public class UnitBasicProperties : MonoBehaviour
 
     private void ApplyStatusEffect()
     {
-        if(poisonToken)
+        if(isPoisoned)
         {
             RecieveInjuries(1);
         }
@@ -209,9 +208,9 @@ public class UnitBasicProperties : MonoBehaviour
 
     internal void RemoveStatusEffect(bool endOfActivationCleanse = true)
     {
-        poisonToken = false;
-        staggerToken = false;
-        frozenToken = false;
-        bleedToken = endOfActivationCleanse ? bleedToken : false;
+        isPoisoned = false;
+        isStaggered = false;
+        isFrozen = false;
+        isBleeding = endOfActivationCleanse ? isBleeding : false;
     }
 }
