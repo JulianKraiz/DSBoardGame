@@ -61,6 +61,10 @@ namespace Assets.Scripts.Unit
             }
 
             var closestProperties = closestPlayers.Select(p => p.GetComponent<PlayerProperties>()).ToList();
+            if(closestProperties.Count == 1)
+            {
+                return closestProperties.First().gameObject;
+            }
             if(closestProperties.Count > 1)
             {
                 var aggro = closestProperties.FirstOrDefault(p => p.hasAggroToken);

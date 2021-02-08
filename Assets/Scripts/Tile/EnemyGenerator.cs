@@ -51,6 +51,7 @@ public class EnemyGenerator : MonoBehaviour
         prop.enemyType = EnemyClassEnum.HollowSoldier;
         prop.side = UnitSide.Hollow;
         prop.hitPoints = 1;
+        prop.isStaggered = true;
 
         prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
         var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();

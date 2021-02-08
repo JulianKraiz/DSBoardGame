@@ -76,6 +76,7 @@ namespace Assets.Scripts.Unit.Model.Attacks
                 TargetAllies = this.TargetAllies,
                 AffectAllInRangeUnits = this.AffectAllInRangeUnits,
                 Side = this.Side,
+                targetPreference = this.targetPreference,
             };
             return clone;
         }

@@ -120,8 +120,8 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     {
         if (!EventsRegistered)
         {
-            EventManager.StartListening(ObjectEventType.AttackSelected, AttackSelectedEventRecieved);
-            EventManager.StartListening(ObjectEventType.AttackApplied, DeselectAttackAndNotifySideExausted);
+            EventManager.StartListening(ObjectEventType.AttackSelected, OtherAttackSelected);
+            EventManager.StartListening(ObjectEventType.AttackApplied, DeselectAttack);
             EventManager.StartListening(GameObjectEventType.ActiveUnitMoved, CheckEnoughStaminaLeft);
             hoverLayerRenderer.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += AttackClicked;
             hoverLayerRenderer.gameObject.GetComponent<RaiseEventOnEnterExit>().PositionEnter += AttackHovered;
@@ -173,7 +173,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
 
         if (IsSelected)
         {
-            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetailModified);
+            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetail);
         }
     }
 
@@ -194,48 +194,49 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     }
 
 
-    private void AttackSelectedEventRecieved(object selectedLoad)
+    private void OtherAttackSelected(object selectedLoad)
     {
-        if ((AttackDetail)selectedLoad != AttackDetailModified && IsSelected)
+        if ((AttackDetail)selectedLoad != AttackDetail && IsSelected)
         {
             AttackClicked(null);
             hoverLayerRenderer.enabled = false;
         }
     }
 
-    private void AttackClicked(GameObject _)
+    private void AttackClicked(GameObject eventArg)
     {
-        if (!IsSelected)
-        {
-            IsSelected = true;
-            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetailModified);
-        }
-        else
+        if (IsSelected || eventArg == null)
         {
             IsSelected = false;
-            EventManager.RaiseEvent(ObjectEventType.AttackDeselected, AttackDetailModified);
+            EventManager.RaiseEvent(ObjectEventType.AttackDeselected, AttackDetail);
         }
+        else if (!IsSelected)
+        {
+            IsSelected = true;
+            EventManager.RaiseEvent(ObjectEventType.AttackSelected, AttackDetail);
+        }
+
         selectedLayerRenderer.enabled = IsSelected;
         hoverLayerRenderer.enabled = !IsSelected;
     }
 
     private void AttackHoveredEnd(GameObject _)
     {
-        EventManager.RaiseEvent(ObjectEventType.AttackHoverEnded, AttackDetailModified);
+        EventManager.RaiseEvent(ObjectEventType.AttackHoverEnded, AttackDetail);
         hoverLayerRenderer.enabled = false;
         selectedLayerRenderer.enabled = IsSelected;
     }
 
     private void AttackHovered(GameObject _)
     {
-        EventManager.RaiseEvent(ObjectEventType.AttackHovered, AttackDetailModified);
+        EventManager.RaiseEvent(ObjectEventType.AttackHovered, AttackDetail);
         hoverLayerRenderer.enabled = !IsSelected;
         selectedLayerRenderer.enabled = IsSelected;
     }
 
-    private void DeselectAttackAndNotifySideExausted(object attackApplied)
+    private void DeselectAttack(object attackApplied)
     {
-        if (AttackDetailModified == attackApplied)
+        if (AttackDetail == attackApplied)
         {
             AttackClicked(null);
         }

@@ -112,11 +112,11 @@ public class TileManager : MonoBehaviour
             }
         }
         else
-        {
+        { 
+            // first turn, set the  next player to be the one carying the activation token, or the first players by default.
             isEnemyTurn = true;
             LastActiveEnemy = -1;
-
-            // first turn, set the  next player to be the one carying the activation token, or the first players by default.
+           
             var lastactivePlayer = players.FirstOrDefault(p => p.hasActivationToken);
             if (lastactivePlayer == null)
             {
@@ -140,16 +140,21 @@ public class TileManager : MonoBehaviour
         }
         else
         {
-            players[LastActivePlayer].hasAggroToken = false;
-
+            RemoveAllAggroToken();
             LastActivePlayer++;
             players[LastActivePlayer].Activate();
-
-            players[LastActivePlayer].hasAggroToken = true;
         }
 
         
         
+    }
+
+    private void RemoveAllAggroToken()
+    {
+        foreach(var player in players)
+        {
+            player.hasAggroToken = false;
+        }
     }
 
     #region Battle Preparation
@@ -217,9 +222,6 @@ public class TileManager : MonoBehaviour
                 }
             }
         }
-
-        // should be determined before entering in a room.
-        players[Random.Range(0, players.Count - 1)].hasAggroToken = true;
     }
 
     private void SetupEnemies()
@@ -298,7 +300,6 @@ public class TileManager : MonoBehaviour
         foreach (var unit in players)
         {
             unit.Deactivate();
-            unit.hasAggroToken = false;
         }
 
         EventManager.StopListening(GameObjectEventType.PositionHovered, ShowPath);
@@ -529,12 +530,18 @@ public class TileManager : MonoBehaviour
 
     private void CheckUnitStatusAfterEncounter(object _)
     {
-        currentUnitHasAttacked = true;
         EventManager.StopListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
 
-        CheckUnitsAlive();
+        var currentAttack = currentSelectedAttack;
 
-        EventManager.RaiseEvent(ObjectEventType.AttackApplied, currentSelectedAttack);
+        currentUnitHasAttacked = true;
+        currentSelectedAttack = null;
+
+        InternalHideAttackTargets();
+        CheckUnitsAlive();
+        EventManager.RaiseEvent(ObjectEventType.AttackApplied, currentAttack);
+        
+
     }
 
     public void CheckUnitsAlive()

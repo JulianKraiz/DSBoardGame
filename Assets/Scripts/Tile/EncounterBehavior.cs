@@ -134,7 +134,6 @@ public class EncounterBehavior : MonoBehaviour
             if (encounterToResolve.Any())
             {
                 attackRepeatCounter = 1;
-                currentEncounter = encounterToResolve.First();
                 SetupEncounterDisplay();
             }
             else if (encounterToResolve.Count == 0)
@@ -156,6 +155,9 @@ public class EncounterBehavior : MonoBehaviour
 
     private void SetupEncounterDisplay()
     {
+        currentEncounter = encounterToResolve.First().Clone();
+
+        ApplyStagger();
         SetGlobalVisibility(true);
 
         attackerPortraitRenderer.material = currentEncounter.Attacker.portrait;
@@ -205,6 +207,18 @@ public class EncounterBehavior : MonoBehaviour
         defenseFrozenToken.SetActive(currentEncounter.Defender.isFrozen);
 
 
+    }
+
+    private void ApplyStagger()
+    {
+        if (currentEncounter.Attacker.side == UnitSide.Player)
+        {
+            currentEncounter.Attack.StaminaCost += currentEncounter.Attacker.isStaggered ? 1 : 0;
+        }
+        else if (currentEncounter.Attacker.side == UnitSide.Hollow)
+        {
+            currentEncounter.Attack.FlatModifier = System.Math.Max(0, currentEncounter.Attack.FlatModifier - (currentEncounter.Attacker.isStaggered ? 1 : 0));
+        }
     }
 
     private void PlaceAndDisplayModifier(GameObject container, TextMesh text, int value, GameObject anchor, Vector3 offset, bool showDefaultValue, ref int offsetIndex, int defaultValue = 0)
@@ -447,9 +461,8 @@ public class EncounterBehavior : MonoBehaviour
         currentEncounter.Defender.isStaggered = hit && (currentEncounter.Defender.isStaggered || currentEncounter.Attack.Stagger);
         currentEncounter.Defender.isFrozen = hit && (currentEncounter.Defender.isFrozen || currentEncounter.Attack.Frozen);
 
-        encounterToResolve.Remove(currentEncounter);
         encounterResolved.Add(currentEncounter);
-
+        
         if (attackRepeatCounter < currentEncounter.Attack.Repeat)
         {
             attackRepeatCounter++;
@@ -458,7 +471,10 @@ public class EncounterBehavior : MonoBehaviour
         else
         {
             currentEncounter = null;
-
+            if(encounterToResolve.Any())
+            {
+                encounterToResolve.RemoveAt(0);
+            }
         }
     }
 
@@ -489,7 +505,6 @@ public class EncounterBehavior : MonoBehaviour
         EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
     }
     #endregion
-
 
     #region visibility
     private void SetGlobalVisibility(bool visible)
@@ -536,7 +551,7 @@ public class EncounterBehavior : MonoBehaviour
 
     private void NotifyEncountersResolved()
     {
-        EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved);
+        EventManager.RaiseEvent(ObjectEventType.EncountersResolved, encounterResolved.ToList());
     }
 
 

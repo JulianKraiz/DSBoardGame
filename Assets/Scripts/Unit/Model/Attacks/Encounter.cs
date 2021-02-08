@@ -12,5 +12,16 @@
         public int DefenseRoll { get; set; }
         public int DodgeRoll { get; set; }
 
+        public Encounter Clone()
+        {
+            return new Encounter()
+            {
+                Attacker = Attacker,
+                Defender = Defender,
+                Attack = Attack.Clone(),
+                Defense = Defense
+            };
+        }
     }
+
 }

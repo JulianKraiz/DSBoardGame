@@ -23,14 +23,20 @@ public class EnemyAutoTurnResolver : MonoBehaviour
 
     void Update()
     {
-        
+
+        if (enemy != null && !attackstoExecute.Any())
+        {
+            enemy = null;
+            attackstoExecute.Clear();
+            EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
+        }
     }
 
     public void ResolveEnemyTurn(GameObject enemyObject)
     {
         enemy = enemyObject.GetComponent<EnemyProperties>();
 
-        if(enemy.leftEquipement != null)
+        if (enemy.leftEquipement != null)
         {
             var t = enemy.leftEquipement.GetComponent<EquipementProperties>();
             attackstoExecute.AddRange(enemy.leftEquipement.GetComponent<EquipementProperties>().attackList);
@@ -49,22 +55,25 @@ public class EnemyAutoTurnResolver : MonoBehaviour
         LaunchAttack();
     }
 
-    private void LaunchAttack()
+    private bool LaunchAttack()
     {
-        if(!attackstoExecute.Any())
+        if (!attackstoExecute.Any())
         {
             EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
-            return;
+            return false;
         }
 
         var nextAttack = attackstoExecute.First();
         attackResolver.ExecuteAttack(enemy, nextAttack);
+        return true;
     }
 
     // After is applied and units checked out. ready for next round.
     private void AttackApplied(object _)
     {
-        attackstoExecute.RemoveAt(0);
-        LaunchAttack();
+        if (attackstoExecute.Any())
+        {
+            attackstoExecute.RemoveAt(0);
+        }
     }
 }
