@@ -168,7 +168,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         SetTextOrHide(highRowAnchor, AttackDetailModified.Push ? 1 : 0, PushTokenContainer, null, ref highRowIndex);
 
         var unitStaminaLeft = UnitProperties is PlayerProperties ? UnitProperties.StaminaLeft() : 10;
-        hoverLayerRenderer.material = AttackDetailModified.notEnoughStamina(unitStaminaLeft) ? fade_red_material : fade_green_material;
+        hoverLayerRenderer.material = AttackDetailModified.NotEnoughStamina(unitStaminaLeft) ? fade_red_material : fade_green_material;
         hoverLayerRenderer.enabled = IsSelected;
 
         StaminaTextMesh.text = $"[{AttackDetailModified.StaminaCost}]";

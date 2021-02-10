@@ -40,7 +40,7 @@ namespace BoardGame.Script.Events
         AttackHoverEnded,
         PlayerSheetClicked,
         AddSoulsToCache,
-        EncountersToResolve,
+        EncounterToResolve,
         EncountersResolved,
         UnitMoved,
     }

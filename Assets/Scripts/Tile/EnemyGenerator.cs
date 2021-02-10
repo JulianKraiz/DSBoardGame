@@ -72,7 +72,9 @@ public class EnemyGenerator : MonoBehaviour
                 DodgeLevel = 1,
                 InfiniteRange = true,
                 TargetPreference = PreferedTarget.Aggro,
-                Push = true,
+                ShiftBefore = 2,
+                Repeat = 3,
+                NodeSplash = true,
             }
         };
 

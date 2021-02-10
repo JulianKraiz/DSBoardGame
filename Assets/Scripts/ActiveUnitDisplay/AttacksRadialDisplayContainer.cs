@@ -27,7 +27,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         EventManager.StartListening(GameObjectEventType.UnitIsActivated, SetupUnitAttackPanels);
         EventManager.StartListening(ObjectEventType.AttackApplied, DisableSide);
         EventManager.StartListening(GameObjectEventType.ResetAndHideAttackDial, ClearAllFromEvent);
-        EventManager.StartListening(ObjectEventType.EncountersToResolve, HideTemporaily);
+        EventManager.StartListening(ObjectEventType.EncounterToResolve, HideTemporaily);
         EventManager.StartListening(ObjectEventType.EncountersResolved, ShowExisting);
 
         LeftAttack1 = transform.Find("LeftAttack1").GetComponent<AttackRadialDisplayBehavior>(); 

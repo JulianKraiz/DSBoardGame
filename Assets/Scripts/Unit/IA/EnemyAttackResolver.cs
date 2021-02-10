@@ -22,7 +22,7 @@ namespace Assets.Scripts.Unit
             EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
         }
 
-        private GameObject FindClosestTarget(EnemyProperties enemy, AttackDetail attack, PositionBehavior currentPosition, List<PositionBehavior> positions)
+        private GameObject FindClosestTarget(EnemyProperties attacker, AttackDetail attack, PositionBehavior currentPosition, List<PositionBehavior> positions)
         {
             var closestPlayers = new List<GameObject>();
             var closestDistance = 20;

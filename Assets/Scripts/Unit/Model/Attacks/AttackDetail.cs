@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.Tile;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts.Unit.Model.Attacks
 {
@@ -23,7 +26,8 @@ namespace Assets.Scripts.Unit.Model.Attacks
         internal bool Bleed = false;
         internal bool Frozen = false;
 
-        public int Move = 0;
+        public int ShiftBefore = 0;
+        public int ShiftAfter = 0;
         public bool Push = false;
         public int PushDamage = 0;
         public bool NodeSplash = false;
@@ -33,7 +37,7 @@ namespace Assets.Scripts.Unit.Model.Attacks
 
         public PreferedTarget TargetPreference;
 
-        internal bool InRange(int pathLength)
+        internal bool InRange(int pathLength, bool withShiftBefore = true)
         {
             if(pathLength < MinimumRange)
             {
@@ -43,24 +47,59 @@ namespace Assets.Scripts.Unit.Model.Attacks
             {
                 return true;
             }
-            else if(pathLength > Range)
+            else if(pathLength > Range + ShiftBefore)
             {
                 return false;
             }
             return true;
         }
 
-        public bool notEnoughStamina(int unitStamina)
+        public bool NotEnoughStamina(int unitStamina)
         {
             return unitStamina - StaminaCost <= 0;
+        }
+
+        public List<UnitBasicProperties> FindTargetsInRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions, bool includeShiftBefore = true)
+        {
+            var currentSide = attacker.side;
+            var targetSide = TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
+
+            var targets = new List<UnitBasicProperties>();
+            foreach (var position in positions)
+            {
+                var pathLength = PathFinder.GetPath(attackerPosition, position).Count;
+                if (!InRange(pathLength, includeShiftBefore))
+                {
+                    continue;
+                }
+
+                var potential = position.GetUnits(targetSide).ToList();
+                targets.AddRange(potential.Select(p => p.GetComponent<UnitBasicProperties>()));
+            }
+            return targets;
+        }
+
+        public List<UnitBasicProperties> FindTargetsOnNode(UnitBasicProperties attacker, PositionBehavior targetPosition, UnitBasicProperties originalTarget)
+        {
+            var currentSide = attacker.side;
+            var targetSide = TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
+
+            var targets = new List<UnitBasicProperties>();
+            if (NodeSplash)
+            {
+                targets = targetPosition.GetUnits(targetSide).Select(u => u.GetComponent<UnitBasicProperties>()).ToList();
+            }
+            else
+            {
+                targets.Add(originalTarget);
+            }
+            return targets;
         }
 
         public AttackDetail Clone()
         {
             var clone = new AttackDetail()
             {
-                Move = this.Move,
-
                 StaminaCost = this.StaminaCost,
                 BlackDices = this.BlackDices,
                 BlueDices = this.BlueDices,
@@ -84,6 +123,8 @@ namespace Assets.Scripts.Unit.Model.Attacks
                 TargetPreference = this.TargetPreference,
                 Push = this.Push,
                 PushDamage = this.PushDamage,
+                ShiftBefore = this.ShiftBefore,
+                ShiftAfter = this.ShiftAfter,
             };
             return clone;
         }
