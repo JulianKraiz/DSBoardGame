@@ -37,6 +37,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     private Transform MagicContainer;
     private Transform SplashNodeContainer;
     private Transform RepeatContainer;
+    private Transform PushTokenContainer;
 
     private UnitBasicProperties UnitProperties;
     private AttackDetail AttackDetail;
@@ -92,6 +93,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         MagicContainer = backgroundLayerRenderer.transform.Find("MagicContainer");
         SplashNodeContainer = backgroundLayerRenderer.transform.Find("SplashNodeContainer");
         RepeatContainer = backgroundLayerRenderer.transform.Find("RepeatContainer");
+        PushTokenContainer = backgroundLayerRenderer.transform.Find("PushTokenContainer");
 
         StaminaTextMesh = backgroundLayerRenderer.transform.Find("StaminaCostText").GetComponent<TextMesh>();
         BlackDiceTextMesh = BlackContainer.transform.Find("BlackDiceText").GetComponent<TextMesh>();
@@ -163,6 +165,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
         SetTextOrHide(highRowAnchor, AttackDetailModified.MagicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
         SetTextOrHide(highRowAnchor, AttackDetailModified.NodeSplash ? 1 : 0, SplashNodeContainer, null, ref highRowIndex);
         SetTextOrHide(highRowAnchor, AttackDetailModified.Repeat == 1 ? 0 : AttackDetailModified.Repeat, RepeatContainer, RepeatTextMesh, ref highRowIndex);
+        SetTextOrHide(highRowAnchor, AttackDetailModified.Push ? 1 : 0, PushTokenContainer, null, ref highRowIndex);
 
         var unitStaminaLeft = UnitProperties is PlayerProperties ? UnitProperties.StaminaLeft() : 10;
         hoverLayerRenderer.material = AttackDetailModified.notEnoughStamina(unitStaminaLeft) ? fade_red_material : fade_green_material;
@@ -181,7 +184,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
     {
         var isVisible = value != 0 || showAnyValue;
 
-        if (textMesh != null)
+        if (textMesh != null) 
         {
             textMesh.text = value.ToString();
         }

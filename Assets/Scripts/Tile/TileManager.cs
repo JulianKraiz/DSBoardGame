@@ -136,7 +136,7 @@ public class TileManager : MonoBehaviour
         {
             LastActiveEnemy++;
             enemies[LastActiveEnemy].Activate();
-            enemyAi.ResolveEnemyTurn(enemies[LastActiveEnemy].gameObject);
+            //enemyAi.ResolveEnemyTurn(enemies[LastActiveEnemy].gameObject);
         }
         else
         {
@@ -423,9 +423,21 @@ public class TileManager : MonoBehaviour
             node.Hide();
         }
     }
+
+    public PositionBehavior GetUnitPosition(GameObject unit)
+    {
+        foreach(var position in positions)
+        {
+            if(position.HasUnit(unit))
+            {
+                return position;
+            }
+        }
+        return null;
+    }
     #endregion
 
-    #region attacks
+    #region Attacks
     private void ShowSelectedAttackTargets(object attackObject)
     {
         currentSelectedAttack = (AttackDetail)attackObject;

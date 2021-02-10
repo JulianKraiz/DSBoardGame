@@ -1,4 +1,5 @@
-﻿using BoardGame.Script.Events;
+﻿using Assets.Scripts.Tile;
+using BoardGame.Script.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,14 +16,15 @@ public class MoveChoserBehavior : MonoBehaviour
     public MoveChoserArrowBehavior SouthWestArrowBehavior;
     public MoveChoserArrowBehavior WestArrowBehavior;
     public MoveChoserArrowBehavior NorthWestArrowBehavior;
+    public TextMesh DescriptionText;
 
     public GameObject OcclusionBackground;
 
     public delegate void PositionEvent(PositionBehavior position);
     public event PositionEvent PositionClicked;
 
-    PositionBehavior currentPosition;
-    UnitBasicProperties unit;
+    private PositionBehavior currentPosition;
+    private UnitBasicProperties movingUnit;
 
     void Start()
     {
@@ -42,7 +44,7 @@ public class MoveChoserBehavior : MonoBehaviour
         {
             MoveFrom = currentPosition,
             MoveTo = position,
-            Unit = unit.gameObject,
+            Unit = movingUnit.gameObject,
         };
         EventManager.RaiseEvent(ObjectEventType.UnitMoved, moveCommand);
 
@@ -56,10 +58,12 @@ public class MoveChoserBehavior : MonoBehaviour
     {
     }
 
-    public void SetupAndShow(UnitBasicProperties unit)
+    public void SetupAndShow(UnitBasicProperties unit, MoveChoserType moveType, UnitBasicProperties awayFrom = null)
     {
-        this.unit = unit;
-        if (this.unit == null)
+        DescriptionText.text = $"Choose {moveType.ToString()} {Environment.NewLine} Direction";
+
+        this.movingUnit = unit;
+        if (this.movingUnit == null)
         {
             NorthArrowBehavior.SetTarget(null);
             NorthEastArrowBehavior.SetTarget(null);
@@ -70,6 +74,7 @@ public class MoveChoserBehavior : MonoBehaviour
             WestArrowBehavior.SetTarget(null);
             NorthWestArrowBehavior.SetTarget(null);
             OcclusionBackground.SetActive(false);
+            DescriptionText.gameObject.SetActive(false);
         }
         else
         {
@@ -77,9 +82,19 @@ public class MoveChoserBehavior : MonoBehaviour
             var tile = gameState.GetActiveTile();
             var positions = tile.GetPositions();
 
-            currentPosition = positions.First(p => p.HasUnit(this.unit.gameObject));
+            currentPosition = positions.First(p => p.HasUnit(unit.gameObject));
+            var awayFromPosition = awayFrom != null ? positions.First(p => p.HasUnit(awayFrom.gameObject)) : null;
 
             OcclusionBackground.SetActive(true);
+            DescriptionText.gameObject.SetActive(true);
+            ShowValidDirections(currentPosition, awayFromPosition);
+        }
+    }
+
+    private void ShowValidDirections(PositionBehavior currentPosition, PositionBehavior awayFromPosition = null)
+    {
+        if (awayFromPosition == null || currentPosition == awayFromPosition)
+        {
             NorthArrowBehavior.SetTarget(currentPosition.NorthPosition);
             NorthEastArrowBehavior.SetTarget(currentPosition.NorthEastPosition);
             EastArrowBehavior.SetTarget(currentPosition.EastPosition);
@@ -89,5 +104,49 @@ public class MoveChoserBehavior : MonoBehaviour
             WestArrowBehavior.SetTarget(currentPosition.WestPosition);
             NorthWestArrowBehavior.SetTarget(currentPosition.NorthWestPosition);
         }
-    } 
+        else
+        {
+            var currentDistance = PathFinder.GetPath(awayFromPosition, currentPosition).Count;
+            if (currentPosition.NorthPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.NorthPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                NorthArrowBehavior.SetTarget(currentPosition.NorthPosition);
+            }
+            if (currentPosition.NorthEastPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.NorthEastPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                NorthEastArrowBehavior.SetTarget(currentPosition.NorthEastPosition);
+            }
+            if (currentPosition.EastPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.EastPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                EastArrowBehavior.SetTarget(currentPosition.EastPosition);
+            }
+            if (currentPosition.SouthEastPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.SouthEastPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                SouthEastArrowBehavior.SetTarget(currentPosition.SouthEastPosition);
+            }
+            if (currentPosition.SouthPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.SouthPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                SouthArrowBehavior.SetTarget(currentPosition.SouthPosition);
+            }
+            if (currentPosition.SouthWestPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.SouthWestPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                SouthWestArrowBehavior.SetTarget(currentPosition.SouthWestPosition);
+            }
+            if (currentPosition.WestPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.WestPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                WestArrowBehavior.SetTarget(currentPosition.WestPosition);
+            }
+            if (currentPosition.NorthWestPosition != null && PathFinder.GetPath(awayFromPosition, currentPosition.NorthWestPosition.GetComponent<PositionBehavior>()).Count > currentDistance)
+            {
+                NorthWestArrowBehavior.SetTarget(currentPosition.NorthWestPosition);
+            }
+        }
+    }
+
+}
+
+public enum MoveChoserType
+{
+    None,
+    Dodge,
+    Push
 }

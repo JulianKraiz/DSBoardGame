@@ -36,7 +36,7 @@ namespace Assets.Scripts.Unit
                 }
 
                 var potential = position.GetUnits(UnitSide.Player).ToList();
-                if (attack.targetPreference == PreferedTarget.Aggro)
+                if (attack.TargetPreference == PreferedTarget.Aggro)
                 {
                     potential = potential.Where(a => a.GetComponent<PlayerProperties>().hasAggroToken).ToList();
                 }

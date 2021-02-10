@@ -23,12 +23,15 @@ namespace Assets.Scripts.Unit.Model.Attacks
         internal bool Bleed = false;
         internal bool Frozen = false;
 
+        public int Move = 0;
+        public bool Push = false;
+        public int PushDamage = 0;
         public bool NodeSplash = false;
         public bool TargetAllies = false;
         public bool AffectAllInRangeUnits = false;
         public AttackSide Side;
 
-        public PreferedTarget targetPreference;
+        public PreferedTarget TargetPreference;
 
         internal bool InRange(int pathLength)
         {
@@ -56,6 +59,8 @@ namespace Assets.Scripts.Unit.Model.Attacks
         {
             var clone = new AttackDetail()
             {
+                Move = this.Move,
+
                 StaminaCost = this.StaminaCost,
                 BlackDices = this.BlackDices,
                 BlueDices = this.BlueDices,
@@ -76,7 +81,9 @@ namespace Assets.Scripts.Unit.Model.Attacks
                 TargetAllies = this.TargetAllies,
                 AffectAllInRangeUnits = this.AffectAllInRangeUnits,
                 Side = this.Side,
-                targetPreference = this.targetPreference,
+                TargetPreference = this.TargetPreference,
+                Push = this.Push,
+                PushDamage = this.PushDamage,
             };
             return clone;
         }

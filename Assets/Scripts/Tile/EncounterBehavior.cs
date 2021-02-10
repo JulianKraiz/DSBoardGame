@@ -63,11 +63,13 @@ public class EncounterBehavior : MonoBehaviour
 
     public GameObject confirmButton;
     public MoveChoserBehavior dodgeMover;
+    public MoveChoserBehavior pushMover;
 
     public GameObject attackBleedToken;
     public GameObject attackPoisonToken;
     public GameObject attackStaggerToken;
     public GameObject attackFrozenToken;
+    public GameObject attackPushToken;
 
     public GameObject defenseBleedToken;
     public GameObject defensePoisonToken;
@@ -121,6 +123,7 @@ public class EncounterBehavior : MonoBehaviour
 
         confirmButton.transform.Find("BackgroundButton").GetComponent<RaiseEventOnClicked>().PositionClicked += ConfirmResult;
         dodgeMover.PositionClicked += DodgeMoveSelected;
+        pushMover.PositionClicked += PushMoveSelected;
 
         EventManager.StartListening(ObjectEventType.EncountersToResolve, Resolve);
 
@@ -194,6 +197,7 @@ public class EncounterBehavior : MonoBehaviour
         attackPoisonToken.SetActive(currentEncounter.Attack.Poison);
         attackStaggerToken.SetActive(currentEncounter.Attack.Stagger);
         attackFrozenToken.SetActive(currentEncounter.Attack.Frozen);
+        attackPushToken.SetActive(currentEncounter.Attack.Push);
 
         index = 0;
         PlaceAndDisplayModifier(defenseBlackDiceContainer, defenseBlackDiceText, currentEncounter.Defense.BlackDices, defenseAnchor, anchorOffset, false, ref index);
@@ -205,8 +209,6 @@ public class EncounterBehavior : MonoBehaviour
         defensePoisonToken.SetActive(currentEncounter.Defender.isPoisoned);
         defenseStaggerToken.SetActive(currentEncounter.Defender.isStaggered);
         defenseFrozenToken.SetActive(currentEncounter.Defender.isFrozen);
-
-
     }
 
     private void ApplyStagger()
@@ -250,12 +252,12 @@ public class EncounterBehavior : MonoBehaviour
 
     private void DodgeSelected(GameObject position)
     {
-        dodgeMover.SetupAndShow(currentEncounter.Defender);
+        dodgeMover.SetupAndShow(currentEncounter.Defender, MoveChoserType.Dodge);
     }
 
     private void DodgeMoveSelected(PositionBehavior _)
     {
-        dodgeMover.SetupAndShow(null);
+        dodgeMover.SetupAndShow(null, MoveChoserType.None);
         blockButton.SetActive(false);
         dodgeButton.SetActive(false);
         rollType = EncounterRollType.Dodge;
@@ -301,6 +303,13 @@ public class EncounterBehavior : MonoBehaviour
         diceResultRecieved = 0;
         ThrowDices();
     }
+
+    private void PushMoveSelected(PositionBehavior position)
+    {
+        pushMover.SetupAndShow(null, MoveChoserType.None);
+        ApplyResultFinalize();
+    }
+
     #endregion
 
     #region dice
@@ -456,13 +465,30 @@ public class EncounterBehavior : MonoBehaviour
         currentEncounter.Defender.RecieveInjuries(damageToApply);
         currentEncounter.Attacker.ConsumeStamina(currentEncounter.Attack.StaminaCost);
 
-        currentEncounter.Defender.isBleeding = hit && (currentEncounter.Defender.isBleeding || currentEncounter.Attack.Bleed);
-        currentEncounter.Defender.isPoisoned = hit && (currentEncounter.Defender.isPoisoned || currentEncounter.Attack.Poison);
-        currentEncounter.Defender.isStaggered = hit && (currentEncounter.Defender.isStaggered || currentEncounter.Attack.Stagger);
-        currentEncounter.Defender.isFrozen = hit && (currentEncounter.Defender.isFrozen || currentEncounter.Attack.Frozen);
+        if (hit)
+        {
+            currentEncounter.Defender.isBleeding = currentEncounter.Defender.isBleeding || currentEncounter.Attack.Bleed;
+            currentEncounter.Defender.isPoisoned = currentEncounter.Defender.isPoisoned || currentEncounter.Attack.Poison;
+            currentEncounter.Defender.isStaggered = currentEncounter.Defender.isStaggered || currentEncounter.Attack.Stagger;
+            currentEncounter.Defender.isFrozen = currentEncounter.Defender.isFrozen || currentEncounter.Attack.Frozen;
 
+        }
+
+        if (hit && currentEncounter.Attack.Push)
+        {
+            pushMover.SetupAndShow(currentEncounter.Defender, MoveChoserType.Push, currentEncounter.Attacker);
+        }
+        else
+        {
+            ApplyResultFinalize();
+        }
+
+    }
+
+    private void ApplyResultFinalize()
+    {
         encounterResolved.Add(currentEncounter);
-        
+
         if (attackRepeatCounter < currentEncounter.Attack.Repeat)
         {
             attackRepeatCounter++;
@@ -471,12 +497,13 @@ public class EncounterBehavior : MonoBehaviour
         else
         {
             currentEncounter = null;
-            if(encounterToResolve.Any())
+            if (encounterToResolve.Any())
             {
                 encounterToResolve.RemoveAt(0);
             }
         }
     }
+
 
     #region Token Effect
     private void UseLuckEvent(GameObject position)
@@ -516,7 +543,8 @@ public class EncounterBehavior : MonoBehaviour
         attackerPortrait.SetActive(visible);
         defenderPortrait.SetActive(visible);
 
-        dodgeMover.SetupAndShow(null);
+        dodgeMover.SetupAndShow(null, MoveChoserType.None);
+        pushMover.SetupAndShow(null, MoveChoserType.None);
 
         SetConfirmButtonVisibility(false);
 
@@ -541,6 +569,7 @@ public class EncounterBehavior : MonoBehaviour
         attackPoisonToken.SetActive(false);
         attackStaggerToken.SetActive(false);
         attackFrozenToken.SetActive(false);
+        attackPushToken.SetActive(false);
     }
 
     private void SetConfirmButtonVisibility(bool visibility)

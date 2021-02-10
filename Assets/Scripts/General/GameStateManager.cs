@@ -11,8 +11,13 @@ public class GameStateManager : MonoBehaviour
     public List<GameObject> players = new List<GameObject>();
 
     private PlayerDisplayContainer characterDisplayContainer;
+
+    //dirty but eh;
+    public static GameStateManager Instance;
+
     void Start()
     {
+        Instance = this;
         characterDisplayContainer = GameObject.Find("UnitDisplays").GetComponent<PlayerDisplayContainer>();
         tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
         players = GameObject.FindGameObjectsWithTag("Player").ToList();
