@@ -69,12 +69,9 @@ public class EnemyGenerator : MonoBehaviour
             {
                 FlatModifier = 3,
                 MagicAttack = true,
-                DodgeLevel = 1,
                 InfiniteRange = true,
+                DodgeLevel = 1,
                 TargetPreference = PreferedTarget.Aggro,
-                ShiftBefore = 2,
-                Repeat = 3,
-                NodeSplash = true,
             }
         };
 

@@ -339,6 +339,7 @@ public class TileManager : MonoBehaviour
         {
             unit.ResetStaminaAndInjuries();
             unit.RemoveStatusEffect(false);
+            unit.hasActivationToken = false;
         }
 
         var nextActiveplayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer + 1 : 0;

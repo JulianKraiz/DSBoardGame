@@ -192,7 +192,7 @@ public class UnitBasicProperties : MonoBehaviour
 
     public void EndOfTurn()
     {
-        Deactivate();
+         Deactivate();
         ApplyStatusEffect();
         RemoveStatusEffect();
 
