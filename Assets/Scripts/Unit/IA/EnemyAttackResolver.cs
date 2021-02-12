@@ -9,66 +9,71 @@ namespace Assets.Scripts.Unit
 {
     public class EnemyAttackResolver : MonoBehaviour
     {
-        public void ExecuteAttack(EnemyProperties enemy, AttackDetail attack)
+        private GameStateManager gameState;
+
+        private void Start()
         {
-            var gameState = FindObjectOfType<GameStateManager>();
+            gameState = FindObjectOfType<GameStateManager>();
+        }
+
+        public void ExecuteAttack(EnemyProperties enemy, AttackAction attack)
+        {
             var tile = gameState.GetActiveTile();
             var positions = tile.GetPositions();
             var currentPosition = positions.First(p => p.HasUnit(enemy.gameObject));
 
-            var target = FindClosestTarget(enemy , attack, currentPosition, positions);
+            var target = FindClosestTarget(enemy, attack, currentPosition);
 
             EventManager.RaiseEvent(ObjectEventType.AttackSelected, attack);
             EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
         }
 
-        private GameObject FindClosestTarget(EnemyProperties attacker, AttackDetail attack, PositionBehavior currentPosition, List<PositionBehavior> positions)
+        private GameObject FindClosestTarget(EnemyProperties attacker, AttackAction attack, PositionBehavior currentPosition)
         {
+            var tile = gameState.GetActiveTile();
+            var positions = tile.GetPositions();
+
             var closestPlayers = new List<GameObject>();
             var closestDistance = 20;
 
-            foreach (var position in positions)
+
+            var targetsInRange = attack.FindTargetsInRange(attacker, currentPosition, positions);
+            foreach (var target in targetsInRange)
             {
-                var pathLength = PathFinder.GetPath(currentPosition, position).Count;
-                if (!attack.InRange(pathLength))
+                if (attack.TargetPreference == PreferedTarget.Aggro && !target.hasAggroToken)
                 {
                     continue;
                 }
 
-                var potential = position.GetUnits(UnitSide.Player).ToList();
-                if (attack.TargetPreference == PreferedTarget.Aggro)
-                {
-                    potential = potential.Where(a => a.GetComponent<PlayerProperties>().hasAggroToken).ToList();
-                }
+                var position = tile.GetUnitPosition(target.gameObject);
+                var distance = PathFinder.GetPath(currentPosition, position).Count;
 
-                if (potential.Count > 0)
+                if (distance < closestDistance)
                 {
-                    if (pathLength < closestDistance)
-                    {
-                        closestPlayers = potential;
-                        closestDistance = pathLength;
-                    }
-                    else if (pathLength == closestDistance)
-                    {
-                        closestPlayers.AddRange(potential);
-                    }
+                    closestPlayers.Clear();
+                    closestPlayers.Add(target.gameObject);
+                    closestDistance = distance;
+                }
+                else if (distance == closestDistance)
+                {
+                    closestPlayers.Add(target.gameObject);
                 }
             }
 
-            if(!closestPlayers.Any())
+            if (!closestPlayers.Any())
             {
                 return null;
             }
 
             var closestProperties = closestPlayers.Select(p => p.GetComponent<PlayerProperties>()).ToList();
-            if(closestProperties.Count == 1)
+            if (closestProperties.Count == 1)
             {
                 return closestProperties.First().gameObject;
             }
-            if(closestProperties.Count > 1)
+            if (closestProperties.Count > 1)
             {
                 var aggro = closestProperties.FirstOrDefault(p => p.hasAggroToken);
-                if(aggro != null)
+                if (aggro != null)
                 {
                     return aggro.gameObject;
                 }

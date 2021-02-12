@@ -26,7 +26,7 @@ public class TileManager : MonoBehaviour
 
     private List<PositionBehavior> currentPath;
     private List<UnitBasicProperties> currentUnitInBrillance;
-    private AttackDetail currentSelectedAttack;
+    private BehaviorAction currentSelectedAttack;
 
     private UnitBasicProperties currentUnit;
     private bool currentUnitHasMoved;
@@ -434,7 +434,7 @@ public class TileManager : MonoBehaviour
     #region Attacks
     private void ShowSelectedAttackTargets(object attackObject)
     {
-        currentSelectedAttack = (AttackDetail)attackObject;
+        currentSelectedAttack = (BehaviorAction)attackObject;
         ShowAvailableAttackTargets(attackObject);
     }
 
@@ -442,7 +442,7 @@ public class TileManager : MonoBehaviour
     {
         InternalHideAttackTargets();
 
-        var currentAttack = (AttackDetail)attackObject;
+        var currentAttack = (BehaviorAction)attackObject;
         var startingPosition = GetUnitPosition(currentUnit.gameObject);
 
         var targets = currentAttack.FindTargetsInRange(currentUnit, startingPosition, positions);
@@ -456,7 +456,7 @@ public class TileManager : MonoBehaviour
 
     private void HideSelectedAttackTargets(object deselectedLoad)
     {
-        var deselectedAttack = (AttackDetail)deselectedLoad;
+        var deselectedAttack = (BehaviorAction)deselectedLoad;
         if (deselectedAttack == currentSelectedAttack)
         {
             InternalHideAttackTargets();
@@ -485,19 +485,15 @@ public class TileManager : MonoBehaviour
     private void ApplyAttack(GameObject target)
     {
         var targetProperties = target.GetComponent<UnitBasicProperties>();
-        ComputeAndApplyAttack(currentSelectedAttack, targetProperties);
+        PrepareEncounterToResolve(currentSelectedAttack, targetProperties);
     }
 
-    private void ComputeAndApplyAttack(AttackDetail attack, UnitBasicProperties originalTarget)
+    private void PrepareEncounterToResolve(BehaviorAction attack, UnitBasicProperties originalTarget)
     {
         var sourcePosition = positions.FirstOrDefault(p => p.HasActiveUnit());
         var targetPosition = positions.FirstOrDefault(p => p.HasUnit(originalTarget.gameObject));
 
-        var encounter = new Encounter();
-        encounter.Attacker = currentUnit;
-        encounter.Defender = originalTarget;
-        encounter.Attack = attack;
-        encounter.Defense = originalTarget.GetDefenseDices(attack.MagicAttack);
+        var encounter = new Encounter(attack, currentUnit, originalTarget);
 
         EventManager.RaiseEvent(ObjectEventType.EncounterToResolve, encounter);
         EventManager.StartListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);

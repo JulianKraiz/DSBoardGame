@@ -90,14 +90,14 @@ public class GameStateManager : MonoBehaviour
             equipProp.equipementName = "Battle Axe";
             equipProp.name = "Battle Axe";
             equipProp.strenghRequirement = 14;
-            equipProp.attackList = new List<AttackDetail>()
+            equipProp.attackList = new List<AttackAction>()
             {
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 2,
                     StaminaCost = 0,
                 },
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 2,
                     StaminaCost = 2,
@@ -136,16 +136,16 @@ public class GameStateManager : MonoBehaviour
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_spear_material", typeof(Material)));
             equipProp.equipementName = "Spear Axe";
             equipProp.name = "Spear Axe";
-            equipProp.attackList = new List<AttackDetail>()
+            equipProp.attackList = new List<AttackAction>()
             {
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 1,
                     StaminaCost = 0,
                     MinimumRange = 1,
                     Range = 1
                 },
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 1,
                     FlatModifier = 1,
@@ -163,15 +163,15 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Talisman";
             equipProp.strenghRequirement = 12;
             equipProp.faithRequirement = 12;
-            equipProp.attackList = new List<AttackDetail>()
+            equipProp.attackList = new List<AttackAction>()
             {
-                new AttackDetail()
+                new AttackAction()
                 {
                     StaminaCost = 0,
                     Range = 2,
                     FlatModifier = -2,
                 },
-                new AttackDetail()
+                new AttackAction()
                 {
                     StaminaCost = 0,
                     Range = 2,
@@ -207,14 +207,14 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Long Sword";
             equipProp.strenghRequirement = 13;
             equipProp.dextirityRequirement = 12;
-            equipProp.attackList = new List<AttackDetail>()
+            equipProp.attackList = new List<AttackAction>()
             {
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlueDices = 1,
                     StaminaCost = 0,
                 },
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 1,
                     BlueDices = 1,
@@ -251,15 +251,15 @@ public class GameStateManager : MonoBehaviour
             equipProp.equipementName = "Estoc";
             equipProp.name = "Estoc";
             equipProp.dextirityRequirement = 14;
-            equipProp.attackList = new List<AttackDetail>()
+            equipProp.attackList = new List<AttackAction>()
             {
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlueDices = 2,
                     FlatModifier = -1,
                     StaminaCost = 0,
                 },
-                new AttackDetail()
+                new AttackAction()
                 {
                     BlackDices = 3,
                     FlatModifier = -1,

@@ -28,9 +28,9 @@ public class EnemyGenerator : MonoBehaviour
         equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
         equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
         equipProp.equipementName = "Hollow Sword";
-        equipProp.attackList = new List<AttackDetail>()
+        equipProp.attackList = new List<AttackAction>()
         {
-            new AttackDetail()
+            new AttackAction()
             {
                 FlatModifier = 4,
                 DodgeLevel = 1,
@@ -63,15 +63,17 @@ public class EnemyGenerator : MonoBehaviour
         equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
         equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
         equipProp.equipementName = "Hollow Crossbow";
-        equipProp.attackList = new List<AttackDetail>()
+        equipProp.attackList = new List<AttackAction>()
         {
-            new AttackDetail()
+            new AttackAction()
             {
                 FlatModifier = 3,
                 MagicAttack = true,
                 InfiniteRange = true,
                 DodgeLevel = 1,
                 TargetPreference = PreferedTarget.Aggro,
+                ShiftBefore = 1,
+                ShiftAfter = 1,
             }
         };
 

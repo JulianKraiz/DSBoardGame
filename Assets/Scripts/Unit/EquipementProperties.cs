@@ -30,7 +30,7 @@ namespace Assets.Scripts.Unit
         public int inteligenceRequirement = 0;
         public int faithRequirement = 0;
 
-        public List<AttackDetail> attackList = new List<AttackDetail>();
+        public List<AttackAction> attackList = new List<AttackAction>();
 
         public void SetMaterial(Material material)
         {

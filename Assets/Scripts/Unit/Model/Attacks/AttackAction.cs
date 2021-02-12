@@ -1,11 +1,10 @@
 ﻿using Assets.Scripts.Tile;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Assets.Scripts.Unit.Model.Attacks
 {
-    public class AttackDetail
+    public class AttackAction : BehaviorAction
     {
         public int StaminaCost = 0;
         public int BlackDices = 0;
@@ -37,29 +36,14 @@ namespace Assets.Scripts.Unit.Model.Attacks
 
         public PreferedTarget TargetPreference;
 
-        internal bool InRange(int pathLength, bool withShiftBefore = true)
+     
+
+        public bool HasEnoughStamina(int unitStamina)
         {
-            if(pathLength < MinimumRange)
-            {
-                return false;
-            }
-            if(InfiniteRange)
-            {
-                return true;
-            }
-            else if(pathLength > Range + ShiftBefore)
-            {
-                return false;
-            }
-            return true;
+            return unitStamina - StaminaCost > 0;
         }
 
-        public bool NotEnoughStamina(int unitStamina)
-        {
-            return unitStamina - StaminaCost <= 0;
-        }
-
-        public List<UnitBasicProperties> FindTargetsInRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions, bool includeShiftBefore = true)
+        public override List<UnitBasicProperties> FindTargetsInRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions, bool includeShiftBefore = true)
         {
             var currentSide = attacker.side;
             var targetSide = TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
@@ -96,9 +80,26 @@ namespace Assets.Scripts.Unit.Model.Attacks
             return targets;
         }
 
-        public AttackDetail Clone()
+        private bool InRange(int pathLength, bool withShiftBefore = true)
         {
-            var clone = new AttackDetail()
+            if (pathLength < MinimumRange)
+            {
+                return false;
+            }
+            if (InfiniteRange)
+            {
+                return true;
+            }
+            else if (pathLength > Range + ShiftBefore)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override BehaviorAction Clone()
+        {
+            var clone = new AttackAction()
             {
                 StaminaCost = this.StaminaCost,
                 BlackDices = this.BlackDices,

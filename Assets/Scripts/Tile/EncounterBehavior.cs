@@ -80,26 +80,32 @@ public class EncounterBehavior : MonoBehaviour
     private List<GameObject> dices;
     private int diceResultRecieved;
     private EncounterRollType rollType;
-    private int attackRepeatCounter;
 
     private Vector3 anchorOffset;
     private Vector3 offsetDiceResultPresentation;
 
-    private Encounter encounterRecieved;
-    private Encounter currentEncounter;
-    private List<Encounter> defensesToResolve;
+    private AttackAction attackRecieved;
+    private UnitBasicProperties attackerRecieved;
+    private UnitBasicProperties defenderRecieved;
+
+    private List<UnitBasicProperties> defensesToResolve;
     private bool resolvingEncounter = false;
 
-    private int shiftBeforeResolved = 0;
-    private int shiftAfterResolved = 0;
+    private DefenseDices defenseCurrent;
+    private UnitBasicProperties defenderCurrent;
+    private int attackRepeatCounter;
+    private int damageRoll;
+    private int blockRoll;
+    private int dodgeRoll;
+    private int shiftBeforeResolved;
+    private int shiftAfterResolved;
     private bool attackResolved = false;
     private bool defenseResolved = false;
     private EncounterStep currentStep;
 
-
     void Start()
     {
-        defensesToResolve = new List<Encounter>();
+        defensesToResolve = new List<UnitBasicProperties>();
         dices = new List<GameObject>();
 
         anchorOffset = new Vector3(1.35f, 0f, 0f);
@@ -137,7 +143,25 @@ public class EncounterBehavior : MonoBehaviour
         SetGlobalVisibility(false);
     }
 
+    public void Resolve(object eventLoad)
+    {
+        var castLoad = (Encounter)eventLoad;
+        if (castLoad.Action.GetType() != typeof(AttackAction))
+        {
+            return;
+        }
 
+        resolvingEncounter = true;
+
+        attackRecieved = (AttackAction)castLoad.Action.Clone();
+        attackerRecieved = castLoad.Attacker;
+        defenderRecieved = castLoad.Defender;
+
+        ApplyStagger(attackRecieved, attackerRecieved);
+        CloneRecievedToCurrent();
+        currentStep = EncounterStep.None;
+        attackRepeatCounter = 1;
+    }
 
     void Update()
     {
@@ -150,7 +174,7 @@ public class EncounterBehavior : MonoBehaviour
                 SetupForShift();
 
             }
-            else if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved == currentEncounter.Attack.ShiftBefore)
+            else if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved == attackRecieved.ShiftBefore)
             {
 
                 currentStep = EncounterStep.Attack;
@@ -161,7 +185,7 @@ public class EncounterBehavior : MonoBehaviour
                 currentStep = EncounterStep.Defense;
                 defenseResolved = false;
                 FindAllPotentialTargets();
-                currentEncounter = null;
+                ClearCurrent();
             }
             else if (currentStep == EncounterStep.Defense)
             {
@@ -170,22 +194,18 @@ public class EncounterBehavior : MonoBehaviour
                     currentStep = EncounterStep.ShiftAfter;
                     SetupForShift();
                 }
-                else if (currentEncounter == null) // load next defender against same attack.
+                else if (IsCurrentCleared()) // load next defender against same attack.
                 {
                     SetupForDefender();
                 }
             }
-            else if (currentStep == EncounterStep.ShiftAfter && shiftAfterResolved == encounterRecieved.Attack.ShiftAfter)
+            else if (currentStep == EncounterStep.ShiftAfter && shiftAfterResolved == attackRecieved.ShiftAfter)
             {
-                if (attackRepeatCounter < encounterRecieved.Attack.Repeat)
+                if (attackRepeatCounter < attackRecieved.Repeat)
                 {
                     attackRepeatCounter++;
                     currentStep = EncounterStep.None;
-                    attackResolved = false;
-                    attackResolved = defenseResolved = false;
-                    shiftBeforeResolved = 0;
-                    shiftAfterResolved = 0;
-                    currentEncounter = encounterRecieved.Clone();
+                    CloneRecievedToCurrent();
                     SetupForAttack();
                 }
                 else
@@ -196,7 +216,7 @@ public class EncounterBehavior : MonoBehaviour
             }
             else if(currentStep == EncounterStep.Resolved)
             {
-                encounterRecieved.Attacker.ConsumeStamina(encounterRecieved.Attack.StaminaCost);
+                attackerRecieved.ConsumeStamina(attackRecieved.StaminaCost);
                 EventManager.RaiseEvent(ObjectEventType.EncountersResolved);
                 SetGlobalVisibility(false);
                 resolvingEncounter = false;
@@ -204,37 +224,27 @@ public class EncounterBehavior : MonoBehaviour
         }
     }
 
-    public void Resolve(object eventLoad)
-    {
-        encounterRecieved = (Encounter)eventLoad;
-        ApplyStagger(encounterRecieved);
-
-        currentEncounter = encounterRecieved.Clone();
-        resolvingEncounter = true;
-        shiftBeforeResolved = 0;
-        shiftAfterResolved = 0;
-        attackRepeatCounter = 1;
-        currentStep = EncounterStep.None;
-    }
+    
 
     private void SetupForShift()
     {
-        if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved >= encounterRecieved.Attack.ShiftBefore)
+        if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved >= attackRecieved.ShiftBefore)
         {
             return;
         }
-        if (currentStep == EncounterStep.ShiftAfter && shiftAfterResolved >= encounterRecieved.Attack.ShiftAfter)
+        if (currentStep == EncounterStep.ShiftAfter && shiftAfterResolved >= attackRecieved.ShiftAfter)
         {
             return;
         }
         HideButtonAndMoverAndDices();
-        shiftMover.SetupAndShow(encounterRecieved.Attacker, MoveChoserType.Shift);
+        shiftMover.SetupAndShow(attackerRecieved, MoveChoserType.Shift);
     }
 
     private void SetupForAttack()
     {
+        damageRoll = 0;
         HideButtonAndMoverAndDices();
-        if (currentEncounter.Attacker.side == UnitSide.Player)
+        if (attackerRecieved.side == UnitSide.Player)
         {
             attackButton.SetActive(true);
         }
@@ -252,9 +262,9 @@ public class EncounterBehavior : MonoBehaviour
 
     private void SetupForDefender()
     {
-        currentEncounter = defensesToResolve.First();
+        SetNextToCurrent();
         ShowDefenderSide();
-        if (currentEncounter.Defender.side == UnitSide.Player)
+        if (defenderCurrent.side == UnitSide.Player)
         {
             blockButton.SetActive(true);
             dodgeButton.SetActive(true);
@@ -277,20 +287,18 @@ public class EncounterBehavior : MonoBehaviour
     {
 
         var tile = GameStateManager.Instance.GetActiveTile();
-        var currentPosition = tile.GetUnitPosition(currentEncounter.Attacker.gameObject);
+        var currentPosition = tile.GetUnitPosition(attackerRecieved.gameObject);
         var positions = tile.GetPositions();
-        var allTargets = currentEncounter.Attack.FindTargetsInRange(currentEncounter.Attacker, currentPosition, positions, false);
+        var allTargets = attackRecieved.FindTargetsInRange(attackerRecieved, currentPosition, positions, false);
 
-        if (allTargets.Contains(currentEncounter.Defender))
+        if (allTargets.Contains(defenderCurrent))
         {
-            var targetPosition = tile.GetUnitPosition(currentEncounter.Defender.gameObject);
-            var finalTargets = currentEncounter.Attack.FindTargetsOnNode(currentEncounter.Attacker, targetPosition, currentEncounter.Defender);
+            var targetPosition = tile.GetUnitPosition(defenderCurrent.gameObject);
+            var finalTargets = attackRecieved.FindTargetsOnNode(attackerRecieved, targetPosition, defenderCurrent);
 
             foreach (var target in finalTargets)
             {
-                var encounter = currentEncounter.Clone();
-                encounter.Defender = target;
-                defensesToResolve.Add(encounter);
+                defensesToResolve.Add(target);
             }
         }
         else
@@ -302,18 +310,18 @@ public class EncounterBehavior : MonoBehaviour
     private void ShowAttackerSide()
     {
         var index = 0;
-        PlaceAndDisplayModifier(attackBlackDiceContainer, attackBlackDiceText, currentEncounter.Attack.BlackDices, attackAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(attackBlueDiceContainer, attackBlueDiceText, currentEncounter.Attack.BlueDices, attackAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(attackOrangeDiceContainer, attackOrangeDiceText, currentEncounter.Attack.OrangeAttackDices, attackAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(attackFlatModifierContainer, attackFlatModifierText, currentEncounter.Attack.FlatModifier, attackAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
-        PlaceAndDisplayModifier(attackDodgeDiceContainer, attackDodgeDiceText, currentEncounter.Attack.DodgeLevel, attackDodgeDiceContainer, Vector3.zero, currentEncounter.Attacker.side == UnitSide.Player ? false : true, ref index);
-        PlaceAndDisplayModifier(attackRepeatContainer, attackRepeatText, currentEncounter.Attack.Repeat - attackRepeatCounter + 1, attackRepeatContainer, Vector3.zero, currentEncounter.Attack.Repeat > 1 ? true : false, ref index, 1); ;
+        PlaceAndDisplayModifier(attackBlackDiceContainer, attackBlackDiceText, attackRecieved.BlackDices, attackAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(attackBlueDiceContainer, attackBlueDiceText, attackRecieved.BlueDices, attackAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(attackOrangeDiceContainer, attackOrangeDiceText, attackRecieved.OrangeAttackDices, attackAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(attackFlatModifierContainer, attackFlatModifierText, attackRecieved.FlatModifier, attackAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
+        PlaceAndDisplayModifier(attackDodgeDiceContainer, attackDodgeDiceText, attackRecieved.DodgeLevel, attackDodgeDiceContainer, Vector3.zero, attackerRecieved.side == UnitSide.Player ? false : true, ref index);
+        PlaceAndDisplayModifier(attackRepeatContainer, attackRepeatText, attackRecieved.Repeat - attackRepeatCounter + 1, attackRepeatContainer, Vector3.zero, attackRecieved.Repeat > 1 ? true : false, ref index, 1); ;
 
-        attackBleedToken.SetActive(currentEncounter.Attack.Bleed);
-        attackPoisonToken.SetActive(currentEncounter.Attack.Poison);
-        attackStaggerToken.SetActive(currentEncounter.Attack.Stagger);
-        attackFrozenToken.SetActive(currentEncounter.Attack.Frozen);
-        attackPushToken.SetActive(currentEncounter.Attack.Push);
+        attackBleedToken.SetActive(attackRecieved.Bleed);
+        attackPoisonToken.SetActive(attackRecieved.Poison);
+        attackStaggerToken.SetActive(attackRecieved.Stagger);
+        attackFrozenToken.SetActive(attackRecieved.Frozen);
+        attackPushToken.SetActive(attackRecieved.Push);
     }
 
     private void HideButtonAndMoverAndDices()
@@ -334,27 +342,27 @@ public class EncounterBehavior : MonoBehaviour
         SetDefenseSideVisibility(true);
 
         var index = 0;
-        PlaceAndDisplayModifier(defenseBlackDiceContainer, defenseBlackDiceText, currentEncounter.Defense.BlackDices, defenseAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(defenseBlueDiceContainer, defenseBlueDiceText, currentEncounter.Defense.BlueDices, defenseAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(defenseOrangeDiceContainer, defenseOrangeDiceText, currentEncounter.Defense.OrangeDices, defenseAnchor, anchorOffset, false, ref index);
-        PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, currentEncounter.Defense.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
-        PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, currentEncounter.Defense.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
+        PlaceAndDisplayModifier(defenseBlackDiceContainer, defenseBlackDiceText, defenseCurrent.BlackDices, defenseAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(defenseBlueDiceContainer, defenseBlueDiceText, defenseCurrent.BlueDices, defenseAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(defenseOrangeDiceContainer, defenseOrangeDiceText, defenseCurrent.OrangeDices, defenseAnchor, anchorOffset, false, ref index);
+        PlaceAndDisplayModifier(defenseFlatModifierContainer, defenseFlatModifierText, defenseCurrent.FlatReduce, defenseAnchor, anchorOffset, index == 0 ? true : false, ref index); ;
+        PlaceAndDisplayModifier(defenseDodgeDiceContainer, defenseDodgeDiceText, defenseCurrent.DodgeDices, defenseDodgeDiceContainer, Vector3.zero, true, ref index);
 
-        defenseBleedToken.SetActive(currentEncounter.Defender.isBleeding);
-        defensePoisonToken.SetActive(currentEncounter.Defender.isPoisoned);
-        defenseStaggerToken.SetActive(currentEncounter.Defender.isStaggered);
-        defenseFrozenToken.SetActive(currentEncounter.Defender.isFrozen);
+        defenseBleedToken.SetActive(defenderCurrent.isBleeding);
+        defensePoisonToken.SetActive(defenderCurrent.isPoisoned);
+        defenseStaggerToken.SetActive(defenderCurrent.isStaggered);
+        defenseFrozenToken.SetActive(defenderCurrent.isFrozen);
     }
 
-    private void ApplyStagger(Encounter encounter)
+    private void ApplyStagger(AttackAction attack, UnitBasicProperties attacker)
     {
-        if (encounter.Attacker.side == UnitSide.Player)
+        if (attacker.side == UnitSide.Player)
         {
-            encounter.Attack.StaminaCost += encounter.Attacker.isStaggered ? 1 : 0;
+            attack.StaminaCost += attacker.isStaggered ? 1 : 0;
         }
-        else if (encounter.Attacker.side == UnitSide.Hollow)
+        else if (attacker.side == UnitSide.Hollow)
         {
-            encounter.Attack.FlatModifier = encounter.Attack.FlatModifier - (encounter.Attacker.isStaggered ? 1 : 0);
+            attack.FlatModifier = attack.FlatModifier - (attacker.isStaggered ? 1 : 0);
         }
     }
 
@@ -382,12 +390,12 @@ public class EncounterBehavior : MonoBehaviour
     private void DodgeHovered(GameObject position)
     {
         dodgeButtonRenderer.enabled = true;
-        SpawnDices(0, 0, 0, currentEncounter.Defense.DodgeDices);
+        SpawnDices(0, 0, 0, defenseCurrent.DodgeDices);
     }
 
     private void DodgeSelected(GameObject position)
     {
-        dodgeMover.SetupAndShow(currentEncounter.Defender, MoveChoserType.Dodge);
+        dodgeMover.SetupAndShow(defenderCurrent, MoveChoserType.Dodge);
     }
 
     private void DodgeMoveSelected(PositionBehavior _)
@@ -408,7 +416,7 @@ public class EncounterBehavior : MonoBehaviour
     private void BlockHovered(GameObject position)
     {
         blockButtonRenderer.enabled = true;
-        SpawnDices(currentEncounter.Defense.BlackDices, currentEncounter.Defense.BlueDices, currentEncounter.Defense.OrangeDices, 0);
+        SpawnDices(defenseCurrent.BlackDices, defenseCurrent.BlueDices, defenseCurrent.OrangeDices, 0);
     }
 
     private void BlockSelected(GameObject position)
@@ -428,7 +436,7 @@ public class EncounterBehavior : MonoBehaviour
     private void AttackHovered(GameObject position)
     {
         attackButtonRenderer.enabled = true;
-        SpawnDices(currentEncounter.Attack.BlackDices, currentEncounter.Attack.BlueDices, currentEncounter.Attack.OrangeAttackDices, 0);
+        SpawnDices(attackRecieved.BlackDices, attackRecieved.BlueDices, attackRecieved.OrangeAttackDices, 0);
     }
 
     private void AttackSelected(GameObject position)
@@ -447,16 +455,16 @@ public class EncounterBehavior : MonoBehaviour
 
     private void ShiftMoveSelected(PositionBehavior position)
     {
-        if (shiftBeforeResolved < encounterRecieved.Attack.ShiftBefore)
+        if (shiftBeforeResolved < attackRecieved.ShiftBefore)
         {
             shiftBeforeResolved++;
         }
-        else if (shiftAfterResolved < encounterRecieved.Attack.ShiftAfter)
+        else if (shiftAfterResolved < attackRecieved.ShiftAfter)
         {
             shiftAfterResolved++;
         }
 
-        if (shiftBeforeResolved < encounterRecieved.Attack.ShiftBefore || shiftAfterResolved < encounterRecieved.Attack.ShiftAfter)
+        if (shiftBeforeResolved < attackRecieved.ShiftBefore || shiftAfterResolved < attackRecieved.ShiftAfter)
         {
             SetupForShift();
         }
@@ -528,27 +536,24 @@ public class EncounterBehavior : MonoBehaviour
         if (diceResultRecieved == dices.Count)
         {
             EventManager.StopListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
-            currentEncounter.DefenseRoll = 0;
-            currentEncounter.DamageRoll = 0;
-            currentEncounter.DodgeRoll = 0;
-
-            currentEncounter.DamageRoll = currentEncounter.Attack.FlatModifier;
-            currentEncounter.DefenseRoll = currentEncounter.Defense.FlatReduce;
+            dodgeRoll = 0;
+            damageRoll = attackRecieved.FlatModifier;
+            blockRoll = defenseCurrent.FlatReduce;
 
             foreach (var dice in dices)
             {
                 var behavior = dice.GetComponent<DiceBahevior>();
                 if (rollType == EncounterRollType.Block)
                 {
-                    currentEncounter.DefenseRoll += behavior.GetValue();
+                    blockRoll += behavior.GetValue();
                 }
                 else if (rollType == EncounterRollType.Dodge)
                 {
-                    currentEncounter.DodgeRoll += behavior.GetValue();
+                    blockRoll += behavior.GetValue();
                 }
                 else if (rollType == EncounterRollType.Attack)
                 {
-                    currentEncounter.DamageRoll += behavior.GetValue();
+                    damageRoll += behavior.GetValue();
                 }
             }
 
@@ -574,16 +579,16 @@ public class EncounterBehavior : MonoBehaviour
     private bool CanAutoConfirmResult()
     {
         var canAutoResolve = true;
-        if (currentStep == EncounterStep.Attack && currentEncounter.Attacker is PlayerProperties)
+        if (currentStep == EncounterStep.Attack && attackerRecieved is PlayerProperties)
         {
-            var properties = (PlayerProperties)currentEncounter.Attacker;
+            var properties = (PlayerProperties)attackerRecieved;
             if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
                 canAutoResolve = false;
         }
 
-        else if (currentStep == EncounterStep.Defense && currentEncounter.Defender is PlayerProperties)
+        else if (currentStep == EncounterStep.Defense && defenderCurrent is PlayerProperties)
         {
-            var properties = (PlayerProperties)currentEncounter.Defender;
+            var properties = (PlayerProperties)defenderCurrent;
             if ((properties.isActive && properties.hasEstus) || properties.hasLuckToken)
                 canAutoResolve = false;
         }
@@ -598,37 +603,37 @@ public class EncounterBehavior : MonoBehaviour
 
     private void ApplyResult()
     {
-        var damageToApply = currentEncounter.DamageRoll;
+        var damageToApply = damageRoll;
         var hit = true;
 
         if (rollType == EncounterRollType.Block || rollType == EncounterRollType.Attack)
         {
-            damageToApply = System.Math.Max(0, damageToApply - currentEncounter.DefenseRoll);
+            damageToApply = System.Math.Max(0, damageToApply - blockRoll);
         }
         else if (rollType == EncounterRollType.Dodge)
         {
-            if (currentEncounter.DodgeRoll >= currentEncounter.Attack.DodgeLevel)
+            if (dodgeRoll >= attackRecieved.DodgeLevel)
             {
                 damageToApply = 0;
                 hit = false;
             }
-            currentEncounter.Defender.ConsumeStamina(1 + (currentEncounter.Defender.isFrozen ? 1 : 0));
+            defenderCurrent.ConsumeStamina(1 + (defenderCurrent.isFrozen ? 1 : 0));
         }
 
-        currentEncounter.Defender.RecieveInjuries(damageToApply);
+        defenderCurrent.RecieveInjuries(damageToApply);
 
         if (hit)
         {
-            currentEncounter.Defender.isBleeding = currentEncounter.Defender.isBleeding || currentEncounter.Attack.Bleed;
-            currentEncounter.Defender.isPoisoned = currentEncounter.Defender.isPoisoned || currentEncounter.Attack.Poison;
-            currentEncounter.Defender.isStaggered = currentEncounter.Defender.isStaggered || currentEncounter.Attack.Stagger;
-            currentEncounter.Defender.isFrozen = currentEncounter.Defender.isFrozen || currentEncounter.Attack.Frozen;
+            defenderCurrent.isBleeding = defenderCurrent.isBleeding || attackRecieved.Bleed;
+            defenderCurrent.isPoisoned = defenderCurrent.isPoisoned || attackRecieved.Poison;
+            defenderCurrent.isStaggered = defenderCurrent.isStaggered || attackRecieved.Stagger;
+            defenderCurrent.isFrozen = defenderCurrent.isFrozen || attackRecieved.Frozen;
         }
 
-        if (hit && currentEncounter.Attack.Push)
+        if (hit && attackRecieved.Push)
         {
             confirmButton.SetActive(false);
-            pushMover.SetupAndShow(currentEncounter.Defender, MoveChoserType.Push, currentEncounter.Attacker);
+            pushMover.SetupAndShow(defenderCurrent, MoveChoserType.Push, attackerRecieved);
         }
         else
         {
@@ -639,7 +644,7 @@ public class EncounterBehavior : MonoBehaviour
 
     private void ApplyResultFinalize()
     {
-        currentEncounter = null;
+        ClearCurrent();
         if (defensesToResolve.Any())
         {
             defensesToResolve.RemoveAt(0);
@@ -651,11 +656,10 @@ public class EncounterBehavior : MonoBehaviour
         }
     }
 
-
     #region Token Effect
     private void UseLuckEvent(GameObject position)
     {
-        var unit = currentEncounter.Attacker.side == UnitSide.Player ? (PlayerProperties)currentEncounter.Attacker : (PlayerProperties)currentEncounter.Defender;
+        var unit = attackerRecieved.side == UnitSide.Player ? (PlayerProperties)attackerRecieved : (PlayerProperties)defenderCurrent;
         if (unit.hasLuckToken)
         {
             foreach (var dice in dices)
@@ -720,9 +724,9 @@ public class EncounterBehavior : MonoBehaviour
 
         if (visible)
         {
-            attackerPortraitRenderer.material = encounterRecieved.Attacker.portrait;
-            attackEstusBehavior.SetUnit(encounterRecieved.Attacker);
-            attackLuckBehavior.SetUnit(encounterRecieved.Attacker);
+            attackerPortraitRenderer.material = attackerRecieved.portrait;
+            attackEstusBehavior.SetUnit(attackerRecieved);
+            attackLuckBehavior.SetUnit(attackerRecieved);
         }
     }
 
@@ -738,10 +742,10 @@ public class EncounterBehavior : MonoBehaviour
 
         if (visible)
         {
-            defenderPortraitRenderer.material = currentEncounter.Defender.portrait;
-            defenseEstusBehavior.SetUnit(currentEncounter.Defender);
-            defenseLuckBehavior.SetUnit(currentEncounter.Defender);
-            defenseEmberBehavior.SetUnit(currentEncounter.Defender);
+            defenderPortraitRenderer.material = defenderCurrent.portrait;
+            defenseEstusBehavior.SetUnit(defenderCurrent);
+            defenseLuckBehavior.SetUnit(defenderCurrent);
+            defenseEmberBehavior.SetUnit(defenderCurrent);
         }
     }
 
@@ -750,6 +754,39 @@ public class EncounterBehavior : MonoBehaviour
         confirmButton.SetActive(visibility);
     }
     #endregion
+
+    private void CloneRecievedToCurrent()
+    {
+        defenderCurrent = defenderRecieved;
+
+        attackResolved = false;
+        attackResolved = false;
+        shiftBeforeResolved = 0;
+        shiftAfterResolved = 0;
+    }
+
+    private void SetNextToCurrent()
+    {
+        var next = defensesToResolve.First();
+        defenderCurrent = next;
+        defenseCurrent = defenderCurrent.GetDefenseDices(attackRecieved.MagicAttack);
+        blockRoll = 0;
+        dodgeRoll = 0;
+    }
+
+    private void ClearCurrent()
+    {
+        defenderCurrent = null;
+        defenseCurrent = null;
+        blockRoll = 0;
+        dodgeRoll = 0;
+    }
+
+    private bool IsCurrentCleared()
+    {
+        return defenderCurrent == null
+        && defenseCurrent == null;
+    }
 }
 
 public enum EncounterRollType

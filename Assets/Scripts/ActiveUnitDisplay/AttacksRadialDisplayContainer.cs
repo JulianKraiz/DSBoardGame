@@ -93,7 +93,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         }
     }
 
-    private void SetLeftAttack(AttackDetail attack, UnitBasicProperties unitProperties, int index)
+    private void SetLeftAttack(AttackAction attack, UnitBasicProperties unitProperties, int index)
     {
         if (index == 0)
         {
@@ -118,7 +118,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         }
     }
 
-    private void SetRightAttack(AttackDetail attack, UnitBasicProperties unitProperties, int index)
+    private void SetRightAttack(AttackAction attack, UnitBasicProperties unitProperties, int index)
     {
         if (index == 0)
         {
@@ -155,7 +155,7 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
 
     private void DisableSide(object attack)
     {
-        var detail = (AttackDetail)attack;
+        var detail = (AttackAction)attack;
         if(detail.Side == AttackSide.Left || detail.Side == AttackSide.Both)
         {
             DisableLeftDisplay();

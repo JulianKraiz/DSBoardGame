@@ -13,11 +13,11 @@ public class EnemyAutoTurnResolver : MonoBehaviour
     private EnemyAttackResolver attackResolver;
 
     private EnemyProperties enemy;
-    private List<AttackDetail> attackstoExecute;
+    private List<AttackAction> attackstoExecute;
 
     void Start()
     {
-        attackstoExecute = new List<AttackDetail>();
+        attackstoExecute = new List<AttackAction>();
         attackResolver = FindObjectOfType<EnemyAttackResolver>();
     }
 
