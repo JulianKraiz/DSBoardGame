@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-public class UnitMovement
+namespace Assets.Scripts.Tile
 {
-    public PositionBehavior MoveFrom { get; set; }
-    public PositionBehavior MoveTo { get; set; }
-    public GameObject Unit { get; set; } 
+    public class UnitMovement
+    {
+        public PositionBehavior MoveFrom { get; set; }
+        public PositionBehavior MoveTo { get; set; }
+        public GameObject Unit { get; set; }
+    }
 }

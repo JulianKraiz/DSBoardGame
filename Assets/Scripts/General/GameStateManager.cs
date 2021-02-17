@@ -4,6 +4,7 @@ using UnityEngine;
 using BoardGame.Unit;
 using Assets.Scripts.Unit;
 using Assets.Scripts.Unit.Model.Attacks;
+using Assets.Scripts.Tile;
 
 public class GameStateManager : MonoBehaviour
 {
@@ -90,7 +91,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.equipementName = "Battle Axe";
             equipProp.name = "Battle Axe";
             equipProp.strenghRequirement = 14;
-            equipProp.attackList = new List<AttackAction>()
+            equipProp.attackList = new List<BehaviorAction>()
             {
                 new AttackAction()
                 {
@@ -136,7 +137,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_spear_material", typeof(Material)));
             equipProp.equipementName = "Spear Axe";
             equipProp.name = "Spear Axe";
-            equipProp.attackList = new List<AttackAction>()
+            equipProp.attackList = new List<BehaviorAction>()
             {
                 new AttackAction()
                 {
@@ -163,7 +164,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Talisman";
             equipProp.strenghRequirement = 12;
             equipProp.faithRequirement = 12;
-            equipProp.attackList = new List<AttackAction>()
+            equipProp.attackList = new List<BehaviorAction>()
             {
                 new AttackAction()
                 {
@@ -207,7 +208,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Long Sword";
             equipProp.strenghRequirement = 13;
             equipProp.dextirityRequirement = 12;
-            equipProp.attackList = new List<AttackAction>()
+            equipProp.attackList = new List<BehaviorAction>()
             {
                 new AttackAction()
                 {
@@ -251,7 +252,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.equipementName = "Estoc";
             equipProp.name = "Estoc";
             equipProp.dextirityRequirement = 14;
-            equipProp.attackList = new List<AttackAction>()
+            equipProp.attackList = new List<BehaviorAction>()
             {
                 new AttackAction()
                 {

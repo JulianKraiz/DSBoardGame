@@ -1,4 +1,5 @@
-﻿using BoardGame.Script.Events;
+﻿using Assets.Scripts.Tile;
+using BoardGame.Script.Events;
 using UnityEngine;
 
 public class SoulCacheManager : MonoBehaviour

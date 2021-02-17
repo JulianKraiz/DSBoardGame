@@ -32,18 +32,24 @@ namespace Assets.Scripts.Unit.Model.Attacks
         public bool NodeSplash = false;
         public bool TargetAllies = false;
         public bool AffectAllInRangeUnits = false;
-        public AttackSide Side;
-
         public PreferedTarget TargetPreference;
-
-     
 
         public bool HasEnoughStamina(int unitStamina)
         {
             return unitStamina - StaminaCost > 0;
         }
 
-        public override List<UnitBasicProperties> FindTargetsInRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions, bool includeShiftBefore = true)
+        public override List<UnitBasicProperties> FindTargetsInRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions)
+        {
+            return FindTargetsInRangeInternal(attacker, attackerPosition, positions, true);
+        }
+
+        public List<UnitBasicProperties> FindTargetsInWeaponRange(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions)
+        {
+            return FindTargetsInRangeInternal(attacker, attackerPosition, positions, false);
+        }
+
+        private List<UnitBasicProperties> FindTargetsInRangeInternal(UnitBasicProperties attacker, PositionBehavior attackerPosition, IEnumerable<PositionBehavior> positions, bool withShift)
         {
             var currentSide = attacker.side;
             var targetSide = TargetAllies ? currentSide : currentSide == UnitSide.Hollow ? UnitSide.Player : UnitSide.Hollow;
@@ -52,7 +58,7 @@ namespace Assets.Scripts.Unit.Model.Attacks
             foreach (var position in positions)
             {
                 var pathLength = PathFinder.GetPath(attackerPosition, position).Count;
-                if (!InRange(pathLength, includeShiftBefore))
+                if (!InRange(pathLength, withShift))
                 {
                     continue;
                 }
@@ -62,6 +68,7 @@ namespace Assets.Scripts.Unit.Model.Attacks
             }
             return targets;
         }
+
 
         public List<UnitBasicProperties> FindTargetsOnNode(UnitBasicProperties attacker, PositionBehavior targetPosition, UnitBasicProperties originalTarget)
         {

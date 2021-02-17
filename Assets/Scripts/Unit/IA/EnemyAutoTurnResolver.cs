@@ -1,79 +1,97 @@
-﻿using Assets.Scripts.Unit;
-using Assets.Scripts.Unit.Model.Attacks;
+﻿using Assets.Scripts.Unit.Model.Attacks;
 using BoardGame.Script.Events;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyAutoTurnResolver : MonoBehaviour
+namespace Assets.Scripts.Unit.IA
 {
-
-    private EnemyAttackResolver attackResolver;
-
-    private EnemyProperties enemy;
-    private List<AttackAction> attackstoExecute;
-
-    void Start()
-    {
-        attackstoExecute = new List<AttackAction>();
-        attackResolver = FindObjectOfType<EnemyAttackResolver>();
-    }
-
-    void Update()
+    public class EnemyAutoTurnResolver : MonoBehaviour
     {
 
-        if (enemy != null && !attackstoExecute.Any())
-        {
-            enemy = null;
-            attackstoExecute.Clear();
-            EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
-        }
-    }
+        private EnemyActionResolver attackResolver;
 
-    public void ResolveEnemyTurn(GameObject enemyObject)
-    {
-        enemy = enemyObject.GetComponent<EnemyProperties>();
+        private EnemyProperties enemy;
+        private List<BehaviorAction> attackstoExecute;
+        private bool doNextAction;
 
-        if (enemy.leftEquipement != null)
+        void Start()
         {
-            var t = enemy.leftEquipement.GetComponent<EquipementProperties>();
-            attackstoExecute.AddRange(enemy.leftEquipement.GetComponent<EquipementProperties>().attackList);
-        }
-        if (enemy.rightEquipement != null)
-        {
-            attackstoExecute.AddRange(enemy.rightEquipement.GetComponent<EquipementProperties>().attackList);
-        }
-        if (enemy.armourEquipement != null)
-        {
-            attackstoExecute.AddRange(enemy.armourEquipement.GetComponent<EquipementProperties>().attackList);
+            attackstoExecute = new List<BehaviorAction>();
+            attackResolver = FindObjectOfType<EnemyActionResolver>();
+            doNextAction = false;
+
+            EventManager.StartListening(ObjectEventType.AttackApplied, AttackApplied);
         }
 
-        EventManager.StartListening(ObjectEventType.AttackApplied, AttackApplied);
-
-        LaunchAttack();
-    }
-
-    private bool LaunchAttack()
-    {
-        if (!attackstoExecute.Any())
+        void Update()
         {
-            EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
-            return false;
+
+            if (enemy != null)
+            {
+                if (attackstoExecute.Count == 0)
+                {
+                    enemy = null;
+                    attackstoExecute.Clear();
+                    EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
+                }
+                else if(doNextAction)
+                {
+                    doNextAction = false;
+                    LaunchAttack();
+                }
+            }
         }
 
-        var nextAttack = attackstoExecute.First();
-        attackResolver.ExecuteAttack(enemy, nextAttack);
-        return true;
-    }
-
-    // After is applied and units checked out. ready for next round.
-    private void AttackApplied(object _)
-    {
-        if (attackstoExecute.Any())
+        public void ResolveEnemyTurn(GameObject enemyObject)
         {
-            attackstoExecute.RemoveAt(0);
+            attackstoExecute = new List<BehaviorAction>();
+            enemy = enemyObject.GetComponent<EnemyProperties>();
+
+            if (enemy.leftEquipement != null)
+            {
+                var t = enemy.leftEquipement.GetComponent<EquipementProperties>();
+                attackstoExecute.AddRange(enemy.leftEquipement.GetComponent<EquipementProperties>().attackList);
+            }
+            if (enemy.rightEquipement != null)
+            {
+                attackstoExecute.AddRange(enemy.rightEquipement.GetComponent<EquipementProperties>().attackList);
+            }
+            if (enemy.armourEquipement != null)
+            {
+                attackstoExecute.AddRange(enemy.armourEquipement.GetComponent<EquipementProperties>().attackList);
+            }
+
+            doNextAction = true;
+        }
+
+        private bool LaunchAttack()
+        {
+            if (!attackstoExecute.Any())
+            {
+                EventManager.RaiseEvent(GameObjectEventType.EndUnitTurn);
+                return false;
+            }
+
+            var nextAttack = attackstoExecute.First();
+            if (nextAttack is AttackAction)
+            {
+                attackResolver.Execute(enemy, (AttackAction)nextAttack);
+            }
+            else if (nextAttack is MovementAction)
+            {
+                attackResolver.Execute(enemy, (MovementAction)nextAttack);
+            }
+            return true;
+        }
+
+        private void AttackApplied(object _)
+        {
+            if (enemy != null && attackstoExecute.Count > 0)
+            {
+                attackstoExecute.RemoveAt(0);
+                doNextAction = true;
+            }
         }
     }
 }

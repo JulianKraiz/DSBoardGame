@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Tile;
+using UnityEngine;
 
 public class MoveChoserArrowBehavior : MonoBehaviour
 {

@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class AttacksRadialDisplayContainer : MonoBehaviour
 {
-    private Vector3 positionOffset;
-    private Vector3 displayScale;
-
     private GameObject currentUnit;
 
     private AttackRadialDisplayBehavior RightAttack1;
@@ -22,8 +19,6 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
 
     void Start()
     {
-        positionOffset = new Vector3(0, 1, 0);
-        displayScale = new Vector3(0.2f, 0.2f, 0.2f);
         EventManager.StartListening(GameObjectEventType.UnitIsActivated, SetupUnitAttackPanels);
         EventManager.StartListening(ObjectEventType.AttackApplied, DisableSide);
         EventManager.StartListening(GameObjectEventType.ResetAndHideAttackDial, ClearAllFromEvent);
@@ -93,52 +88,52 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         }
     }
 
-    private void SetLeftAttack(AttackAction attack, UnitBasicProperties unitProperties, int index)
+    private void SetLeftAttack(BehaviorAction action, UnitBasicProperties unitProperties, int index)
     {
         if (index == 0)
         {
             LeftAttack1.gameObject.SetActive(true);
             LeftAttack1.Reset();
-            LeftAttack1.SetupTile(attack, unitProperties, AttackSide.Left);
+            LeftAttack1.SetupTile(action, unitProperties, AttackSide.Left);
             existing.Add(LeftAttack1);
         }
         else if (index == 1)
         {
             LeftAttack2.gameObject.SetActive(true);
             LeftAttack2.Reset();
-            LeftAttack2.SetupTile(attack, unitProperties, AttackSide.Left);
+            LeftAttack2.SetupTile(action, unitProperties, AttackSide.Left);
             existing.Add(LeftAttack2);
         }
         else if (index == 2)
         {
             LeftAttack3.gameObject.SetActive(true);
             LeftAttack3.Reset();
-            LeftAttack3.SetupTile(attack, unitProperties, AttackSide.Left);
+            LeftAttack3.SetupTile(action, unitProperties, AttackSide.Left);
             existing.Add(LeftAttack3);
         }
     }
 
-    private void SetRightAttack(AttackAction attack, UnitBasicProperties unitProperties, int index)
+    private void SetRightAttack(BehaviorAction action, UnitBasicProperties unitProperties, int index)
     {
         if (index == 0)
         {
             RightAttack1.gameObject.SetActive(true);
             RightAttack1.Reset();
-            RightAttack1.SetupTile(attack, unitProperties, AttackSide.Right);
+            RightAttack1.SetupTile(action, unitProperties, AttackSide.Right);
             existing.Add(RightAttack1);
         }
         else if (index == 1)
         {
             RightAttack2.gameObject.SetActive(true);
             RightAttack2.Reset();
-            RightAttack2.SetupTile(attack, unitProperties, AttackSide.Right);
+            RightAttack2.SetupTile(action, unitProperties, AttackSide.Right);
             existing.Add(RightAttack2);
         }
         else if (index == 2)
         {
             RightAttack3.gameObject.SetActive(true);
             RightAttack3.Reset();
-            RightAttack3.SetupTile(attack, unitProperties, AttackSide.Right);
+            RightAttack3.SetupTile(action, unitProperties, AttackSide.Right);
             existing.Add(RightAttack3);
         }
     }
@@ -153,9 +148,14 @@ public class AttacksRadialDisplayContainer : MonoBehaviour
         RightAttack3.gameObject.SetActive(false);
     }
 
-    private void DisableSide(object attack)
+    private void DisableSide(object action)
     {
-        var detail = (AttackAction)attack;
+        if(currentUnit.GetComponent<UnitBasicProperties>().side == UnitSide.Hollow)
+        {
+            return;
+        }
+
+        var detail = (BehaviorAction)action;
         if(detail.Side == AttackSide.Left || detail.Side == AttackSide.Both)
         {
             DisableLeftDisplay();

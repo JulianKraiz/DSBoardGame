@@ -4,31 +4,33 @@ using UnityEngine;
 using BoardGame.Unit;
 using Assets.Scripts.Unit.Model.Attacks;
 
-public class EnemyGenerator : MonoBehaviour
+namespace Assets.Scripts.Tile
 {
-    public GameObject CreateHollowSoldier(Transform parent)
+    public class EnemyGenerator : MonoBehaviour
     {
-        var soldier = Instantiate(Resources.Load("Asset/Units/SmallHollowSoldier"), parent) as GameObject;
-        var prop = soldier.GetComponent<EnemyProperties>();
+        public GameObject CreateHollowSoldier(Transform parent)
+        {
+            var soldier = Instantiate(Resources.Load("Asset/Units/SmallHollowSoldier"), parent) as GameObject;
+            var prop = soldier.GetComponent<EnemyProperties>();
 
-        prop.portrait = (Material)Resources.Load("Material/UnitBackground/hollow_soldier_portrait", typeof(Material));
-        prop.tile = (Material)Resources.Load("Material/UnitBackground/hollow_soldier_tile_material", typeof(Material));
-        prop.enemyType = EnemyClassEnum.ArbalestHollowSoldier;
-        prop.hitPoints = 1;
-        prop.side = UnitSide.Hollow;
+            prop.portrait = (Material)Resources.Load("Material/UnitBackground/hollow_soldier_portrait", typeof(Material));
+            prop.tile = (Material)Resources.Load("Material/UnitBackground/hollow_soldier_tile_material", typeof(Material));
+            prop.enemyType = EnemyClassEnum.ArbalestHollowSoldier;
+            prop.hitPoints = 1;
+            prop.side = UnitSide.Hollow;
 
-        prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
-        var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
-        equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
-        equipProp.equipementName = "Hollow Shield";
-        equipProp.flatArmorResistence = 1;
-        equipProp.flatMagicArmorResistence = 1;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
+            equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
+            equipProp.equipementName = "Hollow Shield";
+            equipProp.flatArmorResistence = 1;
+            equipProp.flatMagicArmorResistence = 1;
 
-        prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
-        equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
-        equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
-        equipProp.equipementName = "Hollow Sword";
-        equipProp.attackList = new List<AttackAction>()
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
+            equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
+            equipProp.equipementName = "Hollow Sword";
+            equipProp.attackList = new List<BehaviorAction>()
         {
             new AttackAction()
             {
@@ -38,33 +40,42 @@ public class EnemyGenerator : MonoBehaviour
             }
         };
 
-        return soldier;
-    }
+            return soldier;
+        }
 
-    public GameObject CreateCrossbowHollowSoldier(Transform parent)
-    {
-        var soldier = Instantiate(Resources.Load("Asset/Units/ArcherHoolowSoldier"), parent) as GameObject;
-        var prop = soldier.GetComponent<EnemyProperties>();
-
-        prop.portrait = (Material)Resources.Load("Material/UnitBackground/hollow_arbalest_soldier_portrait", typeof(Material));
-        prop.tile = (Material)Resources.Load("Material/UnitBackground/hollow_arbalest_soldier_tile_material", typeof(Material));
-        prop.enemyType = EnemyClassEnum.HollowSoldier;
-        prop.side = UnitSide.Hollow;
-        prop.hitPoints = 1;
-        prop.isStaggered = true;
-
-        prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
-        var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
-        equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
-        equipProp.equipementName = "Hollow Shield";
-        equipProp.flatArmorResistence = 1;
-
-        prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
-        equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
-        equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
-        equipProp.equipementName = "Hollow Crossbow";
-        equipProp.attackList = new List<AttackAction>()
+        public GameObject CreateCrossbowHollowSoldier(Transform parent)
         {
+            var soldier = Instantiate(Resources.Load("Asset/Units/ArcherHoolowSoldier"), parent) as GameObject;
+            var prop = soldier.GetComponent<EnemyProperties>();
+
+            prop.portrait = (Material)Resources.Load("Material/UnitBackground/hollow_arbalest_soldier_portrait", typeof(Material));
+            prop.tile = (Material)Resources.Load("Material/UnitBackground/hollow_arbalest_soldier_tile_material", typeof(Material));
+            prop.enemyType = EnemyClassEnum.HollowSoldier;
+            prop.side = UnitSide.Hollow;
+            prop.hitPoints = 1;
+
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
+            equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
+            equipProp.equipementName = "Hollow Shield";
+            equipProp.flatArmorResistence = 1;
+
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
+            equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
+            equipProp.equipementName = "Hollow Crossbow";
+            equipProp.attackList = new List<BehaviorAction>()
+        {
+            new MovementAction()
+            {
+                Direction = MovementDirection.Backward,
+                MoveDistance = 1,
+                TargetPreference = PreferedTarget.Aggro,
+                MagicAttack = true,
+                Push = true,
+                PushDamage = 2,
+                Repeat = 2,
+            },
             new AttackAction()
             {
                 FlatModifier = 3,
@@ -72,11 +83,10 @@ public class EnemyGenerator : MonoBehaviour
                 InfiniteRange = true,
                 DodgeLevel = 1,
                 TargetPreference = PreferedTarget.Aggro,
-                ShiftBefore = 1,
-                ShiftAfter = 1,
             }
         };
 
-        return soldier;
+            return soldier;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Tile.Model;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Assets.Scripts.Tile
@@ -13,22 +14,38 @@ namespace Assets.Scripts.Tile
             }
             return GetPath(start, target, new List<PositionBehavior>());
         }
-
-        public static Dictionary<PositionBehavior, int> GetAllNodeWithinRange(int minRange, int maxRange, PositionBehavior start, IList<PositionBehavior> positions)
+       
+        public static List<NodeDistance> GetNodeDistances(PositionBehavior to, IList<PositionBehavior> positions)
         {
-            var result = new Dictionary<PositionBehavior, int>();
+            var result = new List<NodeDistance>();
 
-            var otherNodes = positions.ToList();
-
-            foreach (var other in otherNodes)
+            foreach(var position in positions)
             {
-                var path = GetPath(start, other);
-                if (path != null && path.Count >= minRange && path.Count <= maxRange)
+                var path = GetPath(position, to);
+
+                result.Add(new NodeDistance()
                 {
-                    result.Add(other, path.Count);
-                }
+                    Node = position,
+                    DistanceTo = to,
+                    PathLength = path.Count,
+                    Lengh = NodeWorldDistance(position, to),
+                });
             }
+
             return result;
+        }
+
+        
+
+        public static int GetPathStaminaCost(List<PositionBehavior> path, bool firstMovement, bool isFrozen)
+        {
+            var cost = 0;
+            foreach(var node in path)
+            {
+                cost += node.GetNodeCost() - (firstMovement ? 1 : 0) + (isFrozen ? 1 : 0);
+                firstMovement = false;
+            }
+            return cost;
         }
 
         private static List<PositionBehavior> GetPath(PositionBehavior start, PositionBehavior target, List<PositionBehavior> visited)
@@ -62,17 +79,6 @@ namespace Assets.Scripts.Tile
             }
 
             return bestPath;
-        }
-
-        public static int GetPathStaminaCost(List<PositionBehavior> path, bool firstMovement, bool isFrozen)
-        {
-            var cost = 0;
-            foreach(var node in path)
-            {
-                cost += node.GetNodeCost() - (firstMovement ? 1 : 0) + (isFrozen ? 1 : 0);
-                firstMovement = false;
-            }
-            return cost;
         }
 
         private static float PathDistance(PositionBehavior start, List<PositionBehavior> path)

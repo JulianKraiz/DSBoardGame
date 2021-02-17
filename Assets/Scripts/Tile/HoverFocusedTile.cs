@@ -2,33 +2,36 @@
 using BoardGame.Script.MovementFunctions;
 using BoardGame.Script.Events;
 
-public class HoverFocusedTile : MonoBehaviour
+namespace Assets.Scripts.Tile
 {
-    public Vector3 offsetCenterHover = new Vector3(-0.5f, 7, -7f);
-
-    TileManager tileProperties;
-    Camera mainCamera;
-
-    private void Awake()
+    public class HoverFocusedTile : MonoBehaviour
     {
-        tileProperties = gameObject.GetComponent<TileManager>();
-        mainCamera = Camera.main;
-    }
+        public Vector3 offsetCenterHover = new Vector3(-0.5f, 7, -7f);
 
-    void Update()
-    {
-        if (tileProperties.isFocused && !tileProperties.isHovered)
+        TileManager tileProperties;
+        Camera mainCamera;
+
+        private void Awake()
         {
-            var targetPosition = transform.position + offsetCenterHover;
-            var lerpedProsition = Vect3LerpSnap.SnapLerp(mainCamera.transform.position, targetPosition, 0.9f, 0.2f);
+            tileProperties = gameObject.GetComponent<TileManager>();
+            mainCamera = Camera.main;
+        }
 
-            if (lerpedProsition == targetPosition)
+        void Update()
+        {
+            if (tileProperties.isFocused && !tileProperties.isHovered)
             {
-                tileProperties.isHovered = true;
-                EventManager.RaiseEvent(GameObjectEventType.TileIsEntered);
-            }
+                var targetPosition = transform.position + offsetCenterHover;
+                var lerpedProsition = Vect3LerpSnap.SnapLerp(mainCamera.transform.position, targetPosition, 0.9f, 0.2f);
 
-            mainCamera.transform.SetPositionAndRotation(lerpedProsition, Quaternion.Euler(45, 0, 0));
+                if (lerpedProsition == targetPosition)
+                {
+                    tileProperties.isHovered = true;
+                    EventManager.RaiseEvent(GameObjectEventType.TileIsEntered);
+                }
+
+                mainCamera.transform.SetPositionAndRotation(lerpedProsition, Quaternion.Euler(45, 0, 0));
+            }
         }
     }
 }
