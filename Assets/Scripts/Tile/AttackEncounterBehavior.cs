@@ -21,8 +21,8 @@ namespace Assets.Scripts.Tile
         public GameObject attackIcon;
         public GameObject defenseIcon;
 
-        private MeshRenderer defenderPortraitRenderer;
-        private MeshRenderer attackerPortraitRenderer;
+        public MeshRenderer defenderPortraitRenderer;
+        public MeshRenderer attackerPortraitRenderer;
 
         public GameObject attackBlackDiceContainer;
         public TextMesh attackBlackDiceText;
@@ -53,9 +53,9 @@ namespace Assets.Scripts.Tile
         public GameObject blockButton;
         public GameObject dodgeButton;
         public GameObject attackButton;
-        private MeshRenderer blockButtonRenderer;
-        private MeshRenderer dodgeButtonRenderer;
-        private MeshRenderer attackButtonRenderer;
+        public MeshRenderer blockButtonRenderer;
+        public MeshRenderer dodgeButtonRenderer;
+        public MeshRenderer attackButtonRenderer;
 
         public TokenBehavior attackEstusBehavior;
         public TokenBehavior attackLuckBehavior;
@@ -112,13 +112,6 @@ namespace Assets.Scripts.Tile
 
             anchorOffset = new Vector3(1.35f, 0f, 0f);
             offsetDiceResultPresentation = new Vector3(2, 0, 0);
-
-            attackerPortraitRenderer = attackerPortrait.GetComponent<MeshRenderer>();
-            defenderPortraitRenderer = defenderPortrait.GetComponent<MeshRenderer>();
-
-            blockButtonRenderer = blockButton.GetComponent<MeshRenderer>();
-            dodgeButtonRenderer = dodgeButton.GetComponent<MeshRenderer>();
-            attackButtonRenderer = attackButton.GetComponent<MeshRenderer>();
 
             attackLuckBehavior.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
             defenseLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
@@ -335,9 +328,9 @@ namespace Assets.Scripts.Tile
         private void HideButtonAndMoverAndDices()
         {
             confirmButton.SetActive(false);
-            dodgeMover.SetupAndShow(null, MoveChoserType.None);
-            pushMover.SetupAndShow(null, MoveChoserType.None);
-            shiftMover.SetupAndShow(null, MoveChoserType.None);
+            dodgeMover.Hide();
+            pushMover.Hide();
+            shiftMover.Hide();
             foreach (var dice in dices)
             {
                 Destroy(dice);
@@ -408,7 +401,7 @@ namespace Assets.Scripts.Tile
 
         private void DodgeMoveSelected(PositionBehavior _)
         {
-            dodgeMover.SetupAndShow(null, MoveChoserType.None);
+            dodgeMover.Hide();
             blockButton.SetActive(false);
             dodgeButton.SetActive(false);
             rollType = EncounterRollType.Dodge;
@@ -457,7 +450,7 @@ namespace Assets.Scripts.Tile
 
         private void PushMoveSelected(PositionBehavior position)
         {
-            pushMover.SetupAndShow(null, MoveChoserType.None);
+            pushMover.Hide();
             ApplyResultFinalize();
         }
 
@@ -707,9 +700,9 @@ namespace Assets.Scripts.Tile
             dodgeButton.SetActive(false);
             attackButton.SetActive(false);
 
-            dodgeMover.SetupAndShow(null, MoveChoserType.None);
-            pushMover.SetupAndShow(null, MoveChoserType.None);
-            shiftMover.SetupAndShow(null, MoveChoserType.None);
+            dodgeMover.Hide();
+            pushMover.Hide();
+            shiftMover.Hide();
 
             SetConfirmButtonVisibility(false);
 

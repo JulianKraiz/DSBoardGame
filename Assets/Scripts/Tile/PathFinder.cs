@@ -103,7 +103,7 @@ namespace Assets.Scripts.Tile
             return NodeWorldDistance(nodeA, target) <= NodeWorldDistance(nodeB, target);
         }
 
-        private static float NodeWorldDistance(PositionBehavior node1, PositionBehavior node2)
+        public static float NodeWorldDistance(PositionBehavior node1, PositionBehavior node2)
         {
             return (node2.transform.position - node1.transform.position).magnitude;
         }

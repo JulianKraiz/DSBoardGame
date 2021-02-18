@@ -63,43 +63,35 @@ public class MoveChoserBehavior : MonoBehaviour
     {
     }
 
-    public void SetupAndShow(UnitBasicProperties unit, MoveChoserType moveType, UnitBasicProperties awayFrom = null)
+    public void Hide()
     {
+        HideAll();
+    }
+
+    public void SetupAndShow(UnitBasicProperties unit, MoveChoserType moveType, PositionBehavior awayFromPosition)
+    {
+        movingUnit = unit;
         DescriptionText.text = $"Choose {moveType.ToString()} {Environment.NewLine} Direction";
 
-        this.movingUnit = unit;
-        if (this.movingUnit == null)
+        OcclusionBackground.SetActive(true);
+        DescriptionText.gameObject.SetActive(true);
+        ShowValidDirections(currentPosition, awayFromPosition);
+
+        if (moveType == MoveChoserType.Shift)
         {
-            NorthArrowBehavior.SetTarget(null);
-            NorthEastArrowBehavior.SetTarget(null);
-            EastArrowBehavior.SetTarget(null);
-            SouthEastArrowBehavior.SetTarget(null);
-            SouthArrowBehavior.SetTarget(null);
-            SouthWestArrowBehavior.SetTarget(null);
-            WestArrowBehavior.SetTarget(null);
-            NorthWestArrowBehavior.SetTarget(null);
-            OcclusionBackground.SetActive(false);
-            DescriptionText.gameObject.SetActive(false);
-            NoneButton.SetActive(false);
+            NoneButton.SetActive(true);
         }
-        else
-        {
-            var gameState = FindObjectOfType<GameStateManager>();
-            var tile = gameState.GetActiveTile();
-            var positions = tile.GetPositions();
+    }
 
-            currentPosition = positions.First(p => p.HasUnit(unit.gameObject));
-            var awayFromPosition = awayFrom != null ? positions.First(p => p.HasUnit(awayFrom.gameObject)) : null;
+    public void SetupAndShow(UnitBasicProperties unit, MoveChoserType moveType, UnitBasicProperties awayFrom = null)
+    {
+        var gameState = FindObjectOfType<GameStateManager>();
+        var tile = gameState.GetActiveTile();
+        var positions = tile.GetPositions();
 
-            OcclusionBackground.SetActive(true);
-            DescriptionText.gameObject.SetActive(true);
-            ShowValidDirections(currentPosition, awayFromPosition);
-
-            if (moveType == MoveChoserType.Shift)
-            {
-                NoneButton.SetActive(true);
-            }
-        }
+        currentPosition = positions.First(p => p.HasUnit(unit.gameObject));
+        var awayFromPosition = awayFrom != null ? positions.First(p => p.HasUnit(awayFrom.gameObject)) : null;
+        SetupAndShow(unit, moveType, awayFromPosition);
     }
 
     private void ShowValidDirections(PositionBehavior currentPosition, PositionBehavior awayFromPosition = null)
@@ -159,7 +151,7 @@ public class MoveChoserBehavior : MonoBehaviour
             }
         }
 
-        
+
     }
 
     private void EnableAll()
@@ -172,6 +164,21 @@ public class MoveChoserBehavior : MonoBehaviour
         SouthWestArrowBehavior.SetTarget(currentPosition.SouthWestPosition);
         WestArrowBehavior.SetTarget(currentPosition.WestPosition);
         NorthWestArrowBehavior.SetTarget(currentPosition.NorthWestPosition);
+    }
+
+    private void HideAll()
+    {
+        NorthArrowBehavior.SetTarget(null);
+        NorthEastArrowBehavior.SetTarget(null);
+        EastArrowBehavior.SetTarget(null);
+        SouthEastArrowBehavior.SetTarget(null);
+        SouthArrowBehavior.SetTarget(null);
+        SouthWestArrowBehavior.SetTarget(null);
+        WestArrowBehavior.SetTarget(null);
+        NorthWestArrowBehavior.SetTarget(null);
+        OcclusionBackground.SetActive(false);
+        DescriptionText.gameObject.SetActive(false);
+        NoneButton.SetActive(false);
     }
 
 }
