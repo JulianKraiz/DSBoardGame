@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Events\UnityEventWithGameObject.cs" />
     <Compile Include="Assets\Scripts\Events\UnityEventWithObject.cs" />
     <Compile Include="Assets\Scripts\Gate\NavigateFog.cs" />
+    <Compile Include="Assets\Scripts\General\CameraAutMover.cs" />
     <Compile Include="Assets\Scripts\General\GameStateManager.cs" />
     <Compile Include="Assets\Scripts\General\SoulCacheManager.cs" />
     <Compile Include="Assets\Scripts\General\WallNavigationManager.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Assets\Scripts\Tile\AttackEncounterBehavior.cs" />
     <Compile Include="Assets\Scripts\Tile\BonefireTileManager.cs" />
     <Compile Include="Assets\Scripts\Tile\EnemyGenerator.cs" />
-    <Compile Include="Assets\Scripts\Tile\HoverFocusedTile.cs" />
     <Compile Include="Assets\Scripts\Tile\Model\NodeDistance.cs" />
     <Compile Include="Assets\Scripts\Tile\Model\TileMonsterSettings.cs" />
     <Compile Include="Assets\Scripts\Tile\MovementEncounterBehavior.cs" />

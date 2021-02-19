@@ -113,7 +113,7 @@ namespace Assets.Scripts.Tile
             anchorOffset = new Vector3(1.35f, 0f, 0f);
             offsetDiceResultPresentation = new Vector3(2, 0, 0);
 
-            attackLuckBehavior.gameObject.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
+            attackLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
             defenseLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
 
             blockButton.GetComponent<RaiseEventOnClicked>().PositionClicked += BlockSelected;
@@ -674,8 +674,9 @@ namespace Assets.Scripts.Tile
                     dice.GetComponent<RaiseEventOnClicked>().PositionClicked += DiceSelectedForRethrow;
                 }
                 unit.hasLuckToken = false;
+                SetConfirmButtonVisibility(false);
+
             }
-            SetConfirmButtonVisibility(false);
         }
 
         private void DiceSelectedForRethrow(GameObject dice)

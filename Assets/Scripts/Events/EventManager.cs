@@ -29,6 +29,7 @@ namespace BoardGame.Script.Events
         LuckTrigger,
         EstusTrigger,
         EndUnitTurn,
+        TileFocused,
     }
 
     public enum ObjectEventType

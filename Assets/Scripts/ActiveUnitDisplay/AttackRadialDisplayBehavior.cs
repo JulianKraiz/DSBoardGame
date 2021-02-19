@@ -260,6 +260,7 @@ public class AttackRadialDisplayBehavior : MonoBehaviour
             SetTextOrHide(highRowAnchor, 0, InifiniteRangeContainer, null, ref highRowIndex);
             SetTextOrHide(highRowAnchor, 0, MinRange1Container, null, ref highRowIndex);
             SetTextOrHide(highRowAnchor, 0, SplashNodeContainer, null, ref highRowIndex);
+            SetTextOrHide(highRowAnchor, 0, RepeatContainer, RepeatTextMesh, ref highRowIndex);
 
             SetTextOrHide(highRowAnchor, movement.MagicAttack ? 1 : 0, MagicContainer, null, ref highRowIndex);
             SetTextOrHide(highRowAnchor, movement.Push ? 1 : 0, PushTokenContainer, null, ref highRowIndex);

@@ -423,7 +423,6 @@ GameObject:
   - component: {fileID: 8807044622438383752}
   - component: {fileID: 8807044622438383756}
   - component: {fileID: 8807044622438383763}
-  - component: {fileID: 8807044622438383762}
   - component: {fileID: 4392537667518266221}
   m_Layer: 0
   m_Name: DungeonTile1
@@ -524,7 +523,6 @@ MonoBehaviour:
   isFocused: 0
   players: []
   enemies: []
-  positions: []
 --- !u!114 &8807044622438383763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,19 +539,6 @@ MonoBehaviour:
   southTile: {fileID: 0}
   westTile: {fileID: 0}
   eastTile: {fileID: 0}
---- !u!114 &8807044622438383762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622438383753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e998fc401b0f9f4e8e5707eb8598aed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetCenterHover: {x: -0.5, y: 7, z: -7}
 --- !u!114 &4392537667518266221
 MonoBehaviour:
   m_ObjectHideFlags: 0

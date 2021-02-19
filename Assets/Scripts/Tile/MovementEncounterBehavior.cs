@@ -106,6 +106,7 @@ namespace Assets.Scripts.Tile
             dodgeButton.GetComponent<RaiseEventOnEnterExit>().PositionEnter += DodgeHovered;
             dodgeButton.GetComponent<RaiseEventOnEnterExit>().PositionExit += DodgeHoverEnded;
 
+            defenseLuckBehavior.GetComponent<RaiseEventOnClicked>().PositionClicked += UseLuckEvent;
             confirmButton.transform.Find("BackgroundButton").GetComponent<RaiseEventOnClicked>().PositionClicked += ConfirmResult;
 
             pushMover.PositionClicked += PushMoveSelected;
@@ -404,6 +405,32 @@ namespace Assets.Scripts.Tile
         }
 
         #region Defense Select
+        private void UseLuckEvent(GameObject position)
+        {
+            var unit = (PlayerProperties)currentDefender;
+            if (unit.hasLuckToken)
+            {
+                foreach (var dice in dices)
+                {
+                    dice.GetComponent<RaiseEventOnClicked>().PositionClicked += DiceSelectedForRethrow;
+                }
+                unit.hasLuckToken = false;
+                SetConfirmButtonVisibility(false);
+            }
+        }
+
+        private void DiceSelectedForRethrow(GameObject dice)
+        {
+            foreach (var alldice in dices)
+            {
+                alldice.GetComponent<RaiseEventOnClicked>().PositionClicked -= DiceSelectedForRethrow;
+            }
+
+            diceResultRecieved--;
+            ThrowOneDice(dice);
+            EventManager.StartListening(GameObjectEventType.DiceStoppedMoving, AddDiceResult);
+        }
+
         private void DodgeHoverEnded(GameObject position)
         {
             dodgeButtonRenderer.enabled = false;

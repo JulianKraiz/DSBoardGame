@@ -39,8 +39,15 @@ namespace Assets.Scripts.Unit.IA
             var targetsInRange = attack.FindTargetsInWeaponRange(enemy, currentPosition, positions);
             var target = FindClosestTarget(currentPosition, attack.TargetPreference, targetsInRange);
 
-            EventManager.RaiseEvent(ObjectEventType.AttackSelected, attack);
-            EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
+            if (target == null)
+            {
+                EventManager.RaiseEvent(ObjectEventType.AttackApplied, attack);
+            }
+            else
+            {
+                EventManager.RaiseEvent(ObjectEventType.AttackSelected, attack);
+                EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
+            }
         }
 
         private GameObject FindClosestTarget(PositionBehavior currentPosition, PreferedTarget targetPriority, List<UnitBasicProperties> inRangeTargets)

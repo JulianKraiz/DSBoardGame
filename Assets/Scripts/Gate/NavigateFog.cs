@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Tile;
+using BoardGame.Script.Events;
 using UnityEngine;
 
 public class NavigateFog : MonoBehaviour
@@ -84,6 +85,8 @@ public class NavigateFog : MonoBehaviour
                 
             }
         }
+
+        EventManager.RaiseEvent(GameObjectEventType.TileFocused, null);
     }
 
     public bool BothTileCleared()
