@@ -29,7 +29,7 @@ public class GameStateManager : MonoBehaviour
             tile.GetComponent<TileManager>().monsterSettings = new TileMonsterSettings()
             {
                 arbalestHollowSoldierCount = 1,
-                //swordhollowSoldierCount = 2,
+                swordhollowSoldierCount = 2,
             };
         }
         SetPlayerStartingEquipement();

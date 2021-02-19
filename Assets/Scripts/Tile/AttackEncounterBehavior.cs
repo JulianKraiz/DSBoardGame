@@ -218,9 +218,7 @@ namespace Assets.Scripts.Tile
                 }
             }
         }
-
-
-
+        
         private void SetupForShift()
         {
             if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved >= attackRecieved.ShiftBefore)
@@ -372,14 +370,14 @@ namespace Assets.Scripts.Tile
             if (value == defaultValue && !showDefaultValue)
             {
                 container.SetActive(false);
-                return;
             }
-
-            container.SetActive(true);
-            container.transform.localPosition = anchor.transform.localPosition + (offsetIndex * offset);
-            text.text = value.ToString();
-            offsetIndex++;
-            return;
+            else
+            {
+                container.SetActive(true);
+                container.transform.localPosition = anchor.transform.localPosition + (offsetIndex * offset);
+                text.text = value.ToString();
+                offsetIndex++;
+            }
         }
 
         #region Option Select

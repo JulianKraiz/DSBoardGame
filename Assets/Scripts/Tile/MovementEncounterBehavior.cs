@@ -588,6 +588,10 @@ namespace Assets.Scripts.Tile
             {
                 ApplyPushDamage();
             }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private void ApplyPushDamage()
@@ -752,14 +756,14 @@ namespace Assets.Scripts.Tile
             if (value == defaultValue && !showDefaultValue)
             {
                 container.SetActive(false);
-                return;
             }
-
-            container.SetActive(true);
-            container.transform.localPosition = anchor.transform.localPosition + (offsetIndex * offset);
-            text.text = value.ToString();
-            offsetIndex++;
-            return;
+            else
+            {
+                container.SetActive(true);
+                container.transform.localPosition = anchor.transform.localPosition + (offsetIndex * offset);
+                text.text = value.ToString();
+                offsetIndex++;
+            }
         }
         #endregion
 
