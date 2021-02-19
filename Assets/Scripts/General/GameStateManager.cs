@@ -21,7 +21,7 @@ public class GameStateManager : MonoBehaviour
         Instance = this;
         characterDisplayContainer = GameObject.Find("UnitDisplays").GetComponent<PlayerDisplayContainer>();
         tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
-        players = GameObject.FindGameObjectsWithTag("Player").ToList();
+        players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.activeSelf).ToList();
 
         // DEBUG
         foreach (var tile in tiles)

@@ -75,6 +75,10 @@ public class MoveChoserBehavior : MonoBehaviour
 
         OcclusionBackground.SetActive(true);
         DescriptionText.gameObject.SetActive(true);
+
+        var positions = GameStateManager.Instance.GetActiveTile().GetPositions();
+        currentPosition = positions.First(p => p.HasUnit(unit.gameObject));
+
         ShowValidDirections(currentPosition, awayFromPosition);
 
         if (moveType == MoveChoserType.Shift)
@@ -85,12 +89,9 @@ public class MoveChoserBehavior : MonoBehaviour
 
     public void SetupAndShow(UnitBasicProperties unit, MoveChoserType moveType, UnitBasicProperties awayFrom = null)
     {
-        var gameState = FindObjectOfType<GameStateManager>();
-        var tile = gameState.GetActiveTile();
-        var positions = tile.GetPositions();
-
-        currentPosition = positions.First(p => p.HasUnit(unit.gameObject));
+        var positions = GameStateManager.Instance.GetActiveTile().GetPositions();
         var awayFromPosition = awayFrom != null ? positions.First(p => p.HasUnit(awayFrom.gameObject)) : null;
+        
         SetupAndShow(unit, moveType, awayFromPosition);
     }
 

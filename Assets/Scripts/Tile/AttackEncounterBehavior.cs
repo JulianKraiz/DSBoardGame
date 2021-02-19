@@ -559,7 +559,7 @@ namespace Assets.Scripts.Tile
                     }
                     else if (rollType == EncounterRollType.Dodge)
                     {
-                        blockRoll += behavior.GetValue();
+                        dodgeRoll += behavior.GetValue();
                     }
                     else if (rollType == EncounterRollType.Attack)
                     {

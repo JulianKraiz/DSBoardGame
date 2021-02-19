@@ -9,10 +9,10 @@ namespace Assets.Scripts.Unit.Model.Attacks
         public int MoveDistance;
         public MovementDirection Direction;
         public PreferedTarget TargetPreference;
-        public int Repeat = 1;
         public bool Push;
         public int PushDamage;
         public bool MagicAttack;
+        public int DodgeLevel;
 
 
         public override BehaviorAction Clone()
@@ -22,10 +22,10 @@ namespace Assets.Scripts.Unit.Model.Attacks
                 MoveDistance = MoveDistance,
                 Direction = Direction,
                 TargetPreference = TargetPreference,
-                Repeat = Repeat,
                 Push = Push,
                 PushDamage = PushDamage,
                 MagicAttack = MagicAttack,
+                DodgeLevel = DodgeLevel,
             };
         }
 

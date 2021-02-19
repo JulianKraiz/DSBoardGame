@@ -1400,6 +1400,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e69d01b18a2994f9495740f1f986d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwPoint: {fileID: 4929987210715611140}
+  blackDiceTemplate: {fileID: 419971222526104095, guid: db8e17039a067df46ae78e746468e838,
+    type: 3}
+  blueDiceTemplate: {fileID: 6434283030699849556, guid: 24ee31fc97af4714f965ad6b1dc0cb08,
+    type: 3}
+  orangeDiceTemplate: {fileID: 6921930146398211800, guid: 313250344d453a04e94b37882e759fda,
+    type: 3}
+  dodgeDiceTemplate: {fileID: 6716667290511468783, guid: bc31a889a6d2ddc4caff87e024d82edc,
+    type: 3}
   attackerPortrait: {fileID: 960067792199559279}
   defenderPortrait: {fileID: 8114534717397030279}
   attackOptions: {fileID: 2689315039723591565}
@@ -1419,21 +1428,21 @@ MonoBehaviour:
   defenseDodgeDiceContainer: {fileID: 5898517107484395844}
   defenseDodgeDiceText: {fileID: 6218942093664032118}
   defenseAnchor: {fileID: 2034275623570668908}
-  attackBleedToken: {fileID: 5420366070981286523}
+  attackPushContainer: {fileID: 5420366070981286523}
+  attackPushText: {fileID: 3913502576639394345}
+  attackDodgeDiceContainer: {fileID: 3656932965431831363}
+  attackDodgeDiceText: {fileID: 6212504226005158530}
+  attackBleedToken: {fileID: 2397479891528798952}
   attackPoisonToken: {fileID: 1920171581155493890}
   attackStaggerToken: {fileID: 5832191473058905083}
   attackFrozenToken: {fileID: 5038099339624303259}
   defenseBleedToken: {fileID: 4280842204806260094}
   defensePoisonToken: {fileID: 8576673939285072596}
   defenseStaggerToken: {fileID: 3859669757758513226}
-  defenseFrozenToken: {fileID: 5038099339624303259}
+  defenseFrozenToken: {fileID: 2926061081606000207}
   defenseEstusBehavior: {fileID: 7163361224190652230}
   defenseLuckBehavior: {fileID: 1830707758229286322}
   defenseEmberBehavior: {fileID: 6675820398172506562}
-  pushContainer: {fileID: 5420366070981286523}
-  pushText: {fileID: 3913502576639394345}
-  pushDodgeContainer: {fileID: 3656932965431831363}
-  pushDodgeText: {fileID: 6212504226005158530}
   blockButton: {fileID: 9095930520003168087}
   dodgeButton: {fileID: 2966588627087431559}
   blockButtonRenderer: {fileID: 1061542648181925843}

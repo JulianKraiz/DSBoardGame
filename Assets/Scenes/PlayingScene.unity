@@ -459,6 +459,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Warrior
       objectReference: {fileID: 0}
+    - target: {fileID: 8203809882150509328, guid: 51efd6c2f142721428559f971981d588,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8203809882150509329, guid: 51efd6c2f142721428559f971981d588,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1469,6 +1474,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Knight
       objectReference: {fileID: 0}
+    - target: {fileID: 8203809882150509328, guid: 51efd6c2f142721428559f971981d588,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8203809882150509329, guid: 51efd6c2f142721428559f971981d588,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1572,7 +1582,7 @@ PrefabInstance:
     - target: {fileID: 8203809882150509330, guid: 51efd6c2f142721428559f971981d588,
         type: 3}
       propertyPath: hasActivationToken
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8203809882150509330, guid: 51efd6c2f142721428559f971981d588,
         type: 3}
@@ -3859,7 +3869,7 @@ PrefabInstance:
     - target: {fileID: 8203809882150509330, guid: 51efd6c2f142721428559f971981d588,
         type: 3}
       propertyPath: hasActivationToken
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51efd6c2f142721428559f971981d588, type: 3}

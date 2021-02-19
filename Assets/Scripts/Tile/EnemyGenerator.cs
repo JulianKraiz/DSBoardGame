@@ -68,22 +68,22 @@ namespace Assets.Scripts.Tile
         {
             new MovementAction()
             {
-                Direction = MovementDirection.Backward,
+                Direction = MovementDirection.Forward,
                 MoveDistance = 1,
                 TargetPreference = PreferedTarget.Aggro,
                 MagicAttack = true,
                 Push = true,
                 PushDamage = 2,
-                Repeat = 2,
-            },
-            new AttackAction()
-            {
-                FlatModifier = 3,
-                MagicAttack = true,
-                InfiniteRange = true,
                 DodgeLevel = 1,
-                TargetPreference = PreferedTarget.Aggro,
-            }
+            },
+            //new AttackAction()
+            //{
+            //    FlatModifier = 3,
+            //    MagicAttack = true,
+            //    InfiniteRange = true,
+            //    DodgeLevel = 1,
+            //    TargetPreference = PreferedTarget.Aggro,
+            //}
         };
 
             return soldier;
