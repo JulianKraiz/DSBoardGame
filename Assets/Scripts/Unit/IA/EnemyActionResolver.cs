@@ -27,7 +27,7 @@ namespace Assets.Scripts.Unit.IA
             var target = FindClosestTarget(currentPosition, movement.TargetPreference, targetsInRange);
 
             EventManager.RaiseEvent(ObjectEventType.AttackSelected, movement);
-            EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
+            EventManager.RaiseEvent(GameObjectEventType.UnitSelected, target);
         }
 
         public void Execute(EnemyProperties enemy, AttackAction attack)
@@ -46,7 +46,7 @@ namespace Assets.Scripts.Unit.IA
             else
             {
                 EventManager.RaiseEvent(ObjectEventType.AttackSelected, attack);
-                EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, target);
+                EventManager.RaiseEvent(GameObjectEventType.UnitSelected, target);
             }
         }
 

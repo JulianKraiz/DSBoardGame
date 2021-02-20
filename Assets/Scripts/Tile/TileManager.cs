@@ -27,7 +27,6 @@ namespace Assets.Scripts.Tile
         private EnemyAutoTurnResolver enemyAi;
 
         private List<PositionBehavior> currentPath;
-        private List<UnitBasicProperties> currentUnitInBrillance;
         private BehaviorAction currentSelectedAttack;
 
         private UnitBasicProperties currentUnit;
@@ -55,7 +54,6 @@ namespace Assets.Scripts.Tile
             enemyAi = FindObjectOfType<EnemyAutoTurnResolver>();
             enemyGenerator = GetComponent<EnemyGenerator>();
             currentPath = new List<PositionBehavior>();
-            currentUnitInBrillance = new List<UnitBasicProperties>();
 
             EventManager.StartListening(GameObjectEventType.TileIsEntered, IntializeFocusedTileHandler);
 
@@ -178,7 +176,7 @@ namespace Assets.Scripts.Tile
                 EventManager.StartListening(ObjectEventType.AttackDeselected, HideSelectedAttackTargets);
                 EventManager.StartListening(ObjectEventType.AttackHovered, ShowAvailableAttackTargets);
                 EventManager.StartListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
-                EventManager.StartListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
+                
                 EventManager.StartListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
                 EventManager.StartListening(ObjectEventType.UnitMoved, UnitMoved);
                 EventManager.StartListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
@@ -307,7 +305,7 @@ namespace Assets.Scripts.Tile
             EventManager.StopListening(ObjectEventType.AttackDeselected, HideHoveredAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHovered, ShowAvailableAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
-            EventManager.StopListening(GameObjectEventType.AttackTargetSelected, ApplyAttack);
+            
             EventManager.StopListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
             EventManager.StopListening(ObjectEventType.UnitMoved, UnitMoved);
             EventManager.StopListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
@@ -376,12 +374,11 @@ namespace Assets.Scripts.Tile
                     Unit = currentUnitObject
                 };
 
-                UnitMoved(moveCommand);
                 firstMovementFree = false;
                 currentUnitHasMoved = true;
                 currentUnit.ConsumeStamina(pathcost);
 
-                EventManager.RaiseEvent(GameObjectEventType.ActiveUnitMoved, currentUnit.gameObject);
+                EventManager.RaiseEvent(ObjectEventType.UnitMoved, moveCommand);
             }
         }
 
@@ -451,9 +448,10 @@ namespace Assets.Scripts.Tile
             foreach (var unit in targets)
             {
                 var properties = unit.GetComponent<UnitBasicProperties>();
-                properties.ShowHoverBrillance();
-                currentUnitInBrillance.Add(properties);
+                properties.ShowTargetableBrillance();
             }
+
+            EventManager.StartListening(GameObjectEventType.UnitSelected, ApplyAttack);
         }
 
         private void HideSelectedAttackTargets(object deselectedLoad)
@@ -477,15 +475,22 @@ namespace Assets.Scripts.Tile
 
         private void InternalHideAttackTargets()
         {
-            foreach (var unit in currentUnitInBrillance)
+            foreach (var unit in players)
             {
-                unit.HideHoverBrillance();
+                unit.HideTargetableBrillance();
             }
-            currentUnitInBrillance.Clear();
+            foreach (var unit in enemies)
+            {
+                unit.HideTargetableBrillance();
+            }
+            EventManager.StopListening(GameObjectEventType.UnitSelected, ApplyAttack);
         }
 
         private void ApplyAttack(GameObject target)
         {
+            EventManager.StopListening(GameObjectEventType.UnitSelected, ApplyAttack);
+            InternalHideAttackTargets();
+
             var targetProperties = target.GetComponent<UnitBasicProperties>();
             PrepareEncounterToResolve(currentSelectedAttack, targetProperties);
         }

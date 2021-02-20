@@ -1,72 +1,147 @@
 ﻿using BoardGame.Script.Events;
+using System;
 using UnityEngine;
 
 public class HoverBrillanceBehavior : MonoBehaviour
 {
     public delegate void PositionMouseEvent(GameObject position);
-    public event PositionMouseEvent PositionSelected;
 
-    public Material standardBrillanceMaterial;
-    public Material hoverBrillanceMaterial;
+    public Material activeMaterial;
+    public Material targetableMaterial;
+    public Material hoveredMaterial;
+    public Material attackedMaterial;
 
-    private MeshRenderer capsuleRenderer;
-    private CapsuleCollider capsuleCollider;
+    private bool isUnitActive;
+    private bool isTargetable;
+    private bool isHovered;
+    private bool isAttacked;
+    public MeshRenderer capsuleRenderer;
 
     void Start()
     {
-        capsuleRenderer = GetComponent<MeshRenderer>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
-        capsuleRenderer.material = standardBrillanceMaterial;
-        setState(false);
+        capsuleRenderer.material = targetableMaterial;
+        isUnitActive = false;
+        isTargetable = false;
+        isHovered = false;
+        isAttacked = false;
+        SetCircle();
+
+        EventManager.StartListening(GameObjectEventType.UnitHoverEntered, DisplayUnitHovered);
+        EventManager.StartListening(GameObjectEventType.UnitHoverExited, DisplayUnitHoverEnded);
+    }
+
+    private void DisplayUnitHoverEnded(GameObject unit)
+    {
+        if (unit == transform.parent.gameObject)
+        {
+            isHovered = false;
+        }
+        SetCircle();
+    }
+
+    private void DisplayUnitHovered(GameObject unit)
+    {
+        isHovered = unit == transform.parent.gameObject;
+        SetCircle();
     }
 
     void Update()
     {
-        
+        transform.Rotate(Vector3.up, 10 * Time.deltaTime);
     }
 
-    private void OnMouseDown()
-    {
-        PositionSelected?.Invoke(gameObject);
-    }
+
 
     private void OnMouseEnter()
     {
-        capsuleRenderer.material = hoverBrillanceMaterial;
         EventManager.RaiseEvent(GameObjectEventType.UnitHoverEntered, transform.parent.gameObject);
     }
 
     private void OnMouseExit()
     {
-        capsuleRenderer.material = standardBrillanceMaterial;
         EventManager.RaiseEvent(GameObjectEventType.UnitHoverExited, transform.parent.gameObject);
     }
 
     private void OnMouseUp()
     {
-        if (capsuleRenderer.enabled)
+        if(isAttacked)
         {
-            EventManager.RaiseEvent(GameObjectEventType.AttackTargetSelected, transform.parent.gameObject);
+            EventManager.RaiseEvent(GameObjectEventType.ZoomUnitDisplay, transform.parent.gameObject);
+        }
+        else if (isTargetable)
+        {
+            EventManager.RaiseEvent(GameObjectEventType.UnitSelected, transform.parent.gameObject);
         }
         else
         {
-            EventManager.RaiseEvent(GameObjectEventType.ToggleZoomUnitDisplay, transform.parent.gameObject);
+            EventManager.RaiseEvent(GameObjectEventType.ZoomUnitDisplay, transform.parent.gameObject);
         }
     }
 
-    internal void Activate()
+    internal void ShowAttacked()
     {
-        setState(true);
-        OnMouseExit();
+        isAttacked = true;
+        SetCircle();
     }
 
-    internal void Deactivate()
+    internal void HideAttacked()
     {
-        setState(false);
-        OnMouseExit();
+        isAttacked = false;
+        SetCircle();
     }
-    private void setState(bool state)
+
+    internal void ShowTargetable()
     {
-        capsuleRenderer.enabled = state;
+        isTargetable = true;
+        SetCircle();
+    }
+
+    internal void HideTargetable()
+    {
+        isTargetable = false;
+        SetCircle();
+    }
+
+    internal void ShowActiveUnit()
+    {
+        isUnitActive = true;
+        SetCircle();
+    }
+
+    internal void HideActiveUnit()
+    {
+        isUnitActive = false;
+        SetCircle();
+    }
+
+    private void SetCircle()
+    {
+        var material = GetMaterial();
+        if (material != null)
+        {
+            capsuleRenderer.material = material;
+        }
+        capsuleRenderer.enabled = material != null;
+    }
+
+    private Material GetMaterial()
+    {
+        if(isAttacked)
+        {
+            return attackedMaterial;
+        }
+        else if (isHovered)
+        {
+            return hoveredMaterial;
+        }
+        else if (isTargetable)
+        {
+            return targetableMaterial;
+        }
+        else if (isUnitActive)
+        {
+            return activeMaterial;
+        }
+        return null;
     }
 }

@@ -70,7 +70,7 @@ public class PlayerDisplayBehavior : MonoBehaviour
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
 
         EventManager.StartListening(GameObjectEventType.PlayerSheetClicked, ZoomToggle);
-        EventManager.StartListening(GameObjectEventType.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
+        EventManager.StartListening(GameObjectEventType.ZoomUnitDisplay, ToggleZoomUnitDisplay);
         EventManager.StartListening(GameObjectEventType.UnitHoverEntered, DisplayFocusedOverlay);
         EventManager.StartListening(GameObjectEventType.UnitHoverExited, HideFocusedOverlay);
     }

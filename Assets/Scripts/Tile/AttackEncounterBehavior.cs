@@ -93,6 +93,7 @@ namespace Assets.Scripts.Tile
         private List<UnitBasicProperties> defensesToResolve;
         private bool resolvingEncounter = false;
 
+        private bool currentDefenderIsSetup;
         private DefenseDices defenseCurrent;
         private UnitBasicProperties defenderCurrent;
         private int attackRepeatCounter;
@@ -147,6 +148,7 @@ namespace Assets.Scripts.Tile
             }
 
             resolvingEncounter = true;
+            currentDefenderIsSetup = true;
 
             attackRecieved = (AttackAction)castLoad.Action.Clone();
             attackerRecieved = castLoad.Attacker;
@@ -171,15 +173,18 @@ namespace Assets.Scripts.Tile
                 }
                 else if (currentStep == EncounterStep.ShiftBefore && shiftBeforeResolved == attackRecieved.ShiftBefore)
                 {
-
                     currentStep = EncounterStep.Attack;
                     SetupForAttack();
+                    FindAllPotentialTargets();
+                    if(attackerRecieved.side == UnitSide.Player)
+                    {
+                        ShowNextDefender();
+                    }
                 }
                 else if (currentStep == EncounterStep.Attack && attackResolved)
                 {
                     currentStep = EncounterStep.Defense;
                     defenseResolved = false;
-                    FindAllPotentialTargets();
                     ClearCurrent();
                 }
                 else if (currentStep == EncounterStep.Defense)
@@ -190,6 +195,10 @@ namespace Assets.Scripts.Tile
                         SetupForShift();
                     }
                     else if (IsCurrentCleared()) // load next defender against same attack.
+                    {
+                        ShowNextDefender();
+                    }
+                    else if(!currentDefenderIsSetup)
                     {
                         SetupForDefender();
                     }
@@ -211,10 +220,10 @@ namespace Assets.Scripts.Tile
                 }
                 else if (currentStep == EncounterStep.Resolved)
                 {
+                    resolvingEncounter = false;
                     attackerRecieved.ConsumeStamina(attackRecieved.StaminaCost);
                     EventManager.RaiseEvent(ObjectEventType.EncountersResolved);
                     SetGlobalVisibility(false);
-                    resolvingEncounter = false;
                 }
             }
         }
@@ -256,8 +265,7 @@ namespace Assets.Scripts.Tile
 
         private void SetupForDefender()
         {
-            SetNextToCurrent();
-            ShowDefenderSide();
+            currentDefenderIsSetup = true;
             if (defenderCurrent.side == UnitSide.Player)
             {
                 blockButton.SetActive(true);
@@ -266,8 +274,15 @@ namespace Assets.Scripts.Tile
             else
             {
                 blockRoll = defenseCurrent.FlatReduce;
-                SetCurrentStepResolved();
+                Invoke(nameof(SetCurrentStepResolved),2f);
             }
+        }
+
+        private void ShowNextDefender()
+        {
+            SetNextToCurrent();
+            ShowDefenderSide();
+            currentDefenderIsSetup = false;
         }
 
         private void SetCurrentStepResolved()
@@ -298,6 +313,7 @@ namespace Assets.Scripts.Tile
                 foreach (var target in finalTargets)
                 {
                     defensesToResolve.Add(target);
+                    target.ShowTargetableBrillance();
                 }
             }
             else
@@ -604,6 +620,7 @@ namespace Assets.Scripts.Tile
 
         private void ConfirmResult(GameObject position)
         {
+            confirmButton.SetActive(false);
             SetCurrentStepResolved();
         }
         #endregion
@@ -651,6 +668,7 @@ namespace Assets.Scripts.Tile
 
         private void ApplyResultFinalize()
         {
+            defenderCurrent.HideAttakedBrillance();
             ClearCurrent();
             if (defensesToResolve.Any())
             {
@@ -776,6 +794,7 @@ namespace Assets.Scripts.Tile
         {
             var next = defensesToResolve.First();
             defenderCurrent = next;
+            defenderCurrent.ShowAttackedBrillance();
             defenseCurrent = defenderCurrent.GetDefenseDices(attackRecieved.MagicAttack);
             blockRoll = 0;
             dodgeRoll = 0;

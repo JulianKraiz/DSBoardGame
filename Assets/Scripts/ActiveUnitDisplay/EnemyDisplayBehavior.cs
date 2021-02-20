@@ -27,7 +27,7 @@ public class EnemyDisplayBehavior : MonoBehaviour
         bigScale = 3 * smallScale;
         EventManager.StartListening(GameObjectEventType.UnitHoverEntered, UnitHovered);
         EventManager.StartListening(GameObjectEventType.UnitHoverExited, UnitExited);
-        EventManager.StartListening(GameObjectEventType.ToggleZoomUnitDisplay, ToggleZoomUnitDisplay);
+        EventManager.StartListening(GameObjectEventType.ZoomUnitDisplay, ZoomUnitDisplay);
 
         focusedLayerRenderer = transform.Find("FocusedLayer").GetComponent<MeshRenderer>();
     }
@@ -70,13 +70,34 @@ public class EnemyDisplayBehavior : MonoBehaviour
 
     public void OnMouseUp()
     {
+        ToggleZoom();
+    }
+
+    private void ToggleZoom()
+    {
+        if (zoomedIn)
+        {
+            ZoomOut();
+        }
+        else if (!zoomedIn)
+        {
+            ZoomIn();
+        }
+    }
+
+    private void ZoomOut()
+    {
         if (zoomedIn)
         {
             zoomedIn = !zoomedIn;
             transform.localPosition -= translateOffset;
             transform.localScale = smallScale;
         }
-        else if (!zoomedIn)
+    }
+
+    private void ZoomIn()
+    {
+        if (!zoomedIn)
         {
             zoomedIn = !zoomedIn;
             transform.localPosition += translateOffset;
@@ -100,18 +121,15 @@ public class EnemyDisplayBehavior : MonoBehaviour
         }
     }
 
-    private void ToggleZoomUnitDisplay(GameObject unit)
+    private void ZoomUnitDisplay(GameObject unit)
     {
         if (enemy == unit)
         {
-            if (focusedLayerRenderer.enabled)
-            {
-                UnitExited(unit);
-            }
-            else 
-            {
-                UnitHovered(unit);
-            }
+            ToggleZoom();
+        }
+        else
+        {
+            ZoomOut();
         }
     }
 
@@ -121,6 +139,4 @@ public class EnemyDisplayBehavior : MonoBehaviour
         var rend = GetComponent<MeshRenderer>();
         rend.material = mat;
     }
-
-
 }

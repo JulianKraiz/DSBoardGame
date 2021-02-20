@@ -230,6 +230,10 @@ namespace Assets.Scripts.Tile
 
             SetInitialPushVisibility();
             unitToPushRemaining = GetUnitsToPush();
+            foreach(var unit in unitToPushRemaining)
+            {
+                unit.ShowTargetableBrillance();
+            }
             currentDefender = null;
             attackerOriginNode = null;
         }
@@ -251,6 +255,7 @@ namespace Assets.Scripts.Tile
             SetDefenderPanel();
             SetAttackerPanel();
 
+            currentDefender.ShowAttackedBrillance();
             pushMover.SetupAndShow(currentDefender, MoveChoserType.Push, attackerRecieved);
         }
 
@@ -297,6 +302,10 @@ namespace Assets.Scripts.Tile
 
             SetPushAwayVisibility();
             unitToPushRemaining = GetUnitsToPush();
+            foreach (var unit in unitToPushRemaining)
+            {
+                unit.ShowTargetableBrillance();
+            }
             currentDefender = null;
         }
 
@@ -317,6 +326,7 @@ namespace Assets.Scripts.Tile
             defenderPortraitRenderer.material = currentDefender.portrait;
             attackerPortraitRenderer.material = attackerRecieved.portrait;
 
+            currentDefender.ShowAttackedBrillance();
             if (movementRecieved.PushDamage > 0)
             {
                 ShowNextPushAwayBlockDodge();
@@ -389,6 +399,7 @@ namespace Assets.Scripts.Tile
 
         private void PushMoveSelected(PositionBehavior position)
         {
+            currentDefender.HideAttakedBrillance();
             if (currentStep == MovementStep.InitialPush)
             {
                 currentDefender = null;

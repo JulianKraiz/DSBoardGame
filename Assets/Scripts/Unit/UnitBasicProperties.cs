@@ -8,7 +8,7 @@ public class UnitBasicProperties : MonoBehaviour
     public Material portrait;
     public Material tile;
 
-    public bool isActive { get; protected set; }
+    public bool isActive { get; private set; }
     public int initiative;
     public int hitPoints;
     public int injuries;
@@ -34,17 +34,10 @@ public class UnitBasicProperties : MonoBehaviour
 
     public UnitSide side;
 
-    private HoverBrillanceBehavior hoverBrillanceBehavior;
+    public HoverBrillanceBehavior hoverBrillanceBehavior;
 
-    // Start is called before the first frame update
     void Start()
     {
-        var brillanceCapsule = transform.Find("HoverBrillance");
-        if(brillanceCapsule != null)
-        {
-            hoverBrillanceBehavior = brillanceCapsule.GetComponent<HoverBrillanceBehavior>();
-            hoverBrillanceBehavior.PositionSelected += BrillanceCapsuleClicked;
-        }
         StartInternal();
     }
 
@@ -53,7 +46,6 @@ public class UnitBasicProperties : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateInternal();
@@ -68,12 +60,14 @@ public class UnitBasicProperties : MonoBehaviour
     {
         isActive = true;
         ActivateInternal();
+        hoverBrillanceBehavior.ShowActiveUnit();
         EventManager.RaiseEvent(GameObjectEventType.UnitIsActivated, gameObject);
     }
 
     public void Deactivate()
     {
         isActive = false;
+        hoverBrillanceBehavior.HideActiveUnit();
     }
 
     protected virtual void ActivateInternal()
@@ -117,37 +111,29 @@ public class UnitBasicProperties : MonoBehaviour
         }
     }
 
-    private void OnMouseEnter()
-    {
-    }
-
-    private void OnMouseExit()
-    {
-    }
-
-    private void OnMouseDown()
-    {
-    }
-
     public virtual void ConsumeStamina(int amount)
     {
         stamina += amount;
     }
 
-    public void ShowHoverBrillance()
+    public void ShowTargetableBrillance()
     {
-        if(hoverBrillanceBehavior != null)
-        {
-            hoverBrillanceBehavior.Activate();
-        }
+        hoverBrillanceBehavior.ShowTargetable();
     }
 
-    public void HideHoverBrillance()
+    public void HideTargetableBrillance()
     {
-        if (hoverBrillanceBehavior != null)
-        {
-            hoverBrillanceBehavior.Deactivate();
-        }
+        hoverBrillanceBehavior.HideTargetable();
+    }
+
+    public void ShowAttackedBrillance()
+    {
+        hoverBrillanceBehavior.ShowAttacked();
+    }
+
+    public void HideAttakedBrillance()
+    {
+        hoverBrillanceBehavior.HideAttacked();
     }
 
     public void RecieveInjuries(int injuriesRecieved)
@@ -166,11 +152,6 @@ public class UnitBasicProperties : MonoBehaviour
         }
     }
 
-    private void BrillanceCapsuleClicked(GameObject position)
-    {
-        EventManager.RaiseEvent(GameObjectEventType.UnitSelected, gameObject);
-    }
-
     public DefenseDices GetDefenseDices(bool magicAttack)
     {
         var result = new DefenseDices();
@@ -182,17 +163,17 @@ public class UnitBasicProperties : MonoBehaviour
         {
             leftEquipement.GetComponent<EquipementProperties>().ContributeDiceToDefenseRolls(result, magicAttack);
         }
-        if(rightEquipement != null)
+        if (rightEquipement != null)
         {
             rightEquipement.GetComponent<EquipementProperties>().ContributeDiceToDefenseRolls(result, magicAttack);
         }
-        
+
         return result;
     }
 
     public void EndOfTurn()
     {
-         Deactivate();
+        Deactivate();
         ApplyStatusEffect();
         RemoveStatusEffect();
 
@@ -200,7 +181,7 @@ public class UnitBasicProperties : MonoBehaviour
 
     private void ApplyStatusEffect()
     {
-        if(isPoisoned)
+        if (isPoisoned)
         {
             RecieveInjuries(1);
         }
