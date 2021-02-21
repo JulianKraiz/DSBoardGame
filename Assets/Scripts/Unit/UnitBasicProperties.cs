@@ -129,11 +129,13 @@ public class UnitBasicProperties : MonoBehaviour
     public void ShowAttackedBrillance()
     {
         hoverBrillanceBehavior.ShowAttacked();
+        EventManager.RaiseEvent(GameObjectEventType.UnitIsCurrentlyAttacked, gameObject);
     }
 
     public void HideAttakedBrillance()
     {
         hoverBrillanceBehavior.HideAttacked();
+        EventManager.RaiseEvent(GameObjectEventType.UnitIsNotCurrentlyAttacked, gameObject);
     }
 
     public void RecieveInjuries(int injuriesRecieved)

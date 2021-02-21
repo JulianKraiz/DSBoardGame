@@ -29,6 +29,8 @@ namespace BoardGame.Script.Events
         EstusTrigger,
         EndUnitTurn,
         TileFocused,
+        UnitIsCurrentlyAttacked,
+        UnitIsNotCurrentlyAttacked,
     }
 
     public enum ObjectEventType

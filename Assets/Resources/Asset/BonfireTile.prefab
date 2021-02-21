@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4805120907022785543}
-  m_Layer: 0
+  - component: {fileID: 1341040822}
+  m_Layer: 8
   m_Name: Souls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33,6 +34,18 @@ Transform:
   m_Father: {fileID: 4805120907614750712}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1341040822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4805120907022785540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08254942ef441594487da839235871fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4805120907268874840
 GameObject:
   m_ObjectHideFlags: 0
@@ -45,7 +58,7 @@ GameObject:
   - component: {fileID: 4805120907268874844}
   - component: {fileID: 4805120907268874845}
   - component: {fileID: 4805120907268874842}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SphereMedium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +484,7 @@ GameObject:
   - component: {fileID: 4805120908178575304}
   - component: {fileID: 4805120908178575305}
   - component: {fileID: 4805120908178575318}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SphereLarge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,7 +499,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4805120908178575316}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.328, y: 0, z: 0.392}
   m_LocalScale: {x: 0.26136, y: 0.26136, z: 0.26136}
   m_Children: []
   m_Father: {fileID: 4805120907022785543}
@@ -612,7 +625,7 @@ GameObject:
   - component: {fileID: 4805120908204442762}
   - component: {fileID: 4805120908204442763}
   - component: {fileID: 4805120908204442760}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SphereSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

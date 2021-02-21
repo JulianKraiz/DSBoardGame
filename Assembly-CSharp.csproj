@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\FloatingSoulReserve.cs" />
     <Compile Include="Assets\Models\Campfire\Script\FireLightScript.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttackRadialDisplayBehavior.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttacksRadialDisplayContainer.cs" />

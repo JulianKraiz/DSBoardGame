@@ -18,8 +18,11 @@ namespace Assets.Scripts.General
         TileManager focusedTile;
         public Vector3 focusedTileOffsetHover = new Vector3(-0.5f, 7, -7f);
 
-        UnitBasicProperties activeUnit;
         bool followActiveUnit;
+        UnitBasicProperties activeUnit;
+
+        bool followMidPointBetweenUnit;
+        GameObject attackedUnit;
 
         private void Start()
         {
@@ -27,19 +30,32 @@ namespace Assets.Scripts.General
             mainCamera = Camera.main;
 
             EventManager.StartListening(GameObjectEventType.TileFocused, NewTileFocused);
-            
-            EventManager.StartListening(GameObjectEventType.UnitIsActivated, NewUnitActivated);
 
+            EventManager.StartListening(GameObjectEventType.UnitIsActivated, NewUnitActivated);
             EventManager.StartListening(ObjectEventType.UnitMoved, TrackUnitMoved);
 
-            //inject with config
+            EventManager.StartListening(GameObjectEventType.UnitIsCurrentlyAttacked, TrackBetweenAttackingAndDefender);
+            EventManager.StartListening(GameObjectEventType.UnitIsNotCurrentlyAttacked, TrackActiveUnitIfExists);
+
+        }
+
+        private void TrackActiveUnitIfExists(GameObject _)
+        {
+            followMidPointBetweenUnit = false;
+            attackedUnit = null;
             followActiveUnit = true;
+        }
+
+        private void TrackBetweenAttackingAndDefender(GameObject acttackedUnitArg)
+        {
+            followMidPointBetweenUnit = true;
+            attackedUnit = acttackedUnitArg;
         }
 
         private void TrackUnitMoved(object unitObject)
         {
             var unit = ((UnitMovement)unitObject).Unit.GetComponent<UnitBasicProperties>();
-            if(unit.isActive)
+            if (unit.isActive)
             {
                 followActiveUnit = true;
             }
@@ -72,11 +88,17 @@ namespace Assets.Scripts.General
 
                 mainCamera.transform.SetPositionAndRotation(lerpedProsition, Quaternion.Euler(45, 0, 0));
             }
-            else if(followActiveUnit && activeUnit != null)
+            else if (followActiveUnit && activeUnit != null)
             {
                 var targetPosition = activeUnit.transform.position + focusedTileOffsetHover;
                 mainCamera.transform.SetPositionAndRotation(targetPosition, mainCamera.transform.rotation);
                 followActiveUnit = false;
+            }
+            else if (followMidPointBetweenUnit && activeUnit != null && attackedUnit != null)
+            {
+                var targetPosition = ((activeUnit.transform.position + attackedUnit.transform.position) / 2) + focusedTileOffsetHover;
+                mainCamera.transform.SetPositionAndRotation(targetPosition, mainCamera.transform.rotation);
+                followMidPointBetweenUnit = false;
             }
         }
 
