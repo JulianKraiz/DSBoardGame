@@ -617,7 +617,7 @@ GameObject:
   - component: {fileID: 5697832098570831205}
   - component: {fileID: 1521699099871679499}
   - component: {fileID: 9153753696368170194}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PushToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5260,7 +5260,7 @@ PrefabInstance:
     - target: {fileID: 1668598565312003326, guid: 805009473dc323f4aaa2d5ff094fc268,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1668598565312003326, guid: 805009473dc323f4aaa2d5ff094fc268,
         type: 3}

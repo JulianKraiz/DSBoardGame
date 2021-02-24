@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8344958809090231125}
   - component: {fileID: 4383482441295849591}
   - component: {fileID: 5377999551873325499}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SwordIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 1215302285451380441}
   - component: {fileID: 198965998702898601}
   - component: {fileID: 6502593402872948128}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AttackerPortrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 7325413765444957943}
   - component: {fileID: 7530607681063839753}
   - component: {fileID: 5903954775717406354}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlatBonus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5026241122443656684}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlackDiceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 5113150708202110205}
   - component: {fileID: 5328462495270867852}
   - component: {fileID: 2267646086966235292}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PoisonToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4614648645193973750}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 6328324383366971341}
   - component: {fileID: 7184739834171587676}
   - component: {fileID: 5890187206367531619}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BleedToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -483,7 +483,7 @@ GameObject:
   - component: {fileID: 3348283892582675789}
   - component: {fileID: 5533258224850153877}
   - component: {fileID: 3842783057693655739}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DefenseIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,7 +560,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8961423238304557195}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AttackOptions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   - component: {fileID: 2792246057834119856}
   - component: {fileID: 1292586927609781873}
   - component: {fileID: 8358627977511626385}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrozenToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,7 +680,7 @@ GameObject:
   - component: {fileID: 8923298999903938030}
   - component: {fileID: 8669447368638776855}
   - component: {fileID: 1081169793563734259}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ChooseDodgeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -795,7 +795,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6933528678079150154}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDiceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -829,7 +829,7 @@ GameObject:
   - component: {fileID: 4874840568624647683}
   - component: {fileID: 8811076370393613748}
   - component: {fileID: 7978422417972657704}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: StaggerToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -908,7 +908,7 @@ GameObject:
   - component: {fileID: 4167587374792550483}
   - component: {fileID: 4173714224046307160}
   - component: {fileID: 4534416859667099810}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlueDiceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1001,7 +1001,7 @@ GameObject:
   - component: {fileID: 1939472139651822734}
   - component: {fileID: 155378840620962644}
   - component: {fileID: 3597699488620566760}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlackDiceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1095,7 +1095,7 @@ GameObject:
   - component: {fileID: 8775158548054185806}
   - component: {fileID: 3783354199793708109}
   - component: {fileID: 5092861152455278400}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: OrangeDices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1188,7 +1188,7 @@ GameObject:
   - component: {fileID: 612279281987067461}
   - component: {fileID: 3271537193776759993}
   - component: {fileID: 7098226290093098128}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BleedToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1267,7 +1267,7 @@ GameObject:
   - component: {fileID: 8443696418045045574}
   - component: {fileID: 5090141577698628241}
   - component: {fileID: 6218942093664032118}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDiceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1359,7 +1359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4637548900383955208}
   - component: {fileID: 699534814883948077}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MovementEncounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1375,7 +1375,7 @@ Transform:
   m_GameObject: {fileID: 4637548900383955209}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 183.62, y: 0, z: -0}
-  m_LocalScale: {x: 40, y: 40, z: 40}
+  m_LocalScale: {x: 38, y: 38, z: 38}
   m_Children:
   - {fileID: 8031831532984357197}
   - {fileID: 8961423238304557195}
@@ -1461,7 +1461,7 @@ GameObject:
   - component: {fileID: 1421372447425147843}
   - component: {fileID: 2893469852917207384}
   - component: {fileID: 7051766281681013825}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1556,7 +1556,7 @@ GameObject:
   - component: {fileID: 9077214968502985948}
   - component: {fileID: 2604113936081614336}
   - component: {fileID: 565337563722697088}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BackgroundButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1659,7 +1659,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4942937425246597570}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlatBonusContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1691,7 +1691,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2395220823737956366}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DiceThrowPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1723,7 +1723,7 @@ GameObject:
   - component: {fileID: 3675096204924446805}
   - component: {fileID: 8355680805103169691}
   - component: {fileID: 3677844587499632862}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrozenToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1800,7 +1800,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5827244672426074748}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PushContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1834,7 +1834,7 @@ GameObject:
   - component: {fileID: 1723053460128542461}
   - component: {fileID: 5424212138101179882}
   - component: {fileID: 3913502576639394345}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PushText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1927,7 +1927,7 @@ GameObject:
   - component: {fileID: 4778898492274720289}
   - component: {fileID: 4167766727641773603}
   - component: {fileID: 1851363545933882999}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: StaggerToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2004,7 +2004,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2780593080682859447}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDiceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2039,7 +2039,7 @@ GameObject:
   - component: {fileID: 8692060459570349101}
   - component: {fileID: 530706746269834661}
   - component: {fileID: 2899647726717824696}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlackDices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2132,7 +2132,7 @@ GameObject:
   - component: {fileID: 588066656983868581}
   - component: {fileID: 7247919039379661796}
   - component: {fileID: 6212504226005158530}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDiceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2226,7 +2226,7 @@ GameObject:
   - component: {fileID: 8744806455774143264}
   - component: {fileID: 2470843678874240381}
   - component: {fileID: 4140029991579439034}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2320,7 +2320,7 @@ GameObject:
   - component: {fileID: 5087089777523101435}
   - component: {fileID: 6270914588049096396}
   - component: {fileID: 6064963526653666969}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlueDices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2411,7 +2411,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5707723993546011123}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: OrangeDiceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2443,7 +2443,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3393230155694434743}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DefenseOptions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2494,7 +2494,7 @@ GameObject:
   - component: {fileID: 6817939349809054360}
   - component: {fileID: 8725115930780466048}
   - component: {fileID: 3533369026461338323}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DefenseText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2587,7 +2587,7 @@ GameObject:
   - component: {fileID: 6939689388464625768}
   - component: {fileID: 1518285341812504514}
   - component: {fileID: 8639102925543861466}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: OrangeDiceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2681,7 +2681,7 @@ GameObject:
   - component: {fileID: 4995568892747764650}
   - component: {fileID: 485386057564567541}
   - component: {fileID: 8035453438422122893}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DodgeDices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2775,7 +2775,7 @@ GameObject:
   - component: {fileID: 6854913998015252472}
   - component: {fileID: 5525780422026738501}
   - component: {fileID: 5387396625049928321}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DefenderPortrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2868,7 +2868,7 @@ GameObject:
   - component: {fileID: 5468380353071186203}
   - component: {fileID: 946670825613434014}
   - component: {fileID: 4045543223283660467}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ConfirmResult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2962,7 +2962,7 @@ GameObject:
   - component: {fileID: 6681824130206066342}
   - component: {fileID: 4642687618756700265}
   - component: {fileID: 573977627779489298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PoisonToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3039,7 +3039,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7458450053887108008}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlueDiceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3074,7 +3074,7 @@ GameObject:
   - component: {fileID: 4041870541051666339}
   - component: {fileID: 7069374373223730893}
   - component: {fileID: 580390070441446932}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PushToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3170,7 +3170,7 @@ GameObject:
   - component: {fileID: 7567882675910759732}
   - component: {fileID: 6593968827071503946}
   - component: {fileID: 2865879537668234370}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ChooseBlockButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3287,7 +3287,7 @@ GameObject:
   - component: {fileID: 4806572893058337185}
   - component: {fileID: 1174673400792425633}
   - component: {fileID: 2018821406340630527}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlatBonusText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3380,6 +3380,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LuckToken
+      objectReference: {fileID: 0}
+    - target: {fileID: 1615409452452843591, guid: cd5c445fa799555478354789e63dd056,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3995213193542497158, guid: cd5c445fa799555478354789e63dd056,
         type: 3}
@@ -3720,6 +3725,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EstusToken
       objectReference: {fileID: 0}
+    - target: {fileID: 1615409452452843591, guid: cd5c445fa799555478354789e63dd056,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4865286152533173860, guid: cd5c445fa799555478354789e63dd056,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3806,6 +3816,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EmberToken
+      objectReference: {fileID: 0}
+    - target: {fileID: 1615409452452843591, guid: cd5c445fa799555478354789e63dd056,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3995213193542497158, guid: cd5c445fa799555478354789e63dd056,
         type: 3}

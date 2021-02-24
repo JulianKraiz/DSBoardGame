@@ -404,16 +404,19 @@ namespace Assets.Scripts.Tile
         {
             if (canMove)
             {
-                var starting = positions.First(p => p.HasActiveUnit());
-                var target = positions.First(p => p.name == targetPosition.name);
+                var starting = positions.FirstOrDefault(p => p.HasActiveUnit());
+                var target = positions.FirstOrDefault(p => p.name == targetPosition.name);
 
-                var path = PathFinder.GetPath(starting, target);
-                if (path != null)
+                if (starting != null && target != null)
                 {
-                    currentPath = path;
-                    foreach (var node in path)
+                    var path = PathFinder.GetPath(starting, target);
+                    if (path != null)
                     {
-                        node.Show();
+                        currentPath = path;
+                        foreach (var node in path)
+                        {
+                            node.Show();
+                        }
                     }
                 }
             }
