@@ -21,8 +21,11 @@ public class GameStateManager : MonoBehaviour
 
     public static GameStateManager Instance;
 
+    private bool FirstFrameInitialisation;
+
     void Start()
     {
+        FirstFrameInitialisation = false;
         Instance = this;
         tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
         players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.activeSelf).ToList();
@@ -35,7 +38,7 @@ public class GameStateManager : MonoBehaviour
             tile.GetComponent<TileManager>().monsterSettings = new TileMonsterSettings()
             {
                 arbalestHollowSoldierCount = 1,
-                swordhollowSoldierCount = 2,
+                //swordhollowSoldierCount = 2,
             };
         }
 
@@ -50,6 +53,11 @@ public class GameStateManager : MonoBehaviour
 
     void Update()
     {
+        if (!FirstFrameInitialisation)
+        {
+            FirstFrameInitialisation = true;
+            EventManager.RaiseEvent(GameObjectEventType.TileFocused, bonefireTile.gameObject);
+        }
     }
 
     private void InitializeCharacterDisplays()

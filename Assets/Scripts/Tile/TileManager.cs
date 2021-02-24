@@ -172,10 +172,7 @@ namespace Assets.Scripts.Tile
 
             if (isFocused && isHovered && !isCleared)
             {
-                foreach (var child in positions)
-                {
-                    child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
-                }
+                RegisterPositionClicked();
 
                 EventManager.StartListening(GameObjectEventType.PositionHovered, ShowPath);
                 EventManager.StartListening(GameObjectEventType.PositionHoveredExit, StopShowPath);
@@ -286,6 +283,22 @@ namespace Assets.Scripts.Tile
                 return positions;
             }
         }
+
+        private void RegisterPositionClicked()
+        {
+            foreach (var child in positions)
+            {
+                child.GetComponent<PositionBehavior>().PositionClicked += PositionClicked;
+            }
+        }
+
+        private void UnregisterPositionClicked()
+        {
+            foreach (var child in positions)
+            {
+                child.GetComponent<PositionBehavior>().PositionClicked -= PositionClicked;
+            }
+        }
         #endregion
 
         #region Exit/Clean
@@ -312,16 +325,10 @@ namespace Assets.Scripts.Tile
             EventManager.StopListening(ObjectEventType.AttackDeselected, HideHoveredAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHovered, ShowAvailableAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
-
             EventManager.StopListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
             EventManager.StopListening(ObjectEventType.UnitMoved, UnitMoved);
             EventManager.StopListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
-
-            foreach (var child in positions)
-            {
-                child.GetComponent<PositionBehavior>().PositionClicked -= PositionClicked;
-            }
-
+            UnregisterPositionClicked();
             EventManager.RaiseEvent(GameObjectEventType.ResetAndHideEnemyDisplays);
             EventManager.RaiseEvent(GameObjectEventType.ResetAndHideAttackDial);
         }
@@ -378,6 +385,11 @@ namespace Assets.Scripts.Tile
                 currentUnit.ConsumeStamina(pathcost);
 
                 EventManager.RaiseEvent(ObjectEventType.UnitMoved, moveCommand);
+
+                if (currentSelectedAttack != null)
+                {
+                    ShowSelectedAttackTargets(currentSelectedAttack);
+                }
             }
         }
 
@@ -501,6 +513,7 @@ namespace Assets.Scripts.Tile
 
             var encounter = new Encounter(attack, currentUnit, originalTarget);
 
+            UnregisterPositionClicked();
             EventManager.RaiseEvent(ObjectEventType.EncounterToResolve, encounter);
             EventManager.StartListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
         }
@@ -508,9 +521,9 @@ namespace Assets.Scripts.Tile
         private void CheckUnitStatusAfterEncounter(object _)
         {
             EventManager.StopListening(ObjectEventType.EncountersResolved, CheckUnitStatusAfterEncounter);
+            RegisterPositionClicked();
 
             var currentAttack = currentSelectedAttack;
-
             currentUnitHasAttacked = true;
             currentSelectedAttack = null;
 

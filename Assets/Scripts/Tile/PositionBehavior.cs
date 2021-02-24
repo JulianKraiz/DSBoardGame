@@ -10,6 +10,8 @@ namespace Assets.Scripts.Tile
         public delegate void PositionSelectedEvent(GameObject position);
         public event PositionSelectedEvent PositionClicked;
 
+        public GameObject soulDrop;
+
         public GameObject NorthPosition;
         public GameObject NorthEastPosition;
         public GameObject EastPosition;
@@ -40,6 +42,10 @@ namespace Assets.Scripts.Tile
 
         void Update()
         {
+            if(SoulCache > 0)
+            {
+                soulDrop.SetActive(true);
+            }
 
         }
 
@@ -115,7 +121,7 @@ namespace Assets.Scripts.Tile
             OrganizeCharacterOnPosition();
         }
 
-        private void OnMouseDown()
+        private void OnMouseUp()
         {
             if (PositionClicked != null)
             {
