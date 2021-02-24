@@ -8,6 +8,7 @@ namespace Assets.Scripts.Tile
 {
     public class EnemyGenerator : MonoBehaviour
     {
+
         public GameObject CreateHollowSoldier(Transform parent)
         {
             var soldier = Instantiate(Resources.Load("Asset/Units/SmallHollowSoldier"), parent) as GameObject;
@@ -19,14 +20,14 @@ namespace Assets.Scripts.Tile
             prop.hitPoints = 1;
             prop.side = UnitSide.Hollow;
 
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), GameStateManager.Instance.generatedCardHolder) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
             equipProp.equipementName = "Hollow Shield";
             equipProp.flatArmorResistence = 1;
             equipProp.flatMagicArmorResistence = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), GameStateManager.Instance.generatedCardHolder) as GameObject;
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
             equipProp.equipementName = "Hollow Sword";
@@ -60,13 +61,13 @@ namespace Assets.Scripts.Tile
             prop.side = UnitSide.Hollow;
             prop.hitPoints = 1;
 
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), GameStateManager.Instance.generatedCardHolder) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
             equipProp.equipementName = "Hollow Shield";
             equipProp.flatArmorResistence = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), GameStateManager.Instance.generatedCardHolder) as GameObject;
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
             equipProp.equipementName = "Hollow Crossbow";

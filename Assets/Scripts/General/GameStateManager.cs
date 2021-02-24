@@ -18,7 +18,7 @@ public class GameStateManager : MonoBehaviour
     public int bonefireSparks;
     public int soulCache;
 
-
+    public Transform generatedCardHolder;
     public static GameStateManager Instance;
 
     private bool FirstFrameInitialisation;
@@ -79,7 +79,7 @@ public class GameStateManager : MonoBehaviour
         if (prop != null)
         {
             prop.initiative = 9;
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.leftEquipement.transform.Rotate(45, 180, 0);
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_shield_material", typeof(Material)));
@@ -87,7 +87,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Round Shield";
             equipProp.blackArmorDices = 1;
 
-            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.armourEquipement.transform.Rotate(45, 180, 0);
             equipProp = prop.armourEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_armour_material", typeof(Material)));
@@ -99,7 +99,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.blackMagicArmorDices = 1;
             equipProp.dodgeRollsDices = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.rightEquipement.transform.Rotate(45, 180, 0);
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/warrior_axe_material", typeof(Material)));
@@ -126,7 +126,7 @@ public class GameStateManager : MonoBehaviour
         if (prop != null)
         {
             prop.initiative = 4;
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.leftEquipement.transform.Rotate(45, 180, 0);
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_shield_material", typeof(Material)));
@@ -134,7 +134,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.name = "Kite Shield";
             equipProp.blackArmorDices = 1;
 
-            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.armourEquipement.transform.Rotate(45, 180, 0);
             equipProp = prop.armourEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_armour_material", typeof(Material)));
@@ -146,7 +146,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.blackMagicArmorDices = 1;
             equipProp.dodgeRollsDices = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.rightEquipement.transform.Rotate(45, 180, 0);
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_spear_material", typeof(Material)));
@@ -171,7 +171,7 @@ public class GameStateManager : MonoBehaviour
                 }
         };
 
-            prop.sideEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.sideEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.sideEquipement.transform.Rotate(45, 180, 0);
             equipProp = prop.sideEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/herald_talisman_material", typeof(Material)));
@@ -200,14 +200,14 @@ public class GameStateManager : MonoBehaviour
         if (prop != null)
         {
             prop.initiative = 10;
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/knight_shield_material", typeof(Material)));
             equipProp.equipementName = "Kite Shield";
             equipProp.name = "Kite Shield";
             equipProp.blackArmorDices = 1;
 
-            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             equipProp = prop.armourEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/knight_armour_material", typeof(Material)));
             equipProp.equipementName = "Knight Armour";
@@ -216,7 +216,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.blueArmorDices = 1;
             equipProp.blackMagicArmorDices = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/knight_sword_material", typeof(Material)));
             equipProp.equipementName = "Long Sword";
@@ -243,14 +243,14 @@ public class GameStateManager : MonoBehaviour
         if (prop != null)
         {
             prop.initiative = 8;
-            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             var equipProp = prop.leftEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/assassin_shield_material", typeof(Material)));
             equipProp.equipementName = "Target Shield";
             equipProp.name = "Target Shield";
             equipProp.dodgeRollsDices = 1;
 
-            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.armourEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             equipProp = prop.armourEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/assassin_armour_material", typeof(Material)));
             equipProp.equipementName = "Assassin Armour";
@@ -261,7 +261,7 @@ public class GameStateManager : MonoBehaviour
             equipProp.blackMagicArmorDices = 1;
             equipProp.dodgeRollsDices = 1;
 
-            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard")) as GameObject;
+            prop.rightEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             equipProp = prop.rightEquipement.GetComponent<EquipementProperties>();
             equipProp.SetMaterial((Material)Resources.Load("Material/Cards/StartingEquipement/assassin_sword_material", typeof(Material)));
             equipProp.equipementName = "Estoc";
