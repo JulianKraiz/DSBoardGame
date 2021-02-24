@@ -125,6 +125,7 @@ public class GameStateManager : MonoBehaviour
         prop = pProps.FirstOrDefault(p => p.playerType == PlayerClassEnum.Herald);
         if (prop != null)
         {
+            prop.injuries = 9;
             prop.initiative = 4;
             prop.leftEquipement = Instantiate(Resources.Load("Asset/Cards/EquipementCard"), generatedCardHolder) as GameObject;
             prop.leftEquipement.transform.Rotate(45, 180, 0);

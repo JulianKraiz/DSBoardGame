@@ -38,6 +38,7 @@ public class SoulCacheManager : MonoBehaviour
         var soulsToAdd = (int)countObject;
         SoulWaitingToBeAdded += soulsToAdd;
         soulCountGainText.text = $"{((soulsToAdd > 0) ? "+" : "")} {soulsToAdd}";
+        soulCountGainText.color = new Color(1, 1, 1, 1);
         soulCountGainText.gameObject.SetActive(true);
         soulCountGainText.transform.localPosition = anchorFrom;
 

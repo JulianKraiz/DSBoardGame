@@ -42,11 +42,7 @@ namespace Assets.Scripts.Tile
 
         void Update()
         {
-            if(SoulCache > 0)
-            {
-                soulDrop.SetActive(true);
-            }
-
+            soulDrop.SetActive(SoulCache > 0);
         }
 
         public void AddNonBossUnit(GameObject unit)
@@ -54,7 +50,7 @@ namespace Assets.Scripts.Tile
             nonBossUnits.Add(unit);
             OrganizeCharacterOnPosition();
 
-            if(SoulCache != 0)
+            if (SoulCache != 0 && unit.GetComponent<UnitBasicProperties>().side == UnitSide.Player)
             {
                 EventManager.RaiseEvent(ObjectEventType.AddSoulsToCache, SoulCache);
                 SoulCache = 0;
