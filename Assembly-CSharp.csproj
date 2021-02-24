@@ -63,7 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\FloatingSoulReserve.cs" />
     <Compile Include="Assets\Models\Campfire\Script\FireLightScript.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttackRadialDisplayBehavior.cs" />
     <Compile Include="Assets\Scripts\ActiveUnitDisplay\AttacksRadialDisplayContainer.cs" />
@@ -81,20 +80,24 @@
     <Compile Include="Assets\Scripts\Events\UnityEventWithGameObject.cs" />
     <Compile Include="Assets\Scripts\Events\UnityEventWithObject.cs" />
     <Compile Include="Assets\Scripts\Gate\NavigateFog.cs" />
+    <Compile Include="Assets\Scripts\General\BonefireSparkCounterDisplay.cs" />
     <Compile Include="Assets\Scripts\General\CameraAutMover.cs" />
     <Compile Include="Assets\Scripts\General\GameStateManager.cs" />
     <Compile Include="Assets\Scripts\General\SoulCacheManager.cs" />
     <Compile Include="Assets\Scripts\General\WallNavigationManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\ConfirmationMenu.cs" />
+    <Compile Include="Assets\Scripts\Menu\Model\ConfirmationMenuLoad.cs" />
     <Compile Include="Assets\Scripts\Movement\MoveChoserArrowBehavior.cs" />
     <Compile Include="Assets\Scripts\Movement\MoveChoserBehavior.cs" />
     <Compile Include="Assets\Scripts\Movement\Vect3LerpSnap.cs" />
+    <Compile Include="Assets\Scripts\Tile\Asset\BonefireInteraction.cs" />
+    <Compile Include="Assets\Scripts\Tile\Asset\FloatingSoulReserve.cs" />
     <Compile Include="Assets\Scripts\Tile\AttackEncounterBehavior.cs" />
     <Compile Include="Assets\Scripts\Tile\BonefireTileManager.cs" />
     <Compile Include="Assets\Scripts\Tile\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\Tile\Model\NodeDistance.cs" />
     <Compile Include="Assets\Scripts\Tile\Model\TileMonsterSettings.cs" />
     <Compile Include="Assets\Scripts\Tile\MovementEncounterBehavior.cs" />
-    <Compile Include="Assets\Scripts\Tile\NavigationMapping.cs" />
     <Compile Include="Assets\Scripts\Tile\PathFinder.cs" />
     <Compile Include="Assets\Scripts\Tile\PositionBehavior.cs" />
     <Compile Include="Assets\Scripts\Tile\TileManager.cs" />

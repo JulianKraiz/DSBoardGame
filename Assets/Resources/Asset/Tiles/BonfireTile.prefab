@@ -199,7 +199,6 @@ GameObject:
   - component: {fileID: 4805120907614750713}
   - component: {fileID: 4805120907614750598}
   - component: {fileID: 4805120907614750599}
-  - component: {fileID: 4805120907614750714}
   - component: {fileID: 4805120907614750715}
   m_Layer: 0
   m_Name: BonfireTile
@@ -287,22 +286,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &4805120907614750714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4805120907614750596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6eb6006316531214a9af9e815e11056c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  northTile: {fileID: 0}
-  southTile: {fileID: 0}
-  westTile: {fileID: 0}
-  eastTile: {fileID: 0}
 --- !u!114 &4805120907614750715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,6 +300,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCleared: 1
   isFocused: 1
+  northTile: {fileID: 0}
+  southTile: {fileID: 0}
+  westTile: {fileID: 0}
+  eastTile: {fileID: 0}
   players: []
   enemies: []
 --- !u!1 &4805120907806097645
@@ -441,6 +428,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &4805120907912968917
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,6 +897,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &4805120908510583661
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,6 +1020,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1001 &4805120906612743570
 PrefabInstance:
   m_ObjectHideFlags: 0

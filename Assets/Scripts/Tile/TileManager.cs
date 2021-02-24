@@ -12,6 +12,13 @@ namespace Assets.Scripts.Tile
     {
         public bool isCleared = false;
         public bool isFocused = false;
+        public bool isHovered = false;
+        internal string enteredFrom;
+
+        public GameObject northTile;
+        public GameObject southTile;
+        public GameObject westTile;
+        public GameObject eastTile;
 
         public List<UnitBasicProperties> players = new List<UnitBasicProperties>();
         public List<UnitBasicProperties> enemies = new List<UnitBasicProperties>();
@@ -38,9 +45,7 @@ namespace Assets.Scripts.Tile
         private int LastActiveEnemy = 0;
         private bool firstMovementFree = true;
 
-        internal bool isHovered = false;
-        internal string enteredFrom;
-
+        
         void Start()
         {
             if (transform.Find("Positions") != null)
@@ -82,6 +87,7 @@ namespace Assets.Scripts.Tile
             }
         }
 
+        #region Turn Handling
         private void EndUnitTurn(GameObject _)
         {
             ActivateNextUnit();
@@ -153,6 +159,7 @@ namespace Assets.Scripts.Tile
                 player.hasAggroToken = false;
             }
         }
+        #endregion
 
         #region Battle Preparation
         private void IntializeFocusedTileHandler(GameObject _)
@@ -176,7 +183,7 @@ namespace Assets.Scripts.Tile
                 EventManager.StartListening(ObjectEventType.AttackDeselected, HideSelectedAttackTargets);
                 EventManager.StartListening(ObjectEventType.AttackHovered, ShowAvailableAttackTargets);
                 EventManager.StartListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
-                
+
                 EventManager.StartListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
                 EventManager.StartListening(ObjectEventType.UnitMoved, UnitMoved);
                 EventManager.StartListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
@@ -305,7 +312,7 @@ namespace Assets.Scripts.Tile
             EventManager.StopListening(ObjectEventType.AttackDeselected, HideHoveredAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHovered, ShowAvailableAttackTargets);
             EventManager.StopListening(ObjectEventType.AttackHoverEnded, HideHoveredAttackTargets);
-            
+
             EventManager.StopListening(GameObjectEventType.UnitDestroyed, UnitDestroyed);
             EventManager.StopListening(ObjectEventType.UnitMoved, UnitMoved);
             EventManager.StopListening(GameObjectEventType.EndUnitTurn, EndUnitTurn);
@@ -317,18 +324,6 @@ namespace Assets.Scripts.Tile
 
             EventManager.RaiseEvent(GameObjectEventType.ResetAndHideEnemyDisplays);
             EventManager.RaiseEvent(GameObjectEventType.ResetAndHideAttackDial);
-        }
-
-        private void RemoveEnemy(UnitBasicProperties enemy)
-        {
-            enemy.ClearEquipement();
-            enemyToProperties.Remove(enemy.gameObject);
-            enemies.Remove(enemy);
-            foreach (var position in positions)
-            {
-                position.RemoveNonBossUnit(enemy.gameObject);
-            }
-            Destroy(enemy.gameObject);
         }
 
         private void Cleared()
@@ -344,6 +339,10 @@ namespace Assets.Scripts.Tile
 
             var nextActiveplayer = LastActivePlayer < players.Count - 1 ? LastActivePlayer + 1 : 0;
             players[nextActiveplayer].hasActivationToken = true;
+
+            var gain = monsterSettings.soulGainPerPlayer * players.Count;
+            gain += monsterSettings.soulGainBonus;
+            EventManager.RaiseEvent(ObjectEventType.AddSoulsToCache, gain);
 
             EventManager.RaiseEvent(GameObjectEventType.TileCleared, gameObject);
         }
@@ -542,17 +541,33 @@ namespace Assets.Scripts.Tile
         {
             if (playersToProperties.TryGetValue(unit, out var unitProperties))
             {
-                // player is dead, back to bonefire, party is defeated.
+                EventManager.RaiseEvent(ObjectEventType.StopAI);
+                EventManager.RaiseEvent(GameObjectEventType.ResetAndHideAttackDial, gameObject);
+                EventManager.RaiseEvent(GameObjectEventType.PlayerUnitKilled, unit);
+                ExitTile();
             }
             else if (enemyToProperties.TryGetValue(unit, out var enemyProperties))
             {
                 RemoveEnemy(enemyProperties);
                 if (enemies.Count == 0)
                 {
-                    Cleared();
+                    EventManager.RaiseEvent(ObjectEventType.StopAI);
                     EventManager.RaiseEvent(GameObjectEventType.ResetAndHideAttackDial, gameObject);
+                    Cleared();
                 }
             }
+        }
+
+        private void RemoveEnemy(UnitBasicProperties enemy)
+        {
+            enemy.ClearEquipement();
+            enemyToProperties.Remove(enemy.gameObject);
+            enemies.Remove(enemy);
+            foreach (var position in positions)
+            {
+                position.RemoveNonBossUnit(enemy.gameObject);
+            }
+            Destroy(enemy.gameObject);
         }
         #endregion
     }

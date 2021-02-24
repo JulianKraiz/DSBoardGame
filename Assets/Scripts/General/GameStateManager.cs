@@ -5,25 +5,31 @@ using BoardGame.Unit;
 using Assets.Scripts.Unit;
 using Assets.Scripts.Unit.Model.Attacks;
 using Assets.Scripts.Tile;
+using BoardGame.Script.Events;
+using System;
 
 public class GameStateManager : MonoBehaviour
 {
     public List<GameObject> tiles = new List<GameObject>();
     public List<GameObject> players = new List<GameObject>();
 
-    private PlayerDisplayContainer characterDisplayContainer;
+    public PlayerDisplayContainer characterDisplayContainer;
+    public BonefireTileManager bonefireTile;
+    public int bonefireSparks;
+    public int soulCache;
 
-    //dirty but eh;
+
     public static GameStateManager Instance;
 
     void Start()
     {
         Instance = this;
-        characterDisplayContainer = GameObject.Find("UnitDisplays").GetComponent<PlayerDisplayContainer>();
         tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
         players = GameObject.FindGameObjectsWithTag("Player").Where(p => p.activeSelf).ToList();
 
-        // DEBUG
+        bonefireSparks = 6 - players.Count;
+
+        // TODO : Set from random encounter card attach to tile.
         foreach (var tile in tiles)
         {
             tile.GetComponent<TileManager>().monsterSettings = new TileMonsterSettings()
@@ -32,15 +38,16 @@ public class GameStateManager : MonoBehaviour
                 swordhollowSoldierCount = 2,
             };
         }
-        SetPlayerStartingEquipement();
 
-        // do after each player added to the game.
+        // TODO : Do after selecting character from menu / previous scene.
+        SetPlayerStartingEquipement();
         InitializeCharacterDisplays();
 
-     
+
+        EventManager.StartListening(GameObjectEventType.PlayerUnitKilled, PlayerDiedAtPosition);
+        EventManager.StartListening(GameObjectEventType.RestPartyAtBonefire, RestPartyAtBonefire);
     }
 
-    // Update is called once per frame
     void Update()
     {
     }
@@ -269,4 +276,55 @@ public class GameStateManager : MonoBehaviour
         };
         }
     }
+
+    private void PlayerDiedAtPosition(GameObject defeatedUnit)
+    {
+        DropSouls(defeatedUnit);
+        RestPartyAtBonefire(null);
+    }
+
+    private void RestPartyAtBonefire(GameObject _)
+    {
+        MoveToBonefire();
+        bonefireSparks--;
+        ResetPlayers();
+    }
+
+    private void DropSouls(GameObject defeatedUnit)
+    {
+
+        foreach (var tile in tiles)
+        {
+            foreach (var position in tile.GetComponent<TileManager>().GetPositions())
+            {
+                position.SoulCache = 0;
+            }
+        }
+
+        var positionToDrop = GetActiveTile().GetUnitPosition(defeatedUnit);
+        positionToDrop.AddSoulCache(soulCache);
+        EventManager.RaiseEvent(ObjectEventType.AddSoulsToCache, -soulCache);
+    }
+
+    private void MoveToBonefire()
+    {
+        if (!bonefireTile.isFocused)
+        {
+            GetActiveTile().isFocused = false;
+            bonefireTile.isFocused = true;
+        }
+
+        EventManager.RaiseEvent(GameObjectEventType.TileFocused, bonefireTile.gameObject);
+    }
+
+    private void ResetPlayers()
+    {
+        foreach (var unit in players.Select(u => u.GetComponent<UnitBasicProperties>()))
+        {
+            unit.ResetStaminaAndInjuries();
+            unit.RemoveStatusEffect(false);
+            unit.hasActivationToken = false;
+        }
+    }
+
 }

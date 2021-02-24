@@ -122,6 +122,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044622168335749
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +245,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 1
+  SoulCache: 0
 --- !u!1 &8807044622256193397
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,6 +411,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044622438383753
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,7 +425,6 @@ GameObject:
   - component: {fileID: 8807044622438383759}
   - component: {fileID: 8807044622438383752}
   - component: {fileID: 8807044622438383756}
-  - component: {fileID: 8807044622438383763}
   - component: {fileID: 4392537667518266221}
   m_Layer: 0
   m_Name: DungeonTile1
@@ -521,24 +523,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCleared: 0
   isFocused: 0
-  players: []
-  enemies: []
---- !u!114 &8807044622438383763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8807044622438383753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6eb6006316531214a9af9e815e11056c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   northTile: {fileID: 0}
   southTile: {fileID: 0}
   westTile: {fileID: 0}
   eastTile: {fileID: 0}
+  players: []
+  enemies: []
 --- !u!114 &4392537667518266221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,6 +663,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044622736977583
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +786,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044622748572132
 GameObject:
   m_ObjectHideFlags: 0
@@ -917,6 +909,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 1
+  SoulCache: 0
 --- !u!1 &8807044622827063606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,6 +1032,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623071718955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,6 +1155,7 @@ MonoBehaviour:
   isSpawnOne: 1
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623125301469
 GameObject:
   m_ObjectHideFlags: 0
@@ -1283,6 +1278,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623340562196
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,6 +1401,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623584937414
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,6 +1524,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623703485975
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,6 +1647,7 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 1
   isGreenSlot: 0
+  SoulCache: 0
 --- !u!1 &8807044623783568117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1771,3 +1770,4 @@ MonoBehaviour:
   isSpawnOne: 0
   isSpawnTwo: 0
   isGreenSlot: 0
+  SoulCache: 0

@@ -1,16 +1,23 @@
 ﻿using BoardGame.Script.Events;
+using System;
 using UnityEngine;
 using UnityEngine.Video;
 
 public class VideoPlayersManager : MonoBehaviour
 {
-    public VideoPlayer VictoryPlayer { get; set; }
+    public VideoPlayer VictoryPlayer;
+    public VideoPlayer YouDiedPlayer;
+    public GameObject OcclusionPlane;
+
     void Start()
     {
-        VictoryPlayer = transform.Find("VictoryPlayer").GetComponent<VideoPlayer>();
-        VictoryPlayer.enabled = false;
-
         EventManager.StartListening(GameObjectEventType.TileCleared, ShowVictoryClip);
+        EventManager.StartListening(GameObjectEventType.PlayerUnitKilled, ShowYouDiedClip);
+    }
+
+    private void ShowYouDiedClip(GameObject arg0)
+    {
+        StartPlayer(YouDiedPlayer);
     }
 
     private void ShowVictoryClip(GameObject _)
@@ -24,6 +31,7 @@ public class VideoPlayersManager : MonoBehaviour
 
     private void StartPlayer(VideoPlayer player)
     {
+        OcclusionPlane.SetActive(true);
         player.enabled = true;
         player.Play();
         player.loopPointReached += StopPlayer;
@@ -31,6 +39,7 @@ public class VideoPlayersManager : MonoBehaviour
 
     private void StopPlayer(VideoPlayer player)
     {
+        OcclusionPlane.SetActive(false);
         player.loopPointReached -= StopPlayer;
         player.enabled = false;
     }

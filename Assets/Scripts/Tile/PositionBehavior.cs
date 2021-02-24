@@ -27,15 +27,15 @@ namespace Assets.Scripts.Tile
         public bool isSpawnTwo;
         public bool isGreenSlot;
 
+        public int SoulCache;
+
         private List<GameObject> nonBossUnits;
         private MeshRenderer render;
-        private bool _canRender;
 
         void Start()
         {
             nonBossUnits = new List<GameObject>();
             render = gameObject.GetComponent<MeshRenderer>();
-            _canRender = false;
         }
 
         void Update()
@@ -47,6 +47,12 @@ namespace Assets.Scripts.Tile
         {
             nonBossUnits.Add(unit);
             OrganizeCharacterOnPosition();
+
+            if(SoulCache != 0)
+            {
+                EventManager.RaiseEvent(ObjectEventType.AddSoulsToCache, SoulCache);
+                SoulCache = 0;
+            }
         }
 
         public void RemoveNonBossUnit(GameObject unit)
@@ -98,10 +104,14 @@ namespace Assets.Scripts.Tile
             return result;
         }
 
+        internal void AddSoulCache(int soulCounter)
+        {
+            SoulCache = soulCounter;
+        }
+
         public void ResetPosition(bool canRender)
         {
             nonBossUnits.Clear();
-            _canRender = canRender;
             OrganizeCharacterOnPosition();
         }
 

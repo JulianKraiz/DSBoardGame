@@ -31,6 +31,9 @@ namespace BoardGame.Script.Events
         TileFocused,
         UnitIsCurrentlyAttacked,
         UnitIsNotCurrentlyAttacked,
+        PlayerUnitKilled,
+        DropSouls,
+        RestPartyAtBonefire
     }
 
     public enum ObjectEventType
@@ -45,6 +48,8 @@ namespace BoardGame.Script.Events
         EncounterToResolve,
         EncountersResolved,
         UnitMoved,
+        StopAI,
+        GetActionConfirmation,
     }
 
     public class EventManager

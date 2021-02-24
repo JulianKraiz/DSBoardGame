@@ -17,11 +17,12 @@ namespace Assets.Scripts.Unit.IA
 
         void Start()
         {
-            attackstoExecute = new List<BehaviorAction>();
+            Stop(null);
             attackResolver = FindObjectOfType<EnemyActionResolver>();
             doNextAction = false;
 
             EventManager.StartListening(ObjectEventType.AttackApplied, AttackApplied);
+            EventManager.StartListening(ObjectEventType.StopAI, Stop);
         }
 
         void Update()
@@ -41,6 +42,13 @@ namespace Assets.Scripts.Unit.IA
                     LaunchAttack();
                 }
             }
+        }
+
+        public void Stop(object _)
+        {
+            enemy = null;
+            attackstoExecute = new List<BehaviorAction>();
+            doNextAction = false;
         }
 
         public void ResolveEnemyTurn(GameObject enemyObject)

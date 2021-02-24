@@ -7,61 +7,58 @@ using UnityEngine;
 
 public class WallNavigationManager : MonoBehaviour
 {
+    public GameStateManager gameState;
     public GameObject fogWallAsset = null;
     private Dictionary<WallAlreadyBuilt, GameObject> setupWalls = new Dictionary<WallAlreadyBuilt, GameObject>();
 
     void Start()
     {
-
-
         if (fogWallAsset == null)
         {
             throw new ArgumentException($"fog wall asset reference must be set in {this.GetType().Name} script.");
         }
 
-        var tiles = GameObject.FindGameObjectsWithTag("Tile").ToList();
-
-        foreach (var tile in tiles)
+        foreach (var tile in gameState.tiles)
         {
-            var navigationData = tile.GetComponent<NavigationMapping>();
-            if (navigationData.westTile != null)
+            var tileCasted = tile.GetComponent<TileManager>();
+            if (tileCasted.westTile != null)
             {
-                var name = new WallAlreadyBuilt(tile.name, navigationData.westTile.name);
+                var name = new WallAlreadyBuilt(tile.name, tileCasted.westTile.name);
                 if (!setupWalls.ContainsKey(name))
                 {
                     var wallInstance = Instantiate(fogWallAsset, tile.transform.position, tile.transform.rotation);
-                    SetupFogWall(wallInstance, name.ToString(), new Vector3(-5f, 0f, 0f), new Vector3(0, 90, 0), navigationData.westTile, tile, null, null);
+                    SetupFogWall(wallInstance, name.ToString(), new Vector3(-5f, 0f, 0f), new Vector3(0, 90, 0), tileCasted.westTile, tile, null, null);
                     setupWalls.Add(name, wallInstance);
                 }
             }
 
-            if (navigationData.eastTile != null)
+            if (tileCasted.eastTile != null)
             {
-                var name = new WallAlreadyBuilt(tile.name, navigationData.eastTile.name);
+                var name = new WallAlreadyBuilt(tile.name, tileCasted.eastTile.name);
                 if (!setupWalls.ContainsKey(name))
                 {
                     var wallInstance = Instantiate(fogWallAsset, tile.transform.position, tile.transform.rotation);
-                    SetupFogWall(wallInstance, name.ToString(), new Vector3(5f, 0f, 0f), new Vector3(0, 90, 0), tile, navigationData.eastTile, null, null);
+                    SetupFogWall(wallInstance, name.ToString(), new Vector3(5f, 0f, 0f), new Vector3(0, 90, 0), tile, tileCasted.eastTile, null, null);
                     setupWalls.Add(name, wallInstance);
                 }
             }
-            if (navigationData.northTile != null)
+            if (tileCasted.northTile != null)
             {
-                var name = new WallAlreadyBuilt(tile.name, navigationData.northTile.name);
+                var name = new WallAlreadyBuilt(tile.name, tileCasted.northTile.name);
                 if (!setupWalls.ContainsKey(name))
                 {
                     var wallInstance = Instantiate(fogWallAsset, tile.transform.position, tile.transform.rotation);
-                    SetupFogWall(wallInstance, name.ToString(), new Vector3(0f, 0f, 5f), new Vector3(0, 0, 0), null, null, navigationData.northTile, tile);
+                    SetupFogWall(wallInstance, name.ToString(), new Vector3(0f, 0f, 5f), new Vector3(0, 0, 0), null, null, tileCasted.northTile, tile);
                     setupWalls.Add(name, wallInstance);
                 }
             }
-            if (navigationData.southTile != null)
+            if (tileCasted.southTile != null)
             {
-                var name = new WallAlreadyBuilt(tile.name, navigationData.southTile.name);
+                var name = new WallAlreadyBuilt(tile.name, tileCasted.southTile.name);
                 if (!setupWalls.ContainsKey(name))
                 {
                     var wallInstance = Instantiate(fogWallAsset, tile.transform.position, tile.transform.rotation);
-                    SetupFogWall(wallInstance, name.ToString(), new Vector3(0f, 0f, -5f), new Vector3(0, 0, 0), null, null, tile, navigationData.southTile);
+                    SetupFogWall(wallInstance, name.ToString(), new Vector3(0f, 0f, -5f), new Vector3(0, 0, 0), null, null, tile, tileCasted.southTile);
                     setupWalls.Add(name, wallInstance);
                 }
             }

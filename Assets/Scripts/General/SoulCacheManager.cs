@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SoulCacheManager : MonoBehaviour
 {
-    public int SoulCounter { get; set; }
+    public int SoulCounter;
+    public int SoulWaitingToBeAdded;
 
     private GameStateManager gameState;
     private TextMesh soulCountText;
@@ -19,8 +20,6 @@ public class SoulCacheManager : MonoBehaviour
 
     void Start()
     {
-        SoulCounter = 0;
-
         soulCountText = GameObject.Find("SoulCountText").GetComponent<TextMesh>();
         soulCountGainText = GameObject.Find("SoulAddedText").GetComponent<TextMesh>();
         gameState = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
@@ -30,34 +29,24 @@ public class SoulCacheManager : MonoBehaviour
         timeToReachTarget = 3;
 
         soulCountText.text = string.Empty;
-        
+
         EventManager.StartListening(ObjectEventType.AddSoulsToCache, AddOrRemoveSouls);
-        EventManager.StartListening(GameObjectEventType.TileCleared, CountAndAddSoulsGained);
     }
 
     private void AddOrRemoveSouls(object countObject)
     {
-        SoulCounter += (int)countObject;
-    }
-
-    private void CountAndAddSoulsGained(GameObject tile)
-    {
-        var tileManager = tile.GetComponent<TileManager>();
-        var gain = tileManager.monsterSettings.soulGainPerPlayer * tileManager.players.Count;
-        gain += tileManager.monsterSettings.soulGainBonus;
-        
-        AddOrRemoveSouls(gain);
-        soulCountGainText.text = $"+ {gain}";
+        var soulsToAdd = (int)countObject;
+        SoulWaitingToBeAdded += soulsToAdd;
+        soulCountGainText.text = $"{((soulsToAdd > 0) ? "+" : "")} {soulsToAdd}";
         soulCountGainText.gameObject.SetActive(true);
         soulCountGainText.transform.localPosition = anchorFrom;
 
         Invoke(nameof(InitiateMoveTextAndMerge), 10);
-        
     }
 
     void Update()
     {
-        soulCountText.text = $"{SoulCounter} Souls";
+        soulCountText.text = $"{gameState.soulCache} Souls";
 
         if (moving)
         {
@@ -67,13 +56,16 @@ public class SoulCacheManager : MonoBehaviour
         }
     }
 
-    
+
 
     private void InitiateMoveTextAndMerge()
     {
         t = 0;
         moving = true;
         Invoke(nameof(HideGainText), timeToReachTarget);
+
+        gameState.soulCache += SoulWaitingToBeAdded;
+        SoulWaitingToBeAdded = 0;
     }
 
     private void HideGainText()
@@ -81,6 +73,4 @@ public class SoulCacheManager : MonoBehaviour
         moving = false;
         soulCountGainText.gameObject.SetActive(false);
     }
-
-
 }
